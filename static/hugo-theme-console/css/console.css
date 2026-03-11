@@ -141,29 +141,20 @@
     --code-bg-color: var(--light-code-bg-color);
 }
 
-/* ============================= */
-/* RESPONSIVE VARIABLES */
-/* ============================= */
-
-@media only screen and (max-width: 850px) {
-    :root {
-        --global-font-size: 14px;
-        --global-font-color: #444;
-        --global-line-height: 1.6em;
-        --page-width: 70em;
-    }
-}
 
 /* ============================= */
 /* BASE TYPOGRAPHY */
 /* ============================= */
 
-
+html {
+  scroll-behavior: smooth;
+}
 
 body {
     font-family: var(--font-stack);
     font-size: var(--global-font-size);
     background-color: var(--background-color);
+    margin: 0;
     margin-bottom: 10px;
 }
 
@@ -193,6 +184,12 @@ strong {
 
 .logo {
     font-weight: normal;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
 /* ============================= */
@@ -461,9 +458,6 @@ p.social a {
 /* ============================= */
 
 .terminal-layout {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
     margin-top: 2rem;
 }
 
@@ -535,6 +529,7 @@ p.social a {
 /* ============================= */
 
 .sidebar-avatar {
+    max-width: 100%;
     width: 10rem;
     margin-bottom: 15px;
     border-radius: 50%;
@@ -599,7 +594,7 @@ p.social a {
     background: var(--background-color);
     padding: 12px 20px;
     border-top: 1px dashed var(--secondary-color);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--primary-color);
     white-space: nowrap;
     overflow: hidden;
@@ -625,7 +620,7 @@ p.social a {
 
 .lasttrack {
     font-family: var(--font-stack-mono, "Courier New", Courier, monospace);
-    font-size: 1rem;
+    font-size: 0.8rem;
     background-color: var(--background-color);
     display: inline-flex;
     align-items: center;
@@ -691,6 +686,8 @@ p.social a {
 /* Open Alex */
 /* ============================= */
 .cli-table {
+  width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   border: none;
   font-family: monospace;
@@ -771,6 +768,59 @@ p.social a {
 }
 
 /* ============================= */
+/* RESPONSIVE VARIABLES */
+/* ============================= */
+
+@media only screen and (max-width: 767px) {
+    :root {
+        --global-font-size: 0.85rem;
+        --global-font-color: #444;
+        --global-line-height: 1.6em;
+        --page-width: 70rem;
+    }
+    
+}
+
+
+/* ============================= */
+/* BASE LAYOUT (MOBILE FIRST) */
+/* ============================= */
+
+.terminal-layout {
+
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    
+}
+
+.sidebar,
+.main-content,
+.right-panels {
+    min-width: 0;
+}
+
+/* ============================= */
+/* TABLET LAYOUT */
+/* ============================= */
+
+@media (min-width: 768px) and (max-width: 991px) {
+
+    .terminal-layout {
+        grid-template-columns: 260px 1fr;
+        grid-template-rows: auto auto;
+    }
+
+    .sidebar {
+        grid-row: span 2;
+        position: sticky;
+        top: 20px;
+    }
+
+}
+
+
+/* ============================= */
 /* DESKTOP LAYOUT */
 /* ============================= */
 
@@ -778,11 +828,10 @@ p.social a {
 
     .terminal-layout {
         display: grid;
-        grid-template-columns: 25% 45% 25%;;
+        grid-template-columns: 25% 1fr 25%;
         gap: 2rem;
         align-items: start;
     }
-
 
     .sidebar {
         position: sticky;
@@ -791,12 +840,12 @@ p.social a {
 
 }
 
+
 /* ============================= */
 /* MOBILE LAYOUT */
 /* ============================= */
 
-@media only screen and (max-width: 850px) {
-
+@media (max-width: 991px) {
 
     .site-name {
         width: 2ch;
@@ -804,16 +853,16 @@ p.social a {
     }
 
     .terminal-nav {
-        align-items: flex-start;
-        flex-direction: column;
         display: flex;
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .terminal-menu ul {
-        align-items: flex-start;
         display: flex;
         flex-direction: row;
-        justify-content: left;
+        align-items: flex-start;
+        justify-content: flex-start;
         margin-top: 0;
     }
 
@@ -824,7 +873,11 @@ p.social a {
     .logo {
         padding: calc(var(--global-space) * 1) 0 calc(var(--global-space) * 1);
     }
-    
+
+    .experience-header .time {
+        display: none;;
+    }
+
     .project-role {
         display: none;
     }
@@ -855,3 +908,6 @@ p.social a {
     }
 
 }
+
+
+
