@@ -1,0 +1,12 @@
+# environment
+.env
+
+# Hugo build output
+public/
+resources/_gen/
+
+# hugo lock
+.hugo_build.lock
+
+# macOS junk
+.DS_Store

@@ -1,0 +1,12 @@
+{{ $config := resources.Get "js/config.js" | resources.ExecuteAsTemplate "js/config.js" . | js.Build }}
+<script type="module" src="{{ $config.RelPermalink }}"></script>
+
+<script type="module" src="{{ "js/collapse_windows.js" | relURL }}"></script>
+<script type="module" src="{{ "js/theme.js" | relURL }}"></script>
+<script type="module" src="{{ "js/console_type.js" | relURL }}"></script>
+<script type="module" src="{{ "js/currenttime.js" | relURL }}"></script>
+<script type="module" src="{{ "js/lastFM.js" | relURL }}"></script>
+<script type="module" src="{{ "js/openalex.js" | relURL }}"></script>
+<script type="module" src="{{ "js/anilist.js" | relURL }}"></script>
+<script type="module" src="{{ "js/trakt.js" | relURL }}"></script>
+<script type="module" src="{{ "js/unsplash.js" | relURL }}"></script>

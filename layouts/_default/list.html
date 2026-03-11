@@ -1,0 +1,34 @@
+{{ define "main" }}
+<h1>{{ .Page.Title }}</h1>
+<br/>
+{{ .Content }}
+
+{{/* Group by Year */}}
+{{ range .Pages.GroupByPublishDate "2006" }}
+    <h2 style="border-bottom: 1px solid #555; margin-top: 3rem;">{{ .Key }}</h2>
+    
+    <div class="posts-list">
+        {{ range .Pages }}
+            {{ if not .Params.private }}
+                <div class="post">
+                    <p>
+                        {{/* Month and Day only */}}
+                        <div class="date">{{ .PublishDate.Format "Jan. 02" }}</div>    
+                        <h2>
+                            <a href="{{ .Permalink }}" title="{{ .Title }}">{{ .Title }}</a>
+                        </h2>
+                        
+                        {{ with .Params.company }}
+                            <small style="opacity: 0.6;">{{ . }}</small><br/>
+                        {{ end }}
+
+                        {{/* Plainify strips all HTML/Links from the summary */}}
+                        {{ .Summary | plainify }}
+                    </p>
+                </div>
+            {{ end }}
+        {{ end }}
+    </div>
+{{ end }}
+
+{{ end }}

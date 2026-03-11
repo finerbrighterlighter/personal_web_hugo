@@ -1,0 +1,24 @@
+<div class="image-grid">
+    {{ $match := .Get "match" | default "*" }}
+    {{ range .Page.Resources.Match $match }}
+        {{/* Define our threshold */}}
+        {{ $targetWidth := 1000 }}
+        {{ $src := "" }}
+
+        {{ if gt .Width $targetWidth }}
+            {{/* Only resize if it's wider than 1000px */}}
+            {{ $thumb := .Resize (printf "%dx" $targetWidth) }}
+            {{ $src = $thumb.RelPermalink }}
+        {{ else }}
+            {{/* Use original if it's already small/sharp */}}
+            {{ $src = .RelPermalink }}
+        {{ end }}
+
+        <a href="{{ .RelPermalink }}" target="_blank">
+            <img src="{{ $src }}" 
+                 class="img-responsive" 
+                 alt="{{ .Name }}" 
+                 style="display: block; width: 100%; height: auto;">
+        </a>
+    {{ end }}
+</div>

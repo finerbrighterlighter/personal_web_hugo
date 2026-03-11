@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{ .Site.Title }}{{ $url := urls.Parse .Page.Permalink }}{{ $url.Path }}</title>
+    {{ with .Site.Params.description }}<meta name="description" content="{{ . }}">{{ end }}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ "hugo-theme-console/css/terminal-0.7.4.min.css" | absURL }}">
+    <link rel="stylesheet" href="{{ "hugo-theme-console/css/animate-4.1.1.min.css" | absURL }}">
+    <link rel="stylesheet" href="{{ "hugo-theme-console/css/console.css" | absURL }}">
+    
+    {{- partial "favicon.html" . -}}
+    {{- partial "header.html" . -}}
+</head>
+
+<body class="terminal">
+    <div class="container">
+        <div class="terminal-nav">
+          <header class="terminal-logo">
+            <div class="logo terminal-prompt">
+              <a href="{{ "/" | absURL }}" class="no-style {{ with .Site.Params.TitleCutting }}site-name{{ end }}">
+                {{ .Site.Title }}
+              </a>:~# 
+              {{ $path := "" }}
+              {{ range (split .RelPermalink "/") }}{{ if ne . "" }}{{ $path = printf "%s/%s" $path . }}<a href="{{ $path | absURL }}">{{ . }}</a>/{{ end }}{{ end }}
+              <span id="typed-command"></span></span>
+            </div>
+          </header>
+          
+          <nav class="terminal-menu">
+            <ul vocab="https://schema.org/" typeof="BreadcrumbList">
+                {{ range $index, $element := .Site.Params.navlinks }}
+                <li property="itemListElement" typeof="ListItem">
+                    <a property="item" typeof="WebPage" href="{{ absURL .url }}"><span property="name">{{ .name }}</span></a>
+                    <meta property="position" content="{{ add $index 1}}" />
+                </li>
+                {{ end }}
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                  🌓 theme
+                </button>
+            </ul>
+          </nav>  
+        </div>
+    </div>
+
+    <div class="container terminal-layout {{ .Site.Params.animateStyle }}">
+        
+        <aside class="terminal-window sidebar">
+            <div class="window-header">
+                <div class="window-controls">
+                    <span class="control close"></span>
+                    <span class="control minimize"></span>
+                    <span class="control maximize"></span>
+                </div>
+                <div class="window-title">profile.sh</div>
+            </div>
+            <div class="window-content">
+                {{- partial "sidebar-content.html" . -}}
+            </div>
+            <div id="lasttrack" class="lasttrack window-footer">
+              <span class="loading-dots">Initializing...</span>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            {{ block "main" . }}{{ end }}
+            {{ partial "footer.html" . }}
+        </main>
+        
+        <aside class="right-panels">
+          {{ partial "panel-openalex.html" . }}
+          {{ partial "panel-playlists.html" . }}
+          {{ partial "panel-topalbums.html" . }}
+          {{ partial "panel-anilist.html" . }}
+          {{ partial "panel-trakt.html" . }}
+          {{ partial "panel-unsplash.html" . }}
+        </aside>
+
+        
+    </div>
+
+    {{ partial "scripts.html" . -}}
+</body>
+</html>

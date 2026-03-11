@@ -1,0 +1,9 @@
+{{ define "main" }}
+<h1>{{ .Title }}</h1>
+{{with .Params.company}}
+    <h3>{{ . }}</h3>
+{{ end }}
+{{ .Date | time.Format ":date_medium" }}
+
+{{ .Content }}
+{{ end }}

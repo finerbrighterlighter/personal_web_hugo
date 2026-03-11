@@ -1,0 +1,76 @@
+{{ define "main" }}
+  <br/>
+  {{ .Content }}
+
+  {{ $categories := slice "journal" "conference-speaking" "conference-poster" "preprint" "dissertation" "report" }}
+  {{ $papers := where site.RegularPages "Section" "works" }}
+
+  <div class="works-grouped">
+    {{ range $categories }}
+      {{ $cat := . }}
+      
+      <h2 style="border-bottom: 1px solid #555; margin-top: 3rem;">
+        {{ replace ($cat | title) "-" " " }}
+      </h2>
+
+      <div class="posts-list" >
+        {{ $filtered := where $papers "Params.type" $cat }}
+        {{ $filtered = sort $filtered "Date" "desc" }}
+
+        {{ range $filtered }}
+          <div class="post" itemscope itemtype="https://schema.org/ScholarlyArticle">
+            <meta itemprop="datePublished" content="{{ .Date }}">
+            <div class="date">{{ .Date.Format "2006" }}</div>
+
+            <h2 itemprop="name">
+              <i class="{{ .Params.icon | default "fas fa-file-alt" }}"></i>
+              {{ .Title }}
+            </h2>
+
+            <small>
+              <i itemprop="isPartOf">{{ .Params.venue }}</i>
+            </small><br/>
+
+            <small itemprop="author">
+              {{ $authors := .Params.authors }}
+              {{ $count := len $authors }}
+
+              {{ range $i, $a := $authors }}
+                {{ if $a.highlight }}<b>{{ end }}
+                  {{ $a.family }} {{ $a.given }}
+                {{ if $a.highlight }}</b>{{ end }}
+                {{ if lt (add $i 1) $count }}, {{ end }}
+              {{ end }}
+            </small><br/>
+
+            <small class="sources">
+              {{ with .Params.scholar }}
+                <a itemprop="sameAs"
+                   href="https://scholar.google.com/citations?view_op=view_citation&citation_for_view={{ $.Site.Data.homepage.sidebar.scholar_profile }}:{{ . }}"
+                   target="_blank">
+                  [scholar]
+                </a>
+              {{ end }}
+
+              {{ range .Params.sources }}
+                {{ $isExternal := hasPrefix .url "http" }}
+                {{ $finalURL := .url }}
+
+                {{ if not $isExternal }}
+                  {{ $finalURL = .url | relURL }}
+                {{ end }}
+
+                <a itemprop="url"
+                   href="{{ $finalURL }}"
+                   {{ if $isExternal }}target="_blank" rel="noopener"{{ end }}>
+                  [{{ .text }}]
+                </a>
+              {{ end }}
+              </small>
+              <div style="margin-bottom: 1rem;"></div>
+          </div>
+        {{ end }}
+      </div>
+    {{ end }}
+  </div>
+{{ end }}

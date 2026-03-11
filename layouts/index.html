@@ -1,0 +1,204 @@
+{{ define "main" }}
+
+<h1>Latest posts</h1>
+<div class="posts-list">
+{{ with .Site.GetPage "/posts" }}
+    {{ $posts := where .Pages ".Params.private" "!=" true }}
+    {{ $posts = sort $posts "Date" "desc" }}
+    {{ range first 2 $posts }}
+        <div class="post">
+            <div class="date">{{ .Date | time.Format ":date_medium" }}</div>
+            <h2><a href="{{ .Permalink }}" title="{{ .Title }}">{{ .Title }}</a></h2>
+            {{ .Summary }}
+        </div>    
+    {{ end }}
+{{ end }}
+</div>
+
+<br/>
+
+{{- with .Site.Data.homepage.career_profile -}}
+<h1>{{ .title }}</h1>
+<div class="profile-details">
+{{ .description | markdownify }}
+</div>
+{{- end -}}
+
+<br/>
+
+{{ with .Site.Data.homepage.experiences }}
+<h1>{{ .title }}</h1>
+
+{{ range first 2 .info }}
+<div class="experience">
+  <div class="experience-header">
+    <h4 class="role">{{ .role }}</h4>
+    <span class="time">{{ .time }}</span>
+  </div>
+
+  <div class="company">
+    {{ .role_lan }} at 
+    <a href="{{ .company.link }}">{{ .company.name }}</a>
+  </div>
+
+  <div class="experience-details">
+    {{ .details | markdownify }}
+  </div>
+</div>
+{{ end }}
+
+<details class="experience-collapse">
+<summary>Show more experience</summary>
+
+{{ range after 2 .info }}
+<div class="experience">
+  <div class="experience-header">
+    <h4 class="role">{{ .role }}</h4>
+    <span class="time">{{ .time }}</span>
+  </div>
+
+  <div class="company">
+    {{ .role_lan }} at 
+    <a href="{{ .company.link }}">{{ .company.name }}</a>
+  </div>
+
+  <div class="experience-details">
+    {{ .details | markdownify }}
+  </div>
+</div>
+{{ end }}
+
+</details>
+
+{{ end }}
+
+<br/>
+
+{{ with .Site.Data.homepage.projects }}
+
+<h1>{{ .title }}</h1>
+
+{{ range first 2 .assignments }}
+<div class="project">
+  <div class="project-header">
+    <h4 class="project-title">
+      {{ if .link }}
+        <a href="{{ .link }}">{{ .title }}</a>
+      {{ else }}
+        {{ .title }}
+      {{ end }}
+    </h4>
+    <span class="project-role">{{ .role }}</span>
+  </div>
+
+  <div class="project-tagline">
+    {{ .tagline }}
+  </div>
+</div>
+{{ end }}
+
+<details class="project-collapse">
+<summary>Show more projects</summary>
+
+{{ range after 2 .assignments }}
+<div class="project">
+  <div class="project-header">
+    <h4 class="project-title">
+      {{ if .link }}
+        <a href="{{ .link }}">{{ .title }}</a>
+      {{ else }}
+        {{ .title }}
+      {{ end }}
+    </h4>
+    <span class="project-role">{{ .role }}</span>
+  </div>
+
+  <div class="project-tagline">
+    {{ .tagline }}
+  </div>
+</div>
+{{ end }}
+
+</details>
+
+{{ end }}
+
+<br/>
+
+<h1>Recent Works</h1>
+<div class="posts-list">
+  {{ $papers := where site.RegularPages "Section" "works" }}
+  {{ $cutoff := now.AddDate -1 0 0 }}
+
+  {{ range $papers.ByDate.Reverse }}
+    {{ if ge .Date $cutoff }}
+      <div class="post">
+        <div class="date">{{ .Date.Format "2006" }}</div>
+
+        <h2>
+          <i class="{{ .Params.icon | default "fas fa-file-alt" }}"></i>
+          {{ .Title }}
+        </h2>
+
+        <small><i>{{ .Params.venue }}</i></small><br>
+
+        <small>
+          {{ $authors := .Params.authors }}
+          {{ $count := len $authors }}
+          {{ $authorLimit := 5 }}
+          {{ $myIndex := -1 }}
+
+          {{ range $i, $a := $authors }}
+            {{ if eq $a.family "Teza" }}
+              {{ $myIndex = $i }}
+            {{ end }}
+          {{ end }}
+
+          {{ $limit := $authorLimit }}
+
+          {{ if ge $myIndex $authorLimit }}
+            {{ $limit = add $myIndex 1 }}
+          {{ end }}
+
+          {{ range $i, $a := $authors }}
+            {{ if lt $i $limit }}
+              {{ if $a.highlight }}<b>{{ end }}
+                {{ $a.family }} {{ substr $a.given 0 1 }}.
+              {{ if $a.highlight }}</b>{{ end }}
+              {{ if lt (add $i 1) $limit }}, {{ end }}
+            {{ end }}
+          {{ end }}
+        
+          {{ if gt $count $limit }} et al.{{ end }}
+        </small>
+        <br>
+
+        <small class="sources">
+          {{ with .Params.scholar }}
+            [<a href="https://scholar.google.com/citations?view_op=view_citation&citation_for_view={{ $.Site.Data.homepage.sidebar.scholar_profile }}:{{ . }}" target="_blank">scholar</a>]
+          {{ end }}
+
+          {{ range .Params.sources }}
+            {{ $isExternal := hasPrefix .url "http" }}
+            {{ $finalURL := .url }}
+            
+            {{ if not $isExternal }}
+              {{ $finalURL = .url | relURL }}
+            {{ end }}
+
+            <a href="{{ $finalURL }}" {{ if $isExternal }}target="_blank" rel="noopener"{{ end }}>
+              [{{ .text }}]
+            </a>
+          {{ end }}
+        </small>
+        <div style="margin-bottom: 1rem;"></div>
+      </div>
+    {{ end }}
+  {{ end }}
+
+  <p><a href="/works/">View all works →</a></p>
+</div>
+
+<br/>
+
+{{ end }}

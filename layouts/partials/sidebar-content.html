@@ -1,0 +1,57 @@
+{{ $data := .Site.Data.homepage.sidebar }}
+{{ $edu := .Site.Data.homepage.education }}
+
+<div class="profile-header" style="text-align: center; margin-bottom: 2rem;">
+    {{ with $data.avatar }}
+        <img src="{{ $data.avatar }}" alt="Profile" class="sidebar-avatar">
+    {{ end }}
+    <h2 style="margin-top: 1rem; margin-bottom: 0; color: var(--primary-color); font-size:1rem;">{{ $data.name }}</h2>
+    <small style="opacity: 0.7; color: var(--font-color)">{{ $data.tagline }}</small>
+</div>
+
+<ul class="sidebar-links">
+    
+    {{ with $data.email }}
+    <li> 📧 <a href="mailto:{{ . }}">{{ . }}</a></li>
+    {{ end }}
+
+    {{ with $data.phone }}
+    <li> 📞 <a href="tel:{{ . }}"></span>{{ . }}</a></li>
+    {{ end }}
+
+    {{ if and $data.area $data.location }}
+    <li> 🕒 <a href="https://time.is/{{ $data.location }}" target="_blank" id="timezone" title="{{ $data.location }}">{{ $data.area }}/{{ $data.location }}</a></li>
+    {{ end }}
+
+    {{ with $data.website }}
+    <li> 🌐 <a href="https://{{ . }}" target="_blank">{{ $data.websitename | default . }}</a></li>
+    {{ end }}
+
+    {{ with $data.orcid }}
+    <li> 🆔 <a href="https://orcid.org/{{ . }}" target="_blank">ORCID</a></li>
+    {{ end }}
+
+    {{ with $data.cv }}
+    <li> 📄 <a href="{{ . | relURL }}" target="_blank">Download CV</a></li>
+    {{ end }}
+
+    {{ with $data.vcard }}
+    <li> 📇 <a href="{{ . | relURL }}">Add to Contacts</a></li>
+    {{ end }}
+</ul>
+
+<div style = "border-bottom: 1px dashed var(--secondary-color);"></div>
+
+{{ with $edu }}
+{{ range .info }}
+<div style="margin-bottom: 1rem;"></div>
+<div class="education-title">
+  <a href="{{ .diploma }}" >{{ .degree }}</a>
+</div>
+<div class="education-university">
+    <a href="{{ .university.link }}" style='font-size: 0.75rem; opacity: 0.8;'>{{ .university.name }}</a>
+</div>
+<span class="education-time">{{ .time }}</span>
+
+{{ end }}
+{{ end }}

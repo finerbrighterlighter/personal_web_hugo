@@ -1,0 +1,27 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = 'hteza'
+
+[params]
+  description = "Htun Teza"
+  animateStyle = "animate-fade-up" # Animation style for content
+
+[[params.navlinks]]
+  name = "Works"
+  url = "/works/"
+
+[[params.navlinks]]
+  name = "Posts"
+  url = "/posts/"
+
+[[params.navlinks]]
+  name = "Blood"
+  url = "/blood"
+
+[security]
+  enableInlineShortcodes = false
+
+  [security.funcs]
+    getenv = [
+      "^HUGO_",
+    ]
