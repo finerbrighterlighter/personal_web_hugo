@@ -1,27 +1,25 @@
-baseURL = 'https://example.org/'
-languageCode = 'en-us'
-title = 'hteza'
+baseURL = "https://example.org/"
+languageCode = "en-us"
+title = "hteza"
 
 [params]
-  description = "Htun Teza"
-  animateStyle = "animate-fade-up" # Animation style for content
+description = "Htun Teza"
+animateStyle = "animate-fade-up"
 
 [[params.navlinks]]
-  name = "Works"
-  url = "/works/"
+name = "Works"
+url = "/works/"
 
 [[params.navlinks]]
-  name = "Posts"
-  url = "/posts/"
+name = "Posts"
+url = "/posts/"
 
 [[params.navlinks]]
-  name = "Blood"
-  url = "/blood"
+name = "Blood"
+url = "/blood"
 
 [security]
-  enableInlineShortcodes = false
+enableInlineShortcodes = false
 
-  [security.funcs]
-    getenv = [
-      "^HUGO_",
-    ]
+[security.funcs]
+getenv = ["^HUGO_"]
