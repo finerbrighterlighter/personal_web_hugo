@@ -266,11 +266,9 @@ async function loadOpenAlexMetrics(elementId) {
 
     element.innerHTML = `
 
-<pre class="panel-terminal"
-">
-
+<a href="https://openalex.org/authors/A5065083669" class="panel-terminal">
 $ openalex --metrics
-</pre>
+</a>
 
 <table class="cli-table">
   <thead>
@@ -312,10 +310,7 @@ $ openalex --metrics
 
 <div id="oa-chart-container" style="position:relative;margin-top:10px">
 
-<pre class="panel-terminal">
-
-$ openalex --timeline
-</pre>
+<a href="https://openalex.org/authors/A5065083669" class="panel-terminal">$ openalex --timeline</a>
 
 <div id="oa-tooltip"
      style="
