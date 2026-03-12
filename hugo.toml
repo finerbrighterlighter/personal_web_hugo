@@ -8,19 +8,22 @@ description = "Htun Teza is a Burmese Data Scientist, Research Assistant and Den
 animateStyle = "animate-fade-up"
 ogImage = "assets/general/og_image.webp"
 promptName = "hteza"
-promptHost = "oneminutetimemachine"
+promptHost = "homepage"
 
 [[params.navlinks]]
 name = "Works"
 url = "/works/"
+host = "academia"
 
 [[params.navlinks]]
 name = "Posts"
 url = "/posts/"
+host = "notebook"
 
 [[params.navlinks]]
 name = "Blood"
-url = "/blood"
+url = "/blood/"
+host = "rhesus"
 
 [security]
 enableInlineShortcodes = false

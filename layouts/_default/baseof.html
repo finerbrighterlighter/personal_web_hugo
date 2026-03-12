@@ -17,15 +17,24 @@
         <div class="terminal-nav">
           <header class="terminal-logo">
             <div class="logo terminal-prompt">
+              {{- $host := .Site.Params.promptHost -}}
+              {{- range .Site.Params.navlinks -}}
+                {{- if hasPrefix $.RelPermalink .url -}}
+                  {{- with .host -}}{{- $host = . -}}{{- end -}}
+                {{- end -}}
+              {{- end -}}
+
+
               <a href="{{ "/" | absURL }}" class="no-style {{ with .Site.Params.TitleCutting }}site-name{{ end }}">
-                {{ .Site.Params.promptName }}@{{ .Site.Params.promptHost }}
-              </a>:~{{- $path := "" -}}
+                {{ .Site.Params.promptName }}@{{ $host -}}
+              </a> :~{{- $path := "" -}}
               {{- range (split .RelPermalink "/") -}}
                 {{- if ne . "" -}}
                   {{- $path = printf "%s/%s" $path . -}}/<a href="{{ $path | absURL }}">{{ . }}</a>
                 {{- end -}}
               {{- end -}}$ <span id="typed-command"></span>
             </div>
+
 
           </header>
           
