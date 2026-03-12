@@ -3,8 +3,6 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{ .Site.Title }}{{ $url := urls.Parse .Page.Permalink }}{{ $url.Path }}</title>
-    {{ with .Site.Params.description }}<meta name="description" content="{{ . }}">{{ end }}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ "hugo-theme-console/css/terminal-0.7.4.min.css" | absURL }}">
     <link rel="stylesheet" href="{{ "hugo-theme-console/css/animate-4.1.1.min.css" | absURL }}">
@@ -20,12 +18,15 @@
           <header class="terminal-logo">
             <div class="logo terminal-prompt">
               <a href="{{ "/" | absURL }}" class="no-style {{ with .Site.Params.TitleCutting }}site-name{{ end }}">
-                {{ .Site.Title }}
-              </a>:~# 
-              {{ $path := "" }}
-              {{ range (split .RelPermalink "/") }}{{ if ne . "" }}{{ $path = printf "%s/%s" $path . }}<a href="{{ $path | absURL }}">{{ . }}</a>/{{ end }}{{ end }}
-              <span id="typed-command"></span></span>
+                {{ .Site.Params.promptName }}@{{ .Site.Params.promptHost }}
+              </a>:~{{- $path := "" -}}
+              {{- range (split .RelPermalink "/") -}}
+                {{- if ne . "" -}}
+                  {{- $path = printf "%s/%s" $path . -}}/<a href="{{ $path | absURL }}">{{ . }}</a>
+                {{- end -}}
+              {{- end -}}$ <span id="typed-command"></span>
             </div>
+
           </header>
           
           <nav class="terminal-menu">
