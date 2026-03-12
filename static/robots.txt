@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hugoteza.netlify.app/sitemap.xml
+Sitemap: https://htunteza.com/sitemap.xml
