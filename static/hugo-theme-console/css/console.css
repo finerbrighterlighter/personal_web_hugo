@@ -84,16 +84,17 @@
 :root {
 
 
-    --dark-background-color: #282828;
-    --dark-font-color: #ebdbb2;
+    --dark-background-color: #282828;  
+    --dark-font-color: #ebdbb2;         
     --dark-invert-font-color: #282828;
-    --dark-secondary-color: #a89984;
-    --dark-tertiary-color: #928374;
-    --dark-primary-color: #5e81ac; 
-    --dark-error-color: #fb4934;
-    --dark-progress-bar-background: #3c3836;
-    --dark-progress-bar-fill: #5e81ac;
+    --dark-secondary-color: #a89984;    
+    --dark-tertiary-color: #928374;     
+    --dark-primary-color: #83a598;      
+    --dark-error-color: #fb4934;       
+    --dark-progress-bar-background: #3c3836; 
+    --dark-progress-bar-fill: #83a598;
     --dark-code-bg-color: #3c3836;
+
 
     --light-background-color: #eceff4;
     --light-font-color: #2e3440;
