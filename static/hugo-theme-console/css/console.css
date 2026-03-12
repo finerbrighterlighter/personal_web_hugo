@@ -52,9 +52,10 @@
     --display-h1-decoration: 1;
 }
 
+/* deafult */
+/* 
 :root {
 
-    /* DARK PALETTE */
     --dark-background-color: #222225;
     --dark-font-color: #e8e9ed;
     --dark-invert-font-color: #222225;
@@ -66,7 +67,6 @@
     --dark-progress-bar-fill: #62c4ff;
     --dark-code-bg-color: #3f3f44;
 
-    /* LIGHT PALETTE */
     --light-background-color: #fff;
     --light-font-color: #151515;
     --light-invert-font-color: #fff;
@@ -78,6 +78,146 @@
     --light-code-bg-color: #e8eff2;
 
 }
+*/
+
+/* nord + gruvbox hybrid */
+:root {
+
+
+    --dark-background-color: #282828;
+    --dark-font-color: #ebdbb2;
+    --dark-invert-font-color: #282828;
+    --dark-secondary-color: #a89984;
+    --dark-tertiary-color: #928374;
+    --dark-primary-color: #5e81ac; 
+    --dark-error-color: #fb4934;
+    --dark-progress-bar-background: #3c3836;
+    --dark-progress-bar-fill: #5e81ac;
+    --dark-code-bg-color: #3c3836;
+
+    --light-background-color: #eceff4;
+    --light-font-color: #2e3440;
+    --light-invert-font-color: #eceff4;
+    --light-primary-color: #5e81ac;
+    --light-secondary-color: #4c566a;
+    --light-error-color: #bf616a;
+    --light-progress-bar-background: #d8dee9;
+    --light-progress-bar-fill: #5e81ac;
+    --light-code-bg-color: #e5e9f0;
+
+}
+
+
+/* Nord */
+/* :root {
+
+    --dark-background-color: #2e3440;      
+    --dark-font-color: #eceff4;            
+    --dark-invert-font-color: #2e3440;
+    --dark-secondary-color: #d8dee9;       
+    --dark-tertiary-color: #4c566a;        
+    --dark-primary-color: #5e81ac;         
+    --dark-error-color: #bf616a;           
+    --dark-progress-bar-background: #3b4252; 
+    --dark-progress-bar-fill: #5e81ac;
+    --dark-code-bg-color: #3b4252;
+
+    
+    --light-background-color: #eceff4;    
+    --light-font-color: #2e3440;          
+    --light-invert-font-color: #eceff4;
+    --light-primary-color: #5e81ac;        
+    --light-secondary-color: #4c566a;      
+    --light-error-color: #bf616a;          
+    --light-progress-bar-background: #d8dee9;
+    --light-progress-bar-fill: #5e81ac;
+    --light-code-bg-color: #e5e9f0;       
+
+} */
+
+
+/* Everforest */
+/* :root {
+
+    --dark-background-color: #2f383e;     
+    --dark-font-color: #d3c6aa;            
+    --dark-invert-font-color: #2f383e;
+    --dark-secondary-color: #9da9a0;       
+    --dark-tertiary-color: #4f5b58;        
+    --dark-primary-color: #7fbbb3;        
+    --dark-error-color: #e67e80;           
+    --dark-progress-bar-background: #3a444a; 
+    --dark-progress-bar-fill: #7fbbb3;
+    --dark-code-bg-color: #3a444a;
+
+
+    --light-background-color: #fdf6e3;    
+    --light-font-color: #5c6a72;           
+    --light-invert-font-color: #fdf6e3;
+    --light-primary-color: #3a94c5;      
+    --light-secondary-color: #829181;      
+    --light-error-color: #f85552;          
+    --light-progress-bar-background: #efe7d2; 
+    --light-progress-bar-fill: #3a94c5;
+    --light-code-bg-color: #efe7d2;
+
+}
+ */
+
+/* GRUVBOX */
+/* :root {
+
+    
+    --dark-background-color: #282828;  
+    --dark-font-color: #ebdbb2;         
+    --dark-invert-font-color: #282828;
+    --dark-secondary-color: #a89984;    
+    --dark-tertiary-color: #928374;     
+    --dark-primary-color: #83a598;      
+    --dark-error-color: #fb4934;       
+    --dark-progress-bar-background: #3c3836; 
+    --dark-progress-bar-fill: #83a598;
+    --dark-code-bg-color: #3c3836;
+
+    --light-background-color: #fbf1c7;  
+    --light-font-color: #3c3836;       
+    --light-invert-font-color: #fbf1c7;
+    --light-primary-color: #458588;    
+    --light-secondary-color: #7c6f64;   
+    --light-error-color: #cc241d;       
+    --light-progress-bar-background: #ebdbb2;
+    --light-progress-bar-fill: #458588;
+    --light-code-bg-color: #ebdbb2;
+
+} */
+
+/* catapuccin */
+/* :root {
+
+    
+    --dark-background-color: #1e1e2e;     
+    --dark-font-color: #cdd6f4;          
+    --dark-invert-font-color: #1e1e2e;    
+    --dark-secondary-color: #bac2de;      
+    --dark-tertiary-color: #a6adc8;       
+    --dark-primary-color: #89b4fa;        
+    --dark-error-color: #f38ba8;          
+    --dark-progress-bar-background: #313244; 
+    --dark-progress-bar-fill: #89b4fa;    
+    --dark-code-bg-color: #313244;        
+
+    
+    --light-background-color: #eff1f5;    
+    --light-font-color: #4c4f69;          
+    --light-invert-font-color: #eff1f5;  
+    --light-primary-color: #1e66f5;       
+    --light-secondary-color: #6c6f85;     
+    --light-error-color: #d20f39;         
+    --light-progress-bar-background: #ccd0da;
+    --light-progress-bar-fill: #1e66f5;   
+    --light-code-bg-color: #e6e9ef;       
+} */
+
 
 /* ============================= */
 /* COLOR THEMES */
@@ -533,7 +673,6 @@ p.social a {
     width: 10rem;
     margin-bottom: 15px;
     border-radius: 50%;
-    border: 2px solid var(--primary-color);
     box-shadow: 0 1px 1px rgba(0,0,0,0.1);
     object-fit: cover;
     filter: grayscale(20%);
