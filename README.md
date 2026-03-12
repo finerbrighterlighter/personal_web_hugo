@@ -1,6 +1,6 @@
 # 🧪 Personal Website (Beta Build)
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/YOUR_BADGE_ID/deploy-status)](https://app.netlify.com/sites/YOUR_SITE/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/ca043d57-11d9-487c-9e6f-dae968d5ccc7/deploy-status)](https://app.netlify.com/projects/hugoteza/deploys)
 
 This is the beta build of my personal website — a simple site built with [Hugo](https://gohugo.io), deployed via [Netlify](https://www.netlify.com/). The custom domain is managed through [Porkbun](https://porkbun.com).
 

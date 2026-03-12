@@ -814,7 +814,7 @@ p.social a {
 /* TABLET LAYOUT */
 /* ============================= */
 
-@media (min-width: 768px) and (max-width: 991px) {
+@media (min-width: 768px) and (max-width: 1100px) {
 
     .terminal-layout {
         grid-template-columns: 260px 1fr;
@@ -834,7 +834,7 @@ p.social a {
 /* DESKTOP LAYOUT */
 /* ============================= */
 
-@media (min-width: 992px) {
+@media (min-width: 1101px) {
 
     .terminal-layout {
         display: grid;
@@ -855,7 +855,7 @@ p.social a {
 /* MOBILE LAYOUT */
 /* ============================= */
 
-@media (max-width: 991px) {
+@media (max-width: 767px) {
 
     .site-name {
         width: 2ch;
