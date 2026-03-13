@@ -1,14 +1,14 @@
 conditions:
 - Hypertension
-- Type 2 Diabetes
 - Chronic Kidney Disease
+- Chronic Periodontitis
 
 datasource:
 - Electronic Health Records
 - Thailand
-- CEB Data Warehouse
+- Myanmar
 
 methods:
 - Cox Proportional Hazards
 - Time-varying
-- Multistate Model
+- Machine Learning

@@ -51,4 +51,10 @@ methods:
 - Imputation
 - Validation
 - Methodology
+- Statistics
+- Logistic Regression
+- Machine Learning
+- Decision Tree
+- Random Forest
+- XGBoost
 ---
