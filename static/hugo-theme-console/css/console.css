@@ -444,7 +444,8 @@ strong {
 }
 
 .project-role {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    font-style: italic;
     color: var(--secondary-color);
     white-space: nowrap;
 }

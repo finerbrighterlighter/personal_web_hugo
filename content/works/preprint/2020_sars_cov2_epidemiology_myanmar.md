@@ -35,7 +35,7 @@ conditions:
 
 datasource:
 - Myanmar
-- Ministry of Health and Sports, Myanmar
+- Ministry of Health and Sports
 
 methods:
 - Description

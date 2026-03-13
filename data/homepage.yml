@@ -101,12 +101,12 @@ projects:
 
     - title: CEB Data Warehouse's Hypertension Theme
       link: "https://www.rama.mahidol.ac.th/ceb/content/21sep2022-1439"
-      role: "Data Manager and Co-Investigator"
+      role: "Data Manager"
       tagline: "Funded by National Research Council of Thailand (NRCT)"
 
     - title: CEB Data Warehouse's Dementia Theme
       link: "https://www.rama.mahidol.ac.th/ceb/content/27sep2024-1142"
-      role: "Data Manager and Co-Investigator"
+      role: "Data Manager"
       tagline: "Funded by National Research Council of Thailand (NRCT)"
 
     - title: Development of multi-center cohort for hypertensive patients
@@ -121,22 +121,22 @@ projects:
 
     - title: Uncertainty-aware Missing Data Imputation Methods for Real-world Data
       link:
-      role: "Co-Investigator"
+      role: "Data Analyst"
       tagline: "Methodological research within the CEB Data Warehouse Working Group"
 
     - title: Thailand Health AI Datathon 2023
       link: "https://web.archive.org/web/20231006064810/https://datathonthailand.org/"
-      role: "Data Manager and Local Mentor"
+      role: "Local Mentor"
       tagline: "Hosted by Khon Kaen University and MIT Critical Data"
 
     - title: CEB Data Warehouse's Surgery Theme
       link: "https://www.rama.mahidol.ac.th/ceb/CEBdatawarehouse/Data/Surgery"
-      role: "Data Manager and Co-Investigator"
+      role: "Data Manager"
       tagline: "Funded by National Research Council of Thailand (NRCT)"
 
     - title: Epidemiology of SARS-CoV-2 in Myanmar
       link:
-      role: "Data Curator and Co-Investigator"
+      role: "Data Consultant"
       tagline: "No external funding"
 
     - title: Clinical Prediction of Chronic Periodontitis
