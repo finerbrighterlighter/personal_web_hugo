@@ -188,7 +188,7 @@
 
                   {{ range $i, $a := $authors }}
                     {{ if $a.highlight }}<b>{{ end }}
-                      {{ $a.family }} {{ $a.given }}
+                      {{ $a.given }} {{ $a.family }}
                     {{ if $a.highlight }}</b>{{ end }}
                     {{ if lt (add $i 1) $count }}, {{ end }}
                   {{ end }}
