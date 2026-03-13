@@ -45,9 +45,6 @@
 {{ $images := $bundle.Resources.ByType "image" }}
 
 
-<p>Images found: {{ len (.Resources.ByType "image") }}</p>
-
-
 {{ $withExif := where $images "Exif.Date" "!=" nil }}
 {{ $withoutExif := where $images "Exif.Date" "==" nil }}
 
