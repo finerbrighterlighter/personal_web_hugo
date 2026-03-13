@@ -20,7 +20,7 @@
     {{ end }}
 
     {{ if and $data.area $data.location }}
-    <li> 🕒 <a href="https://time.is/{{ $data.location }}" target="_blank" id="timezone" title="{{ $data.location }}">{{ $data.area }}/{{ $data.location }}</a></li>
+    <li> 🕒 <a href="https://time.is/{{ $data.location }}" target="_blank" id="timezone" title="{{ title $data.area }}/{{ title $data.location }}">{{ title $data.area }}/{{ title $data.location }}</a></li>
     {{ end }}
 
     {{ with $data.website }}
@@ -46,11 +46,16 @@
 {{ range .info }}
 <div style="margin-bottom: 1rem;"></div>
 <div class="education-title">
-  <a href="{{ .diploma }}" >{{ .degree }}</a>
+  <a href="{{ .diploma }}">{{ .degree }}</a>
 </div>
+
 <div class="education-university">
-    <a href="{{ .university.link }}" style='font-size: 0.75rem; opacity: 0.8;'>{{ .university.name }}</a>
+  <a href="{{ .university.link }}">
+    <span class="uni-name">{{ .university.name }}</span>
+    <span class="uni-country">{{ .university.country }}</span>
+  </a>
 </div>
+
 <span class="education-time">{{ .time }}</span>
 
 {{ end }}

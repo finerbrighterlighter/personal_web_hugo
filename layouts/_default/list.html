@@ -15,7 +15,7 @@
                         {{/* Month and Day only */}}
                         <div class="date">{{ .PublishDate.Format "Jan. 02" }}</div>    
                         <h2>
-                            <a href="{{ .Permalink }}" title="{{ .Title }}">{{ .Title }}</a>
+                            <a href="{{ .RelPermalink }}" title="{{ .Title }}">{{ .Title }}</a>
                         </h2>
                         
                         {{ with .Params.company }}

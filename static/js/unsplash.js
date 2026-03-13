@@ -1,6 +1,69 @@
+/**
+ * Unsplash Latest Photos Panel
+ * Fetches recent photos and caches them in sessionStorage
+ * so navigation between pages does not trigger another API call.
+ */
+
 const UNSPLASH_URL = "https://api.unsplash.com";
 
+
+/* -------------------------------------------------- */
+/* RENDER PANEL */
+/* -------------------------------------------------- */
+
+function renderUnsplash(photos, elementID) {
+
+  const element = document.getElementById(elementID);
+  if (!element) return;
+
+  element.innerHTML = "";
+
+  const frag = document.createDocumentFragment();
+
+  photos.forEach(photo => {
+
+    const link = document.createElement("a");
+    link.href = photo.url;
+    link.target = "_blank";
+    link.rel = "noreferrer noopener";
+
+    const img = document.createElement("img");
+    img.src = photo.image;
+    img.title = photo.date;
+    img.alt = photo.date;
+    img.loading = "lazy";
+    img.decoding = "async";
+
+    link.appendChild(img);
+    frag.appendChild(link);
+
+  });
+
+  element.appendChild(frag);
+
+}
+
+
+/* -------------------------------------------------- */
+/* MAIN LOADER */
+/* -------------------------------------------------- */
+
 async function getUnsplash(username, accessKey, limit, elementID) {
+
+  const cacheKey = `unsplash-${username}-${limit}`;
+
+  /* -----------------------------------------
+     Check session cache first
+  ----------------------------------------- */
+
+  const cached = sessionStorage.getItem(cacheKey);
+
+  if (cached) {
+
+    renderUnsplash(JSON.parse(cached), elementID);
+    return;
+
+  }
 
   try {
 
@@ -19,41 +82,46 @@ async function getUnsplash(username, accessKey, limit, elementID) {
 
     const data = await response.json();
 
-    const element = document.getElementById(elementID);
-    element.innerHTML = "";
+    /* -----------------------------------------
+       Extract only the data we actually need
+    ----------------------------------------- */
 
-    const frag = document.createDocumentFragment();
+    const photos = data.slice(0, limit).map(photo => ({
 
-    data.slice(0, limit).forEach(photo => {
+      url: photo.links.html,
+      image: photo.urls.thumb,
+      date: photo.created_at.split("T")[0]
 
-      const url = photo.links.html;
-      const image = photo.urls.thumb;
-      const date = photo.created_at.split("T")[0];
+    }));
 
-      const link = document.createElement("a");
-      link.href = url;
-      link.target = "_blank";
-      link.rel = "noreferrer noopener";
 
-      const img = document.createElement("img");
-      img.src = image;
-      img.title = date;
-      img.alt = date;
-      img.loading = "lazy";
-      img.decoding = "async";
+    /* -----------------------------------------
+       Save to session cache
+    ----------------------------------------- */
 
-      link.appendChild(img);
-      frag.appendChild(link);
+    sessionStorage.setItem(cacheKey, JSON.stringify(photos));
 
-    });
 
-    element.appendChild(frag);
+    /* -----------------------------------------
+       Render panel
+    ----------------------------------------- */
 
-  } catch (err) {
+    renderUnsplash(photos, elementID);
+
+  }
+
+  catch (err) {
+
     console.error("Unsplash widget failed:", err);
+
   }
 
 }
+
+
+/* -------------------------------------------------- */
+/* RUN */
+/* -------------------------------------------------- */
 
 getUnsplash(
   "finerbrighterlighter",

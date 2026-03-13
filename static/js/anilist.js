@@ -1,5 +1,28 @@
 const ANILIST_URL = "https://graphql.anilist.co";
 
+/*
+------------------------------------------------------
+Session cache helpers
+Store API responses for the lifetime of the tab only.
+This avoids repeating the AniList API request on every
+page navigation within the site.
+------------------------------------------------------
+*/
+function getCache(key) {
+  const cached = sessionStorage.getItem(key);
+  if (!cached) return null;
+
+  try {
+    return JSON.parse(cached);
+  } catch {
+    return null;
+  }
+}
+
+function setCache(key, data) {
+  sessionStorage.setItem(key, JSON.stringify(data));
+}
+
 async function getLastRead(username, media, limit, elementID) {
 
   const query = `
@@ -32,6 +55,30 @@ async function getLastRead(username, media, limit, elementID) {
     type: media
   };
 
+  const element = document.getElementById(elementID);
+
+  /*
+  ------------------------------------------------------
+  Build a unique cache key for this request
+  Example:
+  anilist-finer-MANGA-10
+  ------------------------------------------------------
+  */
+  const cacheKey = `anilist-${username}-${media}-${limit}`;
+
+  /*
+  ------------------------------------------------------
+  Try session cache first
+  If data exists, render immediately and skip fetch
+  ------------------------------------------------------
+  */
+  const cachedData = getCache(cacheKey);
+
+  if (cachedData) {
+    renderAniList(cachedData, element, limit);
+    return;
+  }
+
   try {
 
     const response = await fetch(ANILIST_URL, {
@@ -48,50 +95,64 @@ async function getLastRead(username, media, limit, elementID) {
 
     const data = await response.json();
 
-    const element = document.getElementById(elementID);
-    element.innerHTML = "";
+    // save to session cache
+    setCache(cacheKey, data);
 
-    const entries =
-      data.data.MediaListCollection.lists[0].entries;
-
-    const frag = document.createDocumentFragment();
-
-    for (let i = 0; i < Math.min(limit, entries.length); i++) {
-
-      const work = entries[i].media;
-
-      const romaji = work.title.romaji || "";
-      const english = work.title.english;
-      const synonym = work.synonyms?.[0];
-      const lang = work.countryOfOrigin || "";
-
-      let title = romaji;
-
-      if (english) title += ` (${english}, ${lang})`;
-      else if (synonym) title += ` (${synonym}, ${lang})`;
-      else title += ` (${lang})`;
-
-      const link = document.createElement("a");
-      link.href = work.siteUrl;
-      link.target = "_blank";
-      link.rel = "noreferrer noopener";
-
-      const img = document.createElement("img");
-      img.src = work.coverImage.medium;
-      img.title = title.replace(/'/g, "");
-      img.alt = title.replace(/'/g, "");
-      img.loading = "lazy";
-      img.decoding = "async";
-
-      link.appendChild(img);
-      frag.appendChild(link);
-    }
-
-    element.appendChild(frag);
+    renderAniList(data, element, limit);
 
   } catch (err) {
     console.error("AniList request failed:", err);
   }
+}
+
+
+/*
+------------------------------------------------------
+Rendering extracted to a separate function
+So cached and fetched data use the same renderer
+------------------------------------------------------
+*/
+function renderAniList(data, element, limit) {
+
+  element.innerHTML = "";
+
+  const entries =
+    data.data.MediaListCollection.lists[0].entries;
+
+  const frag = document.createDocumentFragment();
+
+  for (let i = 0; i < Math.min(limit, entries.length); i++) {
+
+    const work = entries[i].media;
+
+    const romaji = work.title.romaji || "";
+    const english = work.title.english;
+    const synonym = work.synonyms?.[0];
+    const lang = work.countryOfOrigin || "";
+
+    let title = romaji;
+
+    if (english) title += ` (${english}, ${lang})`;
+    else if (synonym) title += ` (${synonym}, ${lang})`;
+    else title += ` (${lang})`;
+
+    const link = document.createElement("a");
+    link.href = work.siteUrl;
+    link.target = "_blank";
+    link.rel = "noreferrer noopener";
+
+    const img = document.createElement("img");
+    img.src = work.coverImage.medium;
+    img.title = title.replace(/'/g, "");
+    img.alt = title.replace(/'/g, "");
+    img.loading = "lazy";
+    img.decoding = "async";
+
+    link.appendChild(img);
+    frag.appendChild(link);
+  }
+
+  element.appendChild(frag);
 }
 
 getLastRead("finer", "MANGA", 10, "last-read-manga");

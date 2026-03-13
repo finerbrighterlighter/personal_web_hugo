@@ -1,10 +1,12 @@
 
 mahidol: &mahidol
-  name: Mahidol University, Thailand
+  name: Mahidol University
+  country: Thailand
   link: https://en.wikipedia.org/wiki/Mahidol_University
 
 udmy: &udmy
-  name: University of Dental Medicine Yangon, Myanmar
+  name: University of Dental Medicine Yangon
+  country: Myanmar
   link: https://en.wikipedia.org/wiki/University_of_Dental_Medicine,_Yangon
 
 sidebar:

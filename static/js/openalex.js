@@ -12,6 +12,22 @@ const graphDisplayYears = 10;
 
 async function fetchOpenAlexData() {
 
+  const cacheKey = "openalex-author-data";
+
+  /* --------------------------------------
+     Check session cache first
+  -------------------------------------- */
+
+  const cached = sessionStorage.getItem(cacheKey);
+
+  if (cached) {
+    return JSON.parse(cached);
+  }
+
+  /* --------------------------------------
+     Otherwise fetch from OpenAlex API
+  -------------------------------------- */
+
   const [authRes, worksRes] = await Promise.all([
     fetch(`https://api.openalex.org/authors/${authorId}`),
     fetch(`https://api.openalex.org/works?filter=author.id:${authorId}&per_page=200`)
@@ -20,12 +36,20 @@ async function fetchOpenAlexData() {
   if (!authRes.ok || !worksRes.ok)
     throw new Error("OpenAlex API failure");
 
-  return {
+  const data = {
     author: await authRes.json(),
     works: (await worksRes.json()).results
   };
 
+  /* --------------------------------------
+     Save raw API response for this tab
+  -------------------------------------- */
+
+  sessionStorage.setItem(cacheKey, JSON.stringify(data));
+
+  return data;
 }
+
 
 function cssVar(name) {
     return getComputedStyle(document.documentElement)

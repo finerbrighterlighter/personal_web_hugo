@@ -1,9 +1,21 @@
+/**
+ * Trakt Recently Watched Panel
+ * Fetches watch history from Trakt and images from TMDB
+ * Uses sessionStorage to cache results for the lifetime of the tab
+ */
+
 const TRAKT_KEY = CONFIG.trakt;
 const TMDB_KEY = CONFIG.tmdb;
 
 const TRAKT_API = "https://api.trakt.tv/users";
 
+
+/* -------------------------------------------------- */
+/* FETCH TRAKT HISTORY */
+/* -------------------------------------------------- */
+
 async function fetchHistory(username) {
+
   const url = `${TRAKT_API}/${username}/history?limit=100`;
 
   const response = await fetch(url, {
@@ -21,8 +33,15 @@ async function fetchHistory(username) {
   return response.json();
 }
 
+
+/* -------------------------------------------------- */
+/* FETCH TMDB IMAGE */
+/* -------------------------------------------------- */
+
 async function fetchTMDB(tmdbId, type) {
+
   try {
+
     if (!tmdbId) return null;
 
     const url =
@@ -40,9 +59,75 @@ async function fetchTMDB(tmdbId, type) {
   } catch {
     return null;
   }
+
 }
 
+
+/* -------------------------------------------------- */
+/* RENDER PANEL */
+/* -------------------------------------------------- */
+
+function renderWatched(items, elementID) {
+
+  const element = document.getElementById(elementID);
+  if (!element) return;
+
+  element.innerHTML = "";
+
+  const frag = document.createDocumentFragment();
+
+  items.forEach(item => {
+
+    if (!item.image) return;
+
+    const url =
+      item.type === "tv"
+        ? `https://trakt.tv/shows/${item.slug}`
+        : `https://trakt.tv/movies/${item.slug}`;
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noreferrer noopener";
+
+    const img = document.createElement("img");
+    img.src = item.image;
+    img.title = `${item.title} (${item.year})`;
+    img.alt = `${item.title} (${item.year})`;
+    img.loading = "lazy";
+    img.decoding = "async";
+
+    link.appendChild(img);
+    frag.appendChild(link);
+
+  });
+
+  element.appendChild(frag);
+
+}
+
+
+/* -------------------------------------------------- */
+/* MAIN LOADER */
+/* -------------------------------------------------- */
+
 async function loadWatched(username, limit, elementID) {
+
+  const cacheKey = `trakt-${username}-${limit}`;
+
+  /* -----------------------------------------
+     Check session cache first
+     If cached, render immediately
+  ----------------------------------------- */
+
+  const cached = sessionStorage.getItem(cacheKey);
+
+  if (cached) {
+
+    renderWatched(JSON.parse(cached), elementID);
+    return;
+
+  }
 
   try {
 
@@ -51,31 +136,41 @@ async function loadWatched(username, limit, elementID) {
     const items = [];
     let lastId = null;
 
+    /* -----------------------------------------
+       Extract unique titles from watch history
+       (skip consecutive duplicates)
+    ----------------------------------------- */
+
     for (const entry of history) {
 
       let id, title, year, slug, tmdb, type;
 
       if (entry.movie) {
+
         id = `movie-${entry.movie.ids.trakt}`;
         title = entry.movie.title;
         year = entry.movie.year;
         slug = entry.movie.ids.slug;
         tmdb = entry.movie.ids.tmdb;
         type = "movie";
+
       }
 
       if (entry.show) {
+
         id = `show-${entry.show.ids.trakt}`;
         title = entry.show.title;
         year = entry.show.year;
         slug = entry.show.ids.slug;
         tmdb = entry.show.ids.tmdb;
         type = "tv";
+
       }
 
       if (!id) continue;
 
-      /* skip only if the previous item is the same title */
+      /* skip if same as previous item */
+
       if (id === lastId) continue;
 
       lastId = id;
@@ -89,51 +184,51 @@ async function loadWatched(username, limit, elementID) {
       });
 
       if (items.length >= limit) break;
+
     }
 
-    const element = document.getElementById(elementID);
-    if (!element) return;
-
-    element.innerHTML = "";
-
-    const frag = document.createDocumentFragment();
+    /* -----------------------------------------
+       Fetch images from TMDB
+    ----------------------------------------- */
 
     const images = await Promise.all(
       items.map(item => fetchTMDB(item.tmdb, item.type))
     );
 
-    items.forEach((item, i) => {
+    const result = items.map((item, i) => ({
+      ...item,
+      image: images[i]
+    }));
 
-      const image = images[i];
-      if (!image) return;
 
-      const url =
-        item.type === "tv"
-          ? `https://trakt.tv/shows/${item.slug}`
-          : `https://trakt.tv/movies/${item.slug}`;
+    /* -----------------------------------------
+       Save to session cache
+    ----------------------------------------- */
 
-      const link = document.createElement("a");
-      link.href = url;
-      link.target = "_blank";
-      link.rel = "noreferrer noopener";
+    sessionStorage.setItem(cacheKey, JSON.stringify(result));
 
-      const img = document.createElement("img");
-      img.src = image;
-      img.title = `${item.title} (${item.year})`;
-      img.alt = `${item.title} (${item.year})`;
-      img.loading = "lazy";
-      img.decoding = "async";
 
-      link.appendChild(img);
-      frag.appendChild(link);
+    /* -----------------------------------------
+       Render panel
+    ----------------------------------------- */
 
-    });
+    renderWatched(result, elementID);
 
-    element.appendChild(frag);
-
-  } catch (err) {
-    console.error("Trakt widget failed:", err);
   }
+
+  catch (err) {
+
+    console.error("Trakt widget failed:", err);
+
+  }
+
 }
 
-loadWatched("hteza", 10, "last-watched");
+
+/* -------------------------------------------------- */
+/* RUN */
+/* -------------------------------------------------- */
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadWatched("hteza", 10, "last-watched");
+});

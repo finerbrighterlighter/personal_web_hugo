@@ -5,7 +5,7 @@ date: 2023-09-20
 company: Bangkok Marriott Marquis Queen's Park, Thailand
 ---
 
-Faculty of Medicine Ramathibodi Hospital recently hosted the [Ramathibodi International Academic Conference (RIAC) 2023](https://riac.onvirtual-meeting.com/home.php), which took place from September 20th to 22nd at the Bangkok Marriott Marquis Queen's Park. During this event, CEB-RAMA-MU had the opportunity to highlight our expertise in real-world data research. <span />
+Faculty of Medicine Ramathibodi Hospital recently hosted the [Ramathibodi International Academic Conference (RIAC) 2023](https://riac.onvirtual-meeting.com/home.php), which took place from September 20th to 22nd at the Bangkok Marriott Marquis Queen's Park. During this event, CEB-RAMA-MU had the opportunity to highlight our expertise in real-world data research. <!--more--> 
 
 RIAC serves as an annual scientific meeting where various departments of the faculty showcase their research and accomplishments. It also serves as a platform to foster discussions and encourage collaborations among professionals. The conference received support from both local and international partners within the medical and pharmaceutical industries.
 

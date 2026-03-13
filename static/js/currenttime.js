@@ -1,32 +1,34 @@
-let originalTimezone = '';  // To store the original timezone
+let originalTimezone = '';
 
-function getTime(elementID, format) {
+function getTime(elementID, hour12) {
+
   const element = document.getElementById(elementID);
+  if (!element) return;
 
-  // If the original timezone hasn't been stored yet, do it now
+  /* store timezone once */
   if (!originalTimezone) {
-    originalTimezone = element.textContent.trim();  // Store the original timezone (e.g., "Asia/Bangkok")
+    originalTimezone = element.textContent.trim();
   }
 
-  const date = new Date();
-  
-  const options = {
-    timeZone: originalTimezone,  // Use the original timezone stored
-    timeZoneName: "long",
-    hour12: format,
-    hour: "numeric",
-    minute: "numeric",
-  };
+  const now = new Date();
 
-  const formattedTime = date.toLocaleString("en-US", options);  // Example: "3:23 PM Indochina Time"
-  
-  // Split the formatted time and zone based on "M"
-  const timeParts = formattedTime.split("M");
-  element.textContent = timeParts[1] + " (" + timeParts[0] + "M)";  // Format: "Indochina Time (3:23 PM)"
+  const formatted = now.toLocaleTimeString("en-US", {
+    timeZone: originalTimezone,
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: hour12,
+    timeZoneName: "short"
+  });
+
+  /* Example output: "3:23 PM ICT" */
+
+  element.textContent = formatted;
+
 }
 
 function updateTime() {
-  getTime("timezone", true);  // Pass 'true' for 12-hour format, 'false' for 24-hour format
+  getTime("timezone", true);
 }
 
-setInterval(updateTime, 1000); // Refresh every second
+updateTime();
+setInterval(updateTime, 1000);
