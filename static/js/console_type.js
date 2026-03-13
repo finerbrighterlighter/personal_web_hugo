@@ -4,27 +4,53 @@
    These simulate normal terminal activity so the console
    does not only print slogans.
 ========================================================= */
-const linuxLines = [
-    "date",
+const shellLines = [
     "whoami",
+    "date",
     "uptime",
-    "clear",
+    "pwd",
+    "ls",
+    "history | tail -1",
+    "clear"
+];
+
+const hpcLines = [
+    "sbatch train_model.sh",
+    "sbatch --mem=16G --time=12:00:00 analysis.sh",
+    "sbatch --cpus-per-task=8 simulation.sh",
+    "sbatch --array=1-100 job_array.sh",
+    "squeue -u $USER",
+    "scancel 961005",
+    "sacct -j 961005",
+    "sinfo"
+];
+
+const containerLines = [
+    "singularity exec python.sif python train.py",
+    "singularity run analysis.sif",
+    "singularity shell ubuntu.sif",
+    "singularity exec r_env.sif Rscript model.R",
+    "singularity exec pytorch.sif python inference.py",
+    "singularity inspect python.sif"
+];
+
+const devLines = [
     "btop",
     "brew update && brew upgrade -g",
     "sudo pacman -Syu",
+    "yay",
     "conda init",
     "conda activate sandbox",
-    "docker compose up -d",
     "lazydocker",
-    "ls ~/documents",
-    "cat /proc/cpuinfo | head -5",
-    "uname -a",
-    "uname -r",
-    "history | tail -1",
-    "pwd",
-    "ls",
-    "echo $USER",
-    "printf 'hello world\\n'",
+    "docker ps",
+    "docker compose up -d"
+];
+
+const cliLines = [
+    ...shellLines,
+    ...hpcLines,
+    ...containerLines,
+    ...devLines
 ];
 
 
@@ -76,7 +102,7 @@ const commands = [
     Chance of printing a normal terminal command instead
    of a slogan message
 ========================================================= */
-const linuxLineChance = 0.25;
+const linuxLineChance = 0.75;
 
 
 /* =========================================================
@@ -91,14 +117,15 @@ const typingSpeed = 170;
    Usually faster than typing to mimic real behavior */
 const backspaceSpeed = 80;
 
-
 /* =========================================================
-   TIMING BETWEEN COMMANDS
+   TERMINAL IDLE TIME
+
+   Random delay before the next command starts typing.
+   Simulates a human thinking before entering a command. (ms)
 ========================================================= */
 
-/* Pause after a full command finishes typing before
-   the next command begins (ms) */
-const pauseBetweenLines = 1400;
+const idleMin = 500;
+const idleMax = 2000;
 
 
 /* =========================================================
@@ -150,20 +177,27 @@ function buildLine(slogan) {
 }
 
 /* =========================================================
+    Generate random idle time before next command
+    This simulates a human pausing to think before typing.
+    ========================================================= */
+function randomIdle() {
+    const base = idleMin + Math.random() * (idleMax - idleMin);
+    return base + currentLine.length * 5;
+}
+
+
+/* =========================================================
     GENERATE RANDOM LINE
     This randomly decides to either generate a normal
     terminal command or a slogan message.
 ========================================================= */
 function generateLine() {
 
-    if (Math.random() < linuxLineChance) {
+    const r = Math.random();
 
-        /* choose a linux command */
-        return linuxLines[Math.floor(Math.random() * linuxLines.length)];
-
+    if (r < linuxLineChance) {
+        return cliLines[Math.floor(Math.random() * cliLines.length)];
     }
-
-    /* otherwise build a slogan command */
 
     const slogan = slogans[Math.floor(Math.random() * slogans.length)];
     return buildLine(slogan);
@@ -229,7 +263,7 @@ function nextLine() {
         charIndex = 0;
         mistakeMade = false;
 
-        const maxAttempts = slogans.length * 2;
+        const maxAttempts = (slogans.length + cliLines.length);
 
         let attempts = 0;
 
@@ -241,7 +275,7 @@ function nextLine() {
 
                 currentLine = candidate;
 
-                setTimeout(typeLine, 400);
+                setTimeout(typeLine, randomIdle());
                 return;
             }
 
@@ -268,7 +302,7 @@ function nextLine() {
 function typeLine() {
 
     if (charIndex >= currentLine.length) {
-        setTimeout(nextLine, pauseBetweenLines);
+        setTimeout(nextLine, randomIdle());
         return;
     }
 
