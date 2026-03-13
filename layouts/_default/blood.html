@@ -1,51 +1,86 @@
 {{ define "main" }}
 
-  {{ $bld := .Site.Data.blood.bld_cen }}
+{{ $bld := .Site.Data.blood.bld_cen }}
 
-  <div class="works-grouped">
+<div class="works-grouped">
 
-    <h2 style="border-bottom: 1px solid #555; margin-top: 3rem;">
-      {{ $bld.title }}
-    </h2>
+  <h2 style="border-bottom: 1px solid #555; margin-top: 3rem;">
+    {{ $bld.title }}
+  </h2>
 
-    <div class="posts-list">
+  {{ range $bld.direction }}
 
-      {{ range $bld.direction }}
 
-        <div class="post">
+  <h2>
+    <a href="{{ .link }}" target="_blank">{{ .name }}</a>
+    {{ with .note }}
+      <small>({{ . }})</small>
+    {{ end }}
+  </h2>
 
-          <h2>
-            <i class="fas fa-hospital"></i>
-            <a href="{{ .link }}" target="_blank">{{ .name }}</a>
-            {{ with .note }}
-              <small>({{ . }})</small>
-            {{ end }}
-          </h2>
-
-          {{ if .address }}
-            <small>
-              {{ if .geo }}
-                <a href="{{ .geo }}" target="_blank">Address</a>:
-              {{ else }}
-                Address:
-              {{ end }}
-              {{ .address }}
-            </small>
-            <br/>
-          {{ end }}
-
-          {{ with .phone }}
-            <small>Telephone: {{ . }}</small>
-          {{ end }}
-
-          <div style="margin-bottom: 1rem;"></div>
-
-        </div>
-
+  {{ if .address }}
+    <small>
+      {{ if .geo }}
+        <a href="{{ .geo }}" target="_blank">Address</a>:
+      {{ else }}
+        Address:
       {{ end }}
+      {{ .address }}
+    </small>
+    <br/>
+  {{ end }}
 
-    </div>
+  {{ with .phone }}
+    <small>Telephone: {{ . }}</small>
+  {{ end }}
 
-  </div>
+  <div style="margin-bottom: 1rem;"></div>
+
+  {{ end }}
+
+</div>
+
+
+{{ $bundle := .Site.GetPage "blood-records" }}
+{{ $images := $bundle.Resources.ByType "image" }}
+
+
+<p>Images found: {{ len (.Resources.ByType "image") }}</p>
+
+
+{{ $withExif := where $images "Exif.Date" "!=" nil }}
+{{ $withoutExif := where $images "Exif.Date" "==" nil }}
+
+{{ $datesorted := sort $withExif "Exif.Date" "desc" }}
+{{ $namesorted := sort $withoutExif "Name" "asc" }}
+
+<h2 style="border-bottom: 1px solid #555; margin-top: 3rem;">
+Gallery
+</h2>
+
+<div class="image-grid">
+
+  {{ range $datesorted }}
+    {{ $thumb := .Fill "400x400 center" }}
+    <a href="{{ .RelPermalink }}"
+       title="{{ with .Exif }}{{ .Date }}{{ else }}{{ .Name }}{{ end }}">
+      <img
+        src="{{ $thumb.RelPermalink }}"
+        alt="{{ .Name }}"
+        loading="lazy">
+    </a>
+  {{ end }}
+
+  {{ range $namesorted }}
+    {{ $thumb := .Fill "400x400 center" }}
+    <a href="{{ .RelPermalink }}" title="{{ .Name }}">
+      <img
+        src="{{ $thumb.RelPermalink }}"
+        alt="{{ .Name }}"
+        loading="lazy">
+    </a>
+  {{ end }}
+
+</div>
 
 {{ end }}
