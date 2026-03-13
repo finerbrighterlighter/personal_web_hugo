@@ -21,4 +21,22 @@ sources:
 
 - text: mirror
   url: /docs/2022_Screening models for Periodontitis.pdf
+
+conditions:
+- Chronic Periodontitis
+
+datasource:
+- Thailand
+- EGAT study
+- Cohort Study
+
+methods:
+- Statistics
+- Mixed Effects
+- Logistic Regression
+- Machine Learning
+- Support Vector Machine
+- Deep Learning
+- Neural Networks
+- Recurrent Neural Networks
 ---

@@ -34,4 +34,19 @@ sources:
 
 - text: mirror
   url: /docs/2025_Factors Associated with New Onset Atrial Fibrillation in Thai Adults with Hypertension.pdf
+
+conditions:
+- Hypertension
+- Atrial Fibrillation
+
+datasource:
+- Thailand
+- Ramathibodi Hospital
+- CEB Data Warehouse
+- Electronic Health Records
+
+methods:
+- Statistics
+- Cox Proportional Hazards
+- Time-varying
 ---

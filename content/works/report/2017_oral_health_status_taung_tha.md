@@ -8,4 +8,14 @@ authors:
 - family: Teza
   given: Htun
   highlight: true
+
+conditions:
+- Dental Health
+- Chronic Periodontitis
+
+datasource:
+- Myanmar
+
+methods:
+- Description
 ---

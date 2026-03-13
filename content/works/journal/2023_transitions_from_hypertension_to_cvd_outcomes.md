@@ -38,4 +38,22 @@ sources:
 
 - text: mirror
   url: /docs/2023_Evaluation of transitions from early hypertension to hypertensive chronic kidney disease, coronary artery disease, stroke and mortality a Thai real-world data cohort.pdf
+
+conditions:
+- Hypertension
+- Chronic Kidney Disease
+- Stroke
+- Myocardial Infarction
+- All-cause Mortality
+
+datasource:
+- Thailand
+- Ramathibodi Hospital
+- CEB Data Warehouse
+- Electronic Health Records
+
+methods:
+- Statistics
+- Kaplan-Meier
+- Multistate Model
 ---

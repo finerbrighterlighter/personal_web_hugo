@@ -29,4 +29,21 @@ sources:
 
 - text: mirror
   url: /docs/2023_Hypertension and Its Associated Complications A Thai Real-World Clinical Cohort.pdf
+
+conditions:
+- Hypertension
+- Chronic Kidney Disease
+- Stroke
+- Myocardial Infarction
+- All-cause Mortality
+
+datasource:
+- Thailand
+- Ramathibodi Hospital
+- CEB Data Warehouse
+- Electronic Health Records
+
+methods:
+- Statistics
+- Kaplan-Meier
 ---

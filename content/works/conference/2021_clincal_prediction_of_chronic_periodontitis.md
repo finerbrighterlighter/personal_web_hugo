@@ -25,5 +25,18 @@ sources:
 
 - text: mirror
   url: "/docs/2021_Clinical Prediction of Chronic Periodontitis.pdf"
+
+conditions:
+- Chronic Periodontitis
+
+datasource:
+- Thailand
+- EGAT study
+- Cohort Study
+
+methods:
+- Statistics
+- Mixed Effects
+- Logistic Regression
 ---
               

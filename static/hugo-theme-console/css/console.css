@@ -50,6 +50,10 @@
     --global-line-height: 1.6em;
     --page-width: 90%;
     --display-h1-decoration: 1;
+    --mobile-max-width: 767px;
+    --tablet-min-width: 768px;
+    --tablet-max-width: 1250px;
+    --desktop-min-width: 1251px;
 }
 
 /* deafult */
@@ -921,6 +925,80 @@ p.social a {
   filter: grayscale(50%);
 }
 
+
+#works-filters {
+    margin-bottom: 1rem;
+}
+
+#works-filters strong {
+    margin-right: 8px;
+}
+
+#works-filters strong::after {
+    content: ":";
+}
+
+#works-filters button[data-value="all"] {
+    opacity: 0.7;
+}
+
+#works-filters .filter-group {
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+#works-filters button {
+    margin: 2px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--secondary-color);
+    background: transparent;
+    color: var(--font-color);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-radius: 999px;
+}
+
+#works-filters button:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+#works-filters button.active {
+    background: var(--primary-color);
+    color: var(--invert-font-color);
+    border-color: var(--primary-color);
+}
+
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  
+.more-tags {
+    display: contents;
+}
+
+
+.more-tags.collapsed {
+    display: none;
+}
+
+.more-toggle {
+    margin-left: 4px;
+    padding: 4px;
+    background: none;
+    border: none;
+    color: var(--secondary-color);
+    cursor: pointer;
+    font-style: italic;
+  }
+
+
 /* ============================= */
 /* TERMINAL CURSOR */
 /* ============================= */
@@ -979,7 +1057,7 @@ p.social a {
 /* TABLET LAYOUT */
 /* ============================= */
 
-@media (min-width: 768px) and (max-width: 1100px) {
+@media (min-width: 768px) and (max-width: 1250px) {
 
     .terminal-layout {
         grid-template-columns: 260px 1fr;
@@ -999,7 +1077,7 @@ p.social a {
 
 }
 
-@media (max-width:1100px) {
+@media (max-width:1250) {
     
     .uni-country {
         /* hide country in narrow sidebar */
@@ -1012,7 +1090,7 @@ p.social a {
 /* DESKTOP LAYOUT */
 /* ============================= */
 
-@media (min-width: 1101px) {
+@media (min-width: 1251px) {
 
     .terminal-layout {
         display: grid;

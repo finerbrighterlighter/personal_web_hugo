@@ -28,4 +28,21 @@ sources:
 
 - text: slides2
   url: /docs/RIAC2023/RIAC2023_imputation.pdf
+
+conditions:
+- Type 2 Diabetes
+- Chronic Kidney Disease
+- Hypertension
+- Heart Failure
+- Atrial Fibrillation
+
+datasource:
+- Thailand
+- Ramathibodi Hospital
+- CEB Data Warehouse
+- Electronic Health Records
+
+methods:
+- Description
+- Imputation
 ---

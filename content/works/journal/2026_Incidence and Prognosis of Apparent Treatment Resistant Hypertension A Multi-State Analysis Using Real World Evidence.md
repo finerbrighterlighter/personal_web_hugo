@@ -36,4 +36,26 @@ sources:
 
 - text: mirror
   url: /docs/2026_Incidence and Prognosis of Apparent Treatment Resistant Hypertension A Multi-State Analysis Using Real World Evidence.pdf
+
+conditions:
+- Hypertension
+- Resistant Hypertension
+- Coronary Artery Disease
+- Chronic Kidney Disease
+- Stroke
+- Heart Failure
+- All-cause Mortality
+
+datasource:
+- Thailand
+- Ramathibodi Hospital
+- CEB Data Warehouse
+- Electronic Health Records
+
+methods:
+- Statistics
+- Kaplan-Meier
+- Cox Proportional Hazards
+- Time-varying
+- Multistate Model
 ---

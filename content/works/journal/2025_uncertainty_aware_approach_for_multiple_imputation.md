@@ -35,4 +35,20 @@ sources:
 
 - text: mirror
   url: /docs/2025_Uncertainty-aware approach for multiple imputation using conventional and machine learning models a real-world data study.pdf
+
+conditions:
+- Hypertension
+- Atrial Fibrillation
+
+datasource:
+- Thailand
+- Ramathibodi Hospital
+- CEB Data Warehouse
+- Srinagarind Hospital
+- Electronic Health Records
+
+methods:
+- Imputation
+- Validation
+- Methodology
 ---

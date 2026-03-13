@@ -34,4 +34,20 @@ sources:
 
 - text: mirror
   url: /docs/2024_Effects of sodium-glucose cotransporter-2 inhibitors on chronic kidney disease progression a multi-state survival model.pdf
+
+conditions:
+- Type 2 Diabetes
+- Chronic Kidney Disease
+- SGLT2 Inhibitors
+
+datasource:
+- Thailand
+- Ramathibodi Hospital
+- CEB Data Warehouse
+- Electronic Health Records
+
+methods:
+- Statistics
+- Cox Proportional Hazards
+- Multistate Model
 ---

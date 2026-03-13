@@ -40,4 +40,19 @@ sources:
 
 - text: mirror
   url: /docs/2023_External validation and revision of Penn incisional hernia prediction model A large-scale retrospective cohort of abdominal operations.pdf
+
+conditions:
+- Abdominal Surgery
+- Incisional Hernia
+
+datasource:
+- Thailand
+- Ramathibodi Hospital
+- CEB Data Warehouse
+- Electronic Health Records
+
+methods:
+- Statistics
+- Logistic Regression
+- Validation
 ---

@@ -29,4 +29,14 @@ sources:
 
 - text: mirror
   url: /docs/2020_Epidemiological characteristics of SARS-COV-2 in Myanmar.pdf
+
+conditions:
+- SARS-CoV-2
+
+datasource:
+- Myanmar
+- Ministry of Health and Sports, Myanmar
+
+methods:
+- Description
 ---

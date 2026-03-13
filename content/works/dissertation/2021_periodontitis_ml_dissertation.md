@@ -23,4 +23,22 @@ sources:
 
 - text: mirror
   url: /docs/2021_Risk-factor based Diagnosis for Chronic Periodontitis using Machine Learning Models.pdf
+
+conditions:
+- Chronic Periodontitis
+
+datasource:
+- Thailand
+- EGAT study
+- Cohort Study
+
+methods:
+- Statistics
+- Mixed Effects
+- Logistic Regression
+- Machine Learning
+- Support Vector Machine
+- Deep Learning
+- Neural Networks
+- Recurrent Neural Networks
 ---

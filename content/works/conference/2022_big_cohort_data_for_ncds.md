@@ -21,4 +21,18 @@ sources:
 
 - text: slides
   url: /docs/mohammsc.pdf
+
+conditions:
+- Type 2 Diabetes
+- Hypertension
+- Stroke
+
+datasource:
+- Thailand
+- Ramathibodi Hospital
+- CEB Data Warehouse
+- Electronic Health Records
+
+methods:
+- Description
 ---

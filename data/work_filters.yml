@@ -1,0 +1,14 @@
+conditions:
+- Hypertension
+- Type 2 Diabetes
+- Chronic Kidney Disease
+
+datasource:
+- Electronic Health Records
+- Thailand
+- CEB Data Warehouse
+
+methods:
+- Cox Proportional Hazards
+- Time-varying
+- Multistate Model

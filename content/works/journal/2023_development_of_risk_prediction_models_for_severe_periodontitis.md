@@ -32,4 +32,23 @@ sources:
 
 - text: mirror
   url: /docs/2023_Development of Risk Prediction Models for Severe Periodontitis in a Thai Population Statistical and Machine-Learning Approaches.pdf
+
+conditions:
+- Chronic Periodontitis
+
+datasource:
+- Thailand
+- EGAT study
+- Cohort Study
+
+methods:
+- Statistics
+- Mixed Effects
+- Logistic Regression
+- Machine Learning
+- Support Vector Machine
+- Decision Tree
+- Deep Learning
+- Neural Networks
+- Recurrent Neural Networks
 ---
