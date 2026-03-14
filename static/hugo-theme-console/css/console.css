@@ -48,7 +48,7 @@
         DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace,
         serif;
     --global-line-height: 1.6em;
-    --page-width: 90%;
+    --page-width: 95%;
     --display-h1-decoration: 1;
     --mobile-max-width: 767px;
     --tablet-min-width: 768px;
@@ -878,7 +878,7 @@ p.social a {
 .cli-table th,
 .cli-table td {
   border: none;
-  padding: 0.2rem 2rem 0.2rem 0;
+  padding: 0.2rem 0.5rem 0.2rem 0;
 }
 
 .cli-table thead tr {
@@ -1031,7 +1031,6 @@ p.social a {
         --global-font-size: 0.85rem;
         --global-font-color: #444;
         --global-line-height: 1.6em;
-        --page-width: 70rem;
     }
     
 }

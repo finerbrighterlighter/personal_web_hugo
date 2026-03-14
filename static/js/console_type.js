@@ -16,9 +16,9 @@ const shellLines = [
 
 const hpcLines = [
     "sbatch train_model.sh",
-    "sbatch --mem=16G --time=12:00:00 analysis.sh",
-    "sbatch --cpus-per-task=8 simulation.sh",
-    "sbatch --array=1-100 job_array.sh",
+    "sbatch --mem=8G --time=12:00:00 analysis.sh",
+    "sbatch --cpus-per-task=8 analysis.sh",
+    "sbatch --array=1-29 job_array.sh",
     "squeue -u $USER",
     "scancel 961005",
     "sacct -j 961005",
@@ -27,8 +27,6 @@ const hpcLines = [
 
 const containerLines = [
     "singularity exec python.sif python train.py",
-    "singularity run analysis.sif",
-    "singularity shell ubuntu.sif",
     "singularity exec r_env.sif Rscript model.R",
     "singularity exec pytorch.sif python inference.py",
     "singularity inspect python.sif"

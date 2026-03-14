@@ -1,6 +1,7 @@
 {{ define "main" }}
 
-<h1>Latest posts</h1>
+<!-- <h1>Latest posts</h1> -->
+<h2 style="border-bottom: 1px solid #555; margin-top: 3rem;">Latest posts</h2>
 <div class="posts-list">
 {{ with .Site.GetPage "/posts" }}
     {{ $posts := where .Pages ".Params.private" "!=" true }}
@@ -18,7 +19,8 @@
 <br/>
 
 {{- with .Site.Data.homepage.career_profile -}}
-<h1>{{ .title }}</h1>
+<!-- <h1>{{ .title }}</h1> -->
+<h2 style="border-bottom: 1px solid #555; margin-top: 3rem;">{{ .title }}</h2>
 <div class="profile-details">
 {{ .description | markdownify }}
 </div>
@@ -27,8 +29,8 @@
 <br/>
 
 {{ with .Site.Data.homepage.experiences }}
-<h1>{{ .title }}</h1>
-
+<!-- <h1>{{ .title }}</h1> -->
+<h2 style="border-bottom: 1px solid #555; margin-top: 3rem;">{{ .title }}</h2>
 {{ range first 2 .info }}
 <div class="experience">
   <div class="experience-header">
@@ -76,8 +78,8 @@
 
 {{ with .Site.Data.homepage.projects }}
 
-<h1>{{ .title }}</h1>
-
+<!-- <h1>{{ .title }}</h1> -->
+<h2 style="border-bottom: 1px solid #555; margin-top: 3rem;">{{ .title }}</h2>
 {{ range first 2 .assignments }}
 <div class="project">
   <div class="project-header">
@@ -125,7 +127,8 @@
 
 <br/>
 
-<h1>Recent Works</h1>
+<!-- <h1>Recent Works</h1> -->
+<h2 style="border-bottom: 1px solid #555; margin-top: 3rem;">Recent Works</h2>
 <div class="posts-list">
   {{ $papers := where site.RegularPages "Section" "works" }}
   {{ $cutoff := now.AddDate -1 0 0 }}

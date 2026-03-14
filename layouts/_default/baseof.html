@@ -40,15 +40,18 @@
           
           <nav class="terminal-menu">
             <ul vocab="https://schema.org/" typeof="BreadcrumbList">
-                {{ range $index, $element := .Site.Params.navlinks }}
-                <li property="itemListElement" typeof="ListItem">
-                    <a property="item" typeof="WebPage" href="{{ absURL .url }}"><span property="name">{{ .name }}</span></a>
-                    <meta property="position" content="{{ add $index 1}}" />
-                </li>
-                {{ end }}
-                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-                  🌓 theme
-                </button>
+              {{ range .Site.Params.navlinks }}
+              {{ if not (eq $.RelPermalink .url) }}
+              <li>
+                <a href="{{ absURL .url }}">{{ .name }}</a>
+              </li>
+              {{ end }}
+              {{ end }}
+              <li>
+              <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                🌓
+              </button>
+              </li>
             </ul>
           </nav>  
         </div>
