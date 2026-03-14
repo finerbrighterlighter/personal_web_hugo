@@ -961,6 +961,7 @@ p.social a {
     cursor: pointer;
     transition: all 0.15s ease;
     border-radius: 999px;
+    font-family: var(--mono-font-stack);
 }
 
 #works-filters button:hover {
