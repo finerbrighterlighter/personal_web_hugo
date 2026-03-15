@@ -209,10 +209,10 @@ let mistakeMade = false;
 let currentLine = "";
 
 /* screen width limit */
-let widthLimit = window.innerWidth * 0.5;
+let widthLimit = window.innerWidth * 0.6;
 
 function updateWidthLimit() {
-    widthLimit = window.innerWidth * 0.5;
+    widthLimit = window.innerWidth * 0.6;
 }
 
 window.addEventListener("resize", updateWidthLimit);
