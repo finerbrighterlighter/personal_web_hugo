@@ -3,10 +3,16 @@
 
 <div class="profile-header" style="text-align: center; margin-bottom: 2rem;">
     {{ with $data.avatar }}
-        <img src="{{ $data.avatar }}" alt="Profile" class="sidebar-avatar">
+    <div class="avatar-wrapper">
+      <img src="{{ $data.avatar }}" alt="Profile" class="sidebar-avatar" id="avatar">
+
+        <span class="scan-line l1"></span>
+        <span class="scan-line l2"></span>
+        <span class="scan-line l3"></span>
+    </div>
     {{ end }}
-    <h2 style="margin-top: 1rem; margin-bottom: 0; color: var(--primary-color); font-size:1rem;">{{ $data.name }}</h2>
-    <small style="opacity: 0.7; color: var(--font-color)">{{ $data.tagline }}</small>
+    <h2 id="author-name" style="margin-top: 1rem; margin-bottom: 0; color: var(--primary-color); font-size:1rem;">{{ $data.name }}</h2>
+    <small id="tag-line" style="opacity: 0.7; color: var(--font-color)">{{ $data.tagline }}</small>
 </div>
 
 <ul class="sidebar-links">
