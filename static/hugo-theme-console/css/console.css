@@ -872,7 +872,7 @@ p.social a {
   table-layout: fixed;
   border-collapse: collapse;
   border: none;
-  font-family: monospace;
+  font-family: var(--mono-font-stack);
   font-size: 0.7rem;
 }
 
@@ -1001,6 +1001,17 @@ p.social a {
     font-style: italic;
   }
 
+/* ============================= */
+/* PRIVACY */
+/* ============================= */
+
+.privacy-info{
+    font-weight: 700;
+    font-size: 0.7rem;
+    font-family: var(--mono-font-stack);
+    color: var(--secondary-color);
+    margin-top: 1rem;
+}
 
 /* ============================= */
 /* TERMINAL CURSOR */
