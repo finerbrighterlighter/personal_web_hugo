@@ -6,3 +6,6 @@
   url: /posts/
 - title: Each posts
   url: /posts/*
+  children:
+    - title: ""
+      url: /
