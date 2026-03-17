@@ -4,3 +4,5 @@
   url: /works/
 - title: Posts
   url: /posts/
+- title: Each posts
+  url: /posts/*
