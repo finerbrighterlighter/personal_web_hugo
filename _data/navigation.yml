@@ -1,0 +1,11 @@
+- title: Blood Donation
+  url: /blood/
+- title: Works
+  url: /works/
+- title: Posts
+  url: /posts/
+- title: Each posts
+  url: /posts/*
+  children:
+    - title: ""
+      url: /
