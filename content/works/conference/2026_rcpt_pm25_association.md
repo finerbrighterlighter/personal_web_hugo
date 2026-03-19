@@ -14,7 +14,6 @@ authors:
   given: Tint Lwin
 
 sources:
-
 - text: schedule
   url: https://www2.rcpt.org/conference/2026/media/program/Agenda-RCPT_2026_edit-100369.pdf
 

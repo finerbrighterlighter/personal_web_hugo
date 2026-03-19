@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{ "hugo-theme-console/css/terminal-0.7.4.min.css" | absURL }}">
-    <link rel="stylesheet" href="{{ "hugo-theme-console/css/animate-4.1.1.min.css" | absURL }}">
-    <link rel="stylesheet" href="{{ "hugo-theme-console/css/console.css" | absURL }}">
+    <link rel="stylesheet" href="{{ "hugo-theme-console/css/terminal-0.7.4.min.css" | relURL }}">
+    <link rel="stylesheet" href="{{ "hugo-theme-console/css/animate-4.1.1.min.css" | relURL }}">
+    <link rel="stylesheet" href="{{ "hugo-theme-console/css/console.css" | relURL }}">
     
     {{- partial "favicon.html" . -}}
     {{- partial "header.html" . -}}
@@ -25,12 +25,12 @@
               {{- end -}}
 
 
-              <a href="{{ "/" | absURL }}" class="no-style {{ with .Site.Params.TitleCutting }}site-name{{ end }}">
+              <a href="{{ "/" | relURL }}" class="no-style {{ with .Site.Params.TitleCutting }}site-name{{ end }}">
                 {{ .Site.Params.promptName }}@{{ $host -}}
               </a> :~{{- $path := "" -}}
               {{- range (split .RelPermalink "/") -}}
                 {{- if ne . "" -}}
-                  {{- $path = printf "%s/%s" $path . -}}/<a href="{{ $path | absURL }}">{{ . }}</a>
+                  {{- $path = printf "%s/%s" $path . -}}/<a href="{{ $path | relURL }}">{{ . }}</a>
                 {{- end -}}
               {{- end -}}$ <span id="typed-command"></span>
             </div>
@@ -43,7 +43,7 @@
               {{ range .Site.Params.navlinks }}
               {{ if not (eq $.RelPermalink .url) }}
               <li>
-                <a href="{{ absURL .url }}">{{ .name }}</a>
+                <a href="{{ .url | relURL }}">{{ .name }}</a>
               </li>
               {{ end }}
               {{ end }}
