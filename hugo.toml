@@ -9,6 +9,7 @@ animateStyle = "animate-fade-up"
 ogImage = "assets/general/og_image.webp"
 promptName = "hteza"
 promptHost = "homepage"
+buildFuture = true
 
 [[params.navlinks]]
 name = "Works"
