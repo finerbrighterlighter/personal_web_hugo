@@ -2,7 +2,7 @@
 title: "Big Cohort Data for NCDs (NCDs: Bridging the Gaps)"
 date: 2022-07-20
 type: conference-speaking
-venue: "Ministry of Health – Academy of Medicine of Malaysia Scientific Meeting"
+venue: "Ministry of Health – Academy of Medicine of Malaysia Scientific Meeting — Selangor, Malaysia"
 
 authors:
 - family: Thakkinstian

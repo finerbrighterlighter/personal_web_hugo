@@ -2,7 +2,7 @@
 title: "Clinical Prediction of Chronic Periodontitis"
 date: 2021-01-16
 type: conference-poster
-venue: "The 7th Regional Conference on Graduate Research 2021, Sripatum University"
+venue: "The 7th Regional Conference on Graduate Research 2021 — Khon Kaen, Thailand"
 
 authors:
 - family: Teza
@@ -39,4 +39,3 @@ methods:
 - Mixed Effects
 - Logistic Regression
 ---
-              

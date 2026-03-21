@@ -2,7 +2,7 @@
 title: "CEB Data Warehouse Showcase"
 date: 2023-09-20
 type: conference-speaking
-venue: "Ramathibodi International Academic Conference (RIAC 2023), Bangkok"
+venue: "Ramathibodi International Academic Conference (RIAC 2023) — Bangkok, Thailand"
 
 authors:
 - family: Looaresuwan

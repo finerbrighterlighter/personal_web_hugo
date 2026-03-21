@@ -2,7 +2,7 @@
 title: "Screening Models for Periodontitis"
 date: 2022-08-21
 type: conference-poster
-venue: "International Society for Clinical Biostatistics Annual Conference, Newcastle University"
+venue: "International Society for Clinical Biostatistics Annual Conference — Newcastle, UK"
 
 authors:
 - family: Teza
