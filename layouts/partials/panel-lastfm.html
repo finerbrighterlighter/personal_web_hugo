@@ -19,7 +19,7 @@
       {{ range first 10 (sort $data.items "year" "desc") }}
       <a href="{{ .url }}" target="_blank" rel="noreferrer noopener">
         <img
-          src="{{ (printf "general/%s" .image) | relURL }}"
+          src="{{ (printf "images/playlists/%s" .image) | relURL }}"
           title="{{ .title }}"
           alt="{{ .title }}"
           loading="lazy"
