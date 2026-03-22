@@ -52,7 +52,7 @@
 {{ range .info }}
 <div style="margin-bottom: 1rem;"></div>
 <div class="education-title">
-  <a href="{{ .diploma }}">{{ .degree }}</a>
+  <a href="{{ .diploma | relURL }}">{{ .degree }}</a>
 </div>
 
 <div class="education-university">
