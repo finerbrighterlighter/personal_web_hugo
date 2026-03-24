@@ -77,13 +77,14 @@ function renderRecentTrack(data, element) {
   const isNowPlaying = !!track["@attr"]?.nowplaying;
   const icon = isNowPlaying ? "🔊" : "🔈";
   const statusText = isNowPlaying ? "now listening:" : "last played:";
+  const titleAttr = isNowPlaying ? "'Rare moment! You caught this live — I’m listening right now'": "";
 
   const artist = track.artist["#text"].replace(/'/g, '"');
   const song = track.name.replace(/'/g, '"');
   const songURL = track.url;
 
   element.innerHTML = `
-    <span class="footer-icon">${icon}</span>
+    <span class="footer-icon" title=${titleAttr}>${icon}</span>
     <div class="scrobble-marquee">
       <a href="https://www.last.fm/user/${LASTFM_USER}/library" target="_blank" rel="noreferrer noopener">
         ${statusText}
