@@ -100,12 +100,12 @@ projects:
   assignments:
 
     - title: CEB Data Warehouse's Hypertension Theme
-      link: "https://www.rama.mahidol.ac.th/ceb/content/21sep2022-1439"
+      link: "https://www.rama.mahidol.ac.th/ceb/CEBdatawarehouse/Data/HT"
       role: "Data Manager"
       tagline: "Funded by National Research Council of Thailand (NRCT)"
 
     - title: CEB Data Warehouse's Dementia Theme
-      link: "https://www.rama.mahidol.ac.th/ceb/content/27sep2024-1142"
+      link: "https://www.rama.mahidol.ac.th/ceb/CEBdatawarehouse/Data/Dementia"
       role: "Data Manager"
       tagline: "Funded by National Research Council of Thailand (NRCT)"
 
