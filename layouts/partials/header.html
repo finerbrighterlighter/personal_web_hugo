@@ -20,7 +20,11 @@
 
 <meta name="description" content="{{ with .Params.description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
 <meta name="author" content="Htun Teza">
+{{ if eq .Params.private true }}
+<meta name="robots" content="noindex, nofollow">
+{{ else }}
 <meta name="robots" content="index, follow">
+{{ end }}
 <link rel="canonical" href="{{ .Permalink }}">
 
 <!-- ============================= -->
