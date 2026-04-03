@@ -39,7 +39,7 @@
 /* ============================= */
 
 :root {
-    --global-font-size: 0.9rem;
+    --global-font-size: 0.8rem;
     --global-font-color: #444;
     --mono-font-stack: Roboto Mono, Menlo, Monaco, Lucida Console,
         Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
@@ -299,6 +299,7 @@ html {
 body {
     font-family: var(--font-stack);
     font-size: var(--global-font-size);
+    line-height: var(--global-line-height);
     background-color: var(--background-color);
     margin: 0;
     margin-bottom: 10px;
