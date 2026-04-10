@@ -56,172 +56,33 @@
     --desktop-min-width: 1251px;
 }
 
-/* deafult */
-/* 
-:root {
+/* Palette vars (--dark-*, --light-*) are applied at runtime by the inline
+   script in theme-data.html, sourced from data/themes.yml.
+   The block below is a no-JS fallback (author defaults: Nord light, Gruvbox dark). */
+   :root {
+    --dark-background-color:      #282828;
+    --dark-font-color:            #ebdbb2;
+    --dark-invert-font-color:     #282828;
+    --dark-primary-color:         #83a598;
+    --dark-secondary-color:       #a89984;
+    --dark-tertiary-color:        #928374;
+    --dark-error-color:           #fb4934;
+    --dark-progress-bar-background: #3c3836;
+    --dark-progress-bar-fill:     #83a598;
+    --dark-code-bg-color:         #3c3836;
 
-    --dark-background-color: #222225;
-    --dark-font-color: #e8e9ed;
-    --dark-invert-font-color: #222225;
-    --dark-secondary-color: #a3abba;
-    --dark-tertiary-color: #a3abba;
-    --dark-primary-color: #62c4ff;
-    --dark-error-color: #ff3c74;
-    --dark-progress-bar-background: #3f3f44;
-    --dark-progress-bar-fill: #62c4ff;
-    --dark-code-bg-color: #3f3f44;
-
-    --light-background-color: #fff;
-    --light-font-color: #151515;
-    --light-invert-font-color: #fff;
-    --light-primary-color: #1a95e0;
-    --light-secondary-color: #727578;
-    --light-error-color: #d20962;
-    --light-progress-bar-background: #727578;
-    --light-progress-bar-fill: #151515;
-    --light-code-bg-color: #e8eff2;
-
-}
-*/
-
-/* nord + gruvbox hybrid */
-:root {
-
-
-    --dark-background-color: #282828;  
-    --dark-font-color: #ebdbb2;         
-    --dark-invert-font-color: #282828;
-    --dark-secondary-color: #a89984;    
-    --dark-tertiary-color: #928374;     
-    --dark-primary-color: #83a598;      
-    --dark-error-color: #fb4934;       
-    --dark-progress-bar-background: #3c3836; 
-    --dark-progress-bar-fill: #83a598;
-    --dark-code-bg-color: #3c3836;
-
-
-    --light-background-color: #eceff4;
-    --light-font-color: #2e3440;
-    --light-invert-font-color: #eceff4;
-    --light-primary-color: #5e81ac;
-    --light-secondary-color: #4c566a;
-    --light-error-color: #bf616a;
+    --light-background-color:     #eceff4;
+    --light-font-color:           #2e3440;
+    --light-invert-font-color:    #eceff4;
+    --light-primary-color:        #5e81ac;
+    --light-secondary-color:      #4c566a;
+    --light-tertiary-color:       #d8dee9;
+    --light-error-color:          #bf616a;
     --light-progress-bar-background: #d8dee9;
-    --light-progress-bar-fill: #5e81ac;
-    --light-code-bg-color: #e5e9f0;
-
+    --light-progress-bar-fill:    #5e81ac;
+    --light-code-bg-color:        #e5e9f0;
 }
 
-
-/* Nord */
-/* :root {
-
-    --dark-background-color: #2e3440;      
-    --dark-font-color: #eceff4;            
-    --dark-invert-font-color: #2e3440;
-    --dark-secondary-color: #d8dee9;       
-    --dark-tertiary-color: #4c566a;        
-    --dark-primary-color: #5e81ac;         
-    --dark-error-color: #bf616a;           
-    --dark-progress-bar-background: #3b4252; 
-    --dark-progress-bar-fill: #5e81ac;
-    --dark-code-bg-color: #3b4252;
-
-    
-    --light-background-color: #eceff4;    
-    --light-font-color: #2e3440;          
-    --light-invert-font-color: #eceff4;
-    --light-primary-color: #5e81ac;        
-    --light-secondary-color: #4c566a;      
-    --light-error-color: #bf616a;          
-    --light-progress-bar-background: #d8dee9;
-    --light-progress-bar-fill: #5e81ac;
-    --light-code-bg-color: #e5e9f0;       
-
-} */
-
-
-/* Everforest */
-/* :root {
-
-    --dark-background-color: #2f383e;     
-    --dark-font-color: #d3c6aa;            
-    --dark-invert-font-color: #2f383e;
-    --dark-secondary-color: #9da9a0;       
-    --dark-tertiary-color: #4f5b58;        
-    --dark-primary-color: #7fbbb3;        
-    --dark-error-color: #e67e80;           
-    --dark-progress-bar-background: #3a444a; 
-    --dark-progress-bar-fill: #7fbbb3;
-    --dark-code-bg-color: #3a444a;
-
-
-    --light-background-color: #fdf6e3;    
-    --light-font-color: #5c6a72;           
-    --light-invert-font-color: #fdf6e3;
-    --light-primary-color: #3a94c5;      
-    --light-secondary-color: #829181;      
-    --light-error-color: #f85552;          
-    --light-progress-bar-background: #efe7d2; 
-    --light-progress-bar-fill: #3a94c5;
-    --light-code-bg-color: #efe7d2;
-
-}
- */
-
-/* GRUVBOX */
-/* :root {
-
-    
-    --dark-background-color: #282828;  
-    --dark-font-color: #ebdbb2;         
-    --dark-invert-font-color: #282828;
-    --dark-secondary-color: #a89984;    
-    --dark-tertiary-color: #928374;     
-    --dark-primary-color: #83a598;      
-    --dark-error-color: #fb4934;       
-    --dark-progress-bar-background: #3c3836; 
-    --dark-progress-bar-fill: #83a598;
-    --dark-code-bg-color: #3c3836;
-
-    --light-background-color: #fbf1c7;  
-    --light-font-color: #3c3836;       
-    --light-invert-font-color: #fbf1c7;
-    --light-primary-color: #458588;    
-    --light-secondary-color: #7c6f64;   
-    --light-error-color: #cc241d;       
-    --light-progress-bar-background: #ebdbb2;
-    --light-progress-bar-fill: #458588;
-    --light-code-bg-color: #ebdbb2;
-
-} */
-
-/* catapuccin */
-/* :root {
-
-    
-    --dark-background-color: #1e1e2e;     
-    --dark-font-color: #cdd6f4;          
-    --dark-invert-font-color: #1e1e2e;    
-    --dark-secondary-color: #bac2de;      
-    --dark-tertiary-color: #a6adc8;       
-    --dark-primary-color: #89b4fa;        
-    --dark-error-color: #f38ba8;          
-    --dark-progress-bar-background: #313244; 
-    --dark-progress-bar-fill: #89b4fa;    
-    --dark-code-bg-color: #313244;        
-
-    
-    --light-background-color: #eff1f5;    
-    --light-font-color: #4c4f69;          
-    --light-invert-font-color: #eff1f5;  
-    --light-primary-color: #1e66f5;       
-    --light-secondary-color: #6c6f85;     
-    --light-error-color: #d20f39;         
-    --light-progress-bar-background: #ccd0da;
-    --light-progress-bar-fill: #1e66f5;   
-    --light-code-bg-color: #e6e9ef;       
-} */
 
 
 /* ============================= */
@@ -520,6 +381,12 @@ figure {
 /* BUTTONS */
 /* ============================= */
 
+.theme-control {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
 .theme-toggle {
     background: none;
     border: none;
@@ -535,6 +402,32 @@ figure {
 .theme-toggle:hover {
     opacity: 1;
 }
+
+.theme-palette-select {
+    background: transparent;
+    border: none;
+    border: 1px dashed var(--secondary-color);
+    font-family: var(--mono-font-stack);
+    color: var(--secondary-color);
+    font-size: var(--global-font-size);
+    padding: 1px 3px;
+    cursor: pointer;
+    border-radius: 0;
+    max-width: 7rem;
+}
+
+.theme-palette-select:hover,
+.theme-palette-select:focus {
+    opacity: 1;
+    outline: none;
+}
+
+.theme-palette-select option,
+.theme-palette-select optgroup {
+    background: var(--background-color);
+    color: var(--font-color);
+}
+
 
 /* ============================= */
 /* MASONRY / BOXES */

@@ -433,7 +433,6 @@ citations: ${bar.dataset.cites}
 
 loadOpenAlexMetrics("openalex-metrics");
 
-document.getElementById("theme-toggle")
-  ?.addEventListener("click", () => {
-      loadOpenAlexMetrics("openalex-metrics");
+document.addEventListener("theme-changed", () => {
+  loadOpenAlexMetrics("openalex-metrics");
 });

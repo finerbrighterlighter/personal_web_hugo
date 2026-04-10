@@ -1,0 +1,58 @@
+<script type="application/json" id="theme-data">
+    {{ site.Data.themes | jsonify }}
+</script>
+
+{{/* Inline blocking script — runs before body renders, eliminates FOUC.
+        Reads localStorage, falls back to system pref + author defaults,
+        and writes CSS vars directly to :root as inline styles. */}}
+<script>
+(function () {
+    var raw  = JSON.parse(document.getElementById('theme-data').textContent);
+    var data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+
+    var defaultDark  = null;
+    var defaultLight = null;
+    for (var i = 0; i < data.length; i++) {
+        if (data[i].default === 'dark')  defaultDark  = data[i];
+        if (data[i].default === 'light') defaultLight = data[i];
+    }
+
+    var savedMode         = localStorage.getItem('theme-mode');
+    var savedDarkPalette  = localStorage.getItem('theme-palette-dark');
+    var savedLightPalette = localStorage.getItem('theme-palette-light');
+
+    var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var mode = savedMode || (systemDark ? 'dark' : 'light');
+
+    function findById(id) {
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].id === id) return data[i];
+        }
+        return null;
+    }
+
+    var darkPalette  = (savedDarkPalette  && findById(savedDarkPalette))  || defaultDark;
+    var lightPalette = (savedLightPalette && findById(savedLightPalette)) || defaultLight;
+
+    function applyPalette(palette, modeKey) {
+        var c = palette[modeKey];
+        var p = modeKey + '-';
+        var r = document.documentElement;
+        r.style.setProperty('--' + p + 'background-color',        c.background);
+        r.style.setProperty('--' + p + 'font-color',              c.font);
+        r.style.setProperty('--' + p + 'invert-font-color',       c.invert_font);
+        r.style.setProperty('--' + p + 'primary-color',           c.primary);
+        r.style.setProperty('--' + p + 'secondary-color',         c.secondary);
+        r.style.setProperty('--' + p + 'tertiary-color',          c.tertiary || c.secondary);
+        r.style.setProperty('--' + p + 'error-color',             c.error);
+        r.style.setProperty('--' + p + 'progress-bar-background', c.progress_bar_background);
+        r.style.setProperty('--' + p + 'progress-bar-fill',       c.progress_bar_fill);
+        r.style.setProperty('--' + p + 'code-bg-color',           c.code_bg);
+    }
+
+    applyPalette(darkPalette,  'dark');
+    applyPalette(lightPalette, 'light');
+
+    document.documentElement.dataset.theme = mode;
+})();
+</script>

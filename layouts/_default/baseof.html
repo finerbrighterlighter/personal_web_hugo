@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="{{ "hugo-theme-console/css/terminal-0.7.4.min.css" | relURL }}">
     <link rel="stylesheet" href="{{ "hugo-theme-console/css/animate-4.1.1.min.css" | relURL }}">
     <link rel="stylesheet" href="{{ "hugo-theme-console/css/console.css" | relURL }}">
-    
+
     {{- partial "favicon.html" . -}}
     {{- partial "header.html" . -}}
+    {{- partial "theme-data.html" . -}}
 </head>
 
 <body class="terminal">
@@ -47,10 +48,12 @@
               </li>
               {{ end }}
               {{ end }}
-              <li>
-              <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-                🌓
-              </button>
+              <li class="theme-control">
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" style="margin-right: 15px;">🌓</button>
+                <select id="theme-palette-select" class="theme-palette-select" aria-label="Select color palette">
+                  <optgroup label="☀️ Light" data-mode="light"></optgroup>
+                  <optgroup label="🌑 Dark"  data-mode="dark"></optgroup>
+                </select>
               </li>
             </ul>
           </nav>  
