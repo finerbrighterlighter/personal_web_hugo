@@ -10,11 +10,17 @@
     var raw  = JSON.parse(document.getElementById('theme-data').textContent);
     var data = typeof raw === 'string' ? JSON.parse(raw) : raw;
 
+    function isDefault(t, mode) {
+        return Array.isArray(t.default)
+            ? t.default.indexOf(mode) !== -1
+            : t.default === mode;
+    }
+ 
     var defaultDark  = null;
     var defaultLight = null;
     for (var i = 0; i < data.length; i++) {
-        if (data[i].default === 'dark')  defaultDark  = data[i];
-        if (data[i].default === 'light') defaultLight = data[i];
+        if (isDefault(data[i], 'dark'))  defaultDark  = data[i];
+        if (isDefault(data[i], 'light')) defaultLight = data[i];
     }
 
     var savedMode         = localStorage.getItem('theme-mode');

@@ -2,6 +2,7 @@
 # default: light  → author's canonical pick for light mode
 # default: dark   → author's canonical pick for dark mode
 # Only one theme should carry each default marker.
+# if we want a theme to be the default for both modes, we can set default: [dark, light]
 - id: nord
   label: Nord
   dark:

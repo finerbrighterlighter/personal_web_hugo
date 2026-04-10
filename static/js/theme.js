@@ -7,9 +7,15 @@
     const select = document.getElementById('theme-palette-select');
 
     // ── helpers ──────────────────────────────────────────────────────────────
-
-    const defaultDark  = data.find(t => t.default === 'dark');
-    const defaultLight = data.find(t => t.default === 'light');
+    
+    function isDefault(t, mode) {
+        return Array.isArray(t.default)
+            ? t.default.includes(mode)
+            : t.default === mode;
+    }
+ 
+    const defaultDark  = data.find(t => isDefault(t, 'dark'));
+    const defaultLight = data.find(t => isDefault(t, 'light'));
 
     function findById(id) {
         return data.find(t => t.id === id) || null;
