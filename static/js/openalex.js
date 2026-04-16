@@ -4,19 +4,17 @@
  */
 
 const authorId = "A5065083669";
-const graphDisplayYears = 10;
+const graphDisplayYears = 5;
 
 /* ---------------------------- */
-/* FETCH DATA */
+/* FETCH DATA                   */
 /* ---------------------------- */
 
 async function fetchOpenAlexData() {
 
   const cacheKey = "openalex-author-data";
 
-  /* --------------------------------------
-     Check session cache first
-  -------------------------------------- */
+  /* Return cached data if available for this tab session */
 
   const cached = sessionStorage.getItem(cacheKey);
 
@@ -24,9 +22,7 @@ async function fetchOpenAlexData() {
     return JSON.parse(cached);
   }
 
-  /* --------------------------------------
-     Otherwise fetch from OpenAlex API
-  -------------------------------------- */
+  /* Fetch author summary and full works list in parallel */
 
   const [authRes, worksRes] = await Promise.all([
     fetch(`https://api.openalex.org/authors/${authorId}`),
@@ -41,27 +37,18 @@ async function fetchOpenAlexData() {
     works: (await worksRes.json()).results
   };
 
-  /* --------------------------------------
-     Save raw API response for this tab
-  -------------------------------------- */
-
   sessionStorage.setItem(cacheKey, JSON.stringify(data));
 
   return data;
 }
 
-
-function cssVar(name) {
-    return getComputedStyle(document.documentElement)
-      .getPropertyValue(name)
-      .trim();
-  }
-
 /* ---------------------------- */
-/* PROCESS DATA */
+/* PROCESS DATA                 */
 /* ---------------------------- */
 
 function processData(author, works, cutoffYear) {
+
+  /* Filter to journal articles and preprints only */
 
   const journalWorks = works.filter(w =>
     w.type === "article" || w.type === "preprint"
@@ -70,6 +57,8 @@ function processData(author, works, cutoffYear) {
   const recentWorks = journalWorks.filter(
     w => w.publication_year >= cutoffYear
   );
+
+  /* h-index calculator for an arbitrary work list */
 
   const calculateH = (workList) => {
 
@@ -80,22 +69,22 @@ function processData(author, works, cutoffYear) {
     let h = 0;
 
     for (let i = 0; i < cites.length; i++) {
-
       if (cites[i] >= i + 1)
         h = i + 1;
       else
         break;
-
     }
 
     return h;
   };
 
+  /* Build year-by-year timeline from first known year to current year.
+     Fills missing years (no API entry) with zero counts. */
+
   const startYear = Math.min(...author.counts_by_year.map(y => y.year));
-  const endYear = new Date().getFullYear();
+  const endYear   = new Date().getFullYear();
 
   const timeline = [];
-  let runningCitationTotal = 0;
 
   for (let y = startYear; y <= endYear; y++) {
 
@@ -103,12 +92,9 @@ function processData(author, works, cutoffYear) {
       author.counts_by_year.find(d => d.year === y) ||
       { works_count: 0, cited_by_count: 0 };
 
-    runningCitationTotal += yearData.cited_by_count;
-
     timeline.push({
       year: y,
-      pubs: yearData.works_count,
-      cumulativeCitations: runningCitationTotal
+      pubs: yearData.works_count
     });
 
   }
@@ -118,16 +104,16 @@ function processData(author, works, cutoffYear) {
     metrics: {
 
       all: {
-        pubs: journalWorks.length,
-        h: author.summary_stats.h_index,
-        i10: author.summary_stats.i10_index,
+        pubs:       journalWorks.length,
+        h:          author.summary_stats.h_index,
+        i10:        author.summary_stats.i10_index,
         totalCites: author.cited_by_count
       },
 
       recent: {
-        pubs: recentWorks.length,
-        h: calculateH(recentWorks),
-        i10: recentWorks.filter(w => w.cited_by_count >= 10).length,
+        pubs:   recentWorks.length,
+        h:      calculateH(recentWorks),
+        i10:    recentWorks.filter(w => w.cited_by_count >= 10).length,
         inflow: author.counts_by_year
           .filter(y => y.year >= cutoffYear)
           .reduce((s, y) => s + y.cited_by_count, 0)
@@ -141,133 +127,98 @@ function processData(author, works, cutoffYear) {
 
 }
 
-
 /* ---------------------------- */
-/* RENDER SVG CHART */
+/* RENDER SVG CHART             */
 /* ---------------------------- */
 
 function renderChartSVG(timeline) {
 
-    const width = 450;
-    const height = 150;
-    const paddingX = 40;
-    const paddingY = 30;
-    const buffer = 0.1;
-  
-    /* read theme colors from CSS root */
-    const css = getComputedStyle(document.documentElement);
-  
-    const primary = css.getPropertyValue("--primary-color").trim();
-    const secondary = css.getPropertyValue("--secondary-color").trim();
-    const fontColor = css.getPropertyValue("--font-color").trim();
-    const invertFont = css.getPropertyValue("--invert-font-color").trim();
-    const codeBg = css.getPropertyValue("--code-bg-color").trim();
-  
-    const maxPubs = Math.max(...timeline.map(d => d.pubs), 1);
-    const minPubs = Math.min(...timeline.map(d => d.pubs));
-    const maxCites = Math.max(...timeline.map(d => d.cumulativeCitations), 1);
-    const minCites = Math.min(...timeline.map(d => d.cumulativeCitations));
-  
-    const barWidth = (width - (paddingX * 2)) / timeline.length;
-  
-    const getLineY = (val) => {
-      const range = maxCites - minCites;
-      if (range === 0) return height / 2;
-      const normalized = (val - minCites) / range;
-      const buffered = buffer + (normalized * (1 - 2 * buffer));
-      return height - paddingY - (buffered * (height - paddingY * 2));
-    };
-  
-    const getBarH = (val) => {
-      if (val === 0) return 0;
-      const range = maxPubs - minPubs;
-      const availableHeight = height - paddingY * 2;
-      if (range === 0) return availableHeight * (buffer + 0.5 * (1 - 2 * buffer));
-      const normalized = (val - minPubs) / range;
-      const bufferedScale = buffer + (normalized * (1 - buffer));
-      return bufferedScale * availableHeight;
-    };
-  
-    const linePoints = timeline.map((d, i) => {
-      const x = paddingX + (i * barWidth) + (barWidth / 2);
-      return `${x},${getLineY(d.cumulativeCitations)}`;
-    }).join(" ");
-  
-    return `
-  <svg viewBox="0 0 ${width} ${height}"
-       id="oa-svg"
-       style="width:100%; height:auto; font-family:monospace; overflow:visible; background:${codeBg};">
-  
-    <!-- LEFT AXIS (PUBLICATIONS) -->
-    <circle cx="18" cy="${paddingY}" r="10" fill="${secondary}" />
-    <text x="18" y="${paddingY + 4}" font-size="11" font-weight="bold"
-          fill="${invertFont}" text-anchor="middle">${maxPubs}</text>
-  
-    <circle cx="18" cy="${height - paddingY}" r="10" fill="${secondary}" />
-    <text x="18" y="${height - paddingY + 4}" font-size="11" font-weight="bold"
-          fill="${invertFont}" text-anchor="middle">${minPubs}</text>
-  
-    <line x1="${paddingX - 5}" y1="${paddingY}"
-          x2="${paddingX - 5}" y2="${height - paddingY}"
-          stroke="${secondary}" />
-  
-    <!-- RIGHT AXIS (CUMULATIVE CITATIONS) -->
-    <circle cx="${width - 18}" cy="${paddingY}" r="10" fill="${primary}" />
-    <text x="${width - 18}" y="${paddingY + 4}" font-size="11" font-weight="bold"
-          fill="${invertFont}" text-anchor="middle">${maxCites}</text>
-  
-    <circle cx="${width - 18}" cy="${height - paddingY}" r="10" fill="${primary}" />
-    <text x="${width - 18}" y="${height - paddingY + 4}" font-size="11" font-weight="bold"
-          fill="${invertFont}" text-anchor="middle">${minCites}</text>
-  
-    <line x1="${width - paddingX + 5}" y1="${paddingY}"
-          x2="${width - paddingX + 5}" y2="${height - paddingY}"
-          stroke="${secondary}" />
-  
-    <!-- PUBLICATION BARS -->
-    ${timeline.map((d, i) => `
-      <rect class="oa-bar"
-            data-year="${d.year}"
-            data-pubs="${d.pubs}"
-            data-cites="${d.cumulativeCitations}"
-            x="${paddingX + (i * barWidth) + 2}"
-            y="${height - paddingY - getBarH(d.pubs)}"
-            width="${barWidth - 4}"
-            height="${getBarH(d.pubs)}"
-            fill="${secondary}"
-            opacity="0.8"
-            rx="2" />
-    `).join("")}
-  
-    <!-- CITATION LINE -->
-    <polyline points="${linePoints}"
-              fill="none"
-              stroke="${primary}"
-              stroke-width="2" />
-  
-    ${timeline.map((d, i) => `
-      <circle cx="${paddingX + (i * barWidth) + (barWidth / 2)}"
-              cy="${getLineY(d.cumulativeCitations)}"
-              r="3"
-              fill="${primary}" />
-    `).join("")}
-  
-    <!-- YEAR LABELS -->
-    <text x="${paddingX}" y="${height - 10}" font-size="10"
-          fill="${secondary}">
-          ${timeline[0].year}
-    </text>
-  
-    <text x="${width - paddingX}" y="${height - 10}" font-size="10"
-          fill="${secondary}" text-anchor="end">
-          ${timeline[timeline.length - 1].year}
-    </text>
-  
-  </svg>`;
-  }
+  const width    = 450;
+  const height   = 150;
+  const paddingX = 44;
+  const paddingY = 30;
+
+  /* Read theme colors from CSS custom properties */
+
+  const css = getComputedStyle(document.documentElement);
+
+  const secondary  = css.getPropertyValue("--secondary-color").trim();
+  const invertFont = css.getPropertyValue("--invert-font-color").trim();
+  const codeBg     = css.getPropertyValue("--code-bg-color").trim();
+
+  /* Scale constants */
+
+  const maxPubs         = Math.max(...timeline.map(d => d.pubs), 1);
+  const availableHeight = height - paddingY * 2;
+  const barWidth        = (width - paddingX * 2) / timeline.length;
+  const midPubs         = Math.round(maxPubs / 2);
+  const midY            = height / 2;
+
+  /* Linear bar height — proportional to max, anchored at 0 */
+
+  const getBarH = (val) => {
+    if (val === 0) return 0;
+    return (val / maxPubs) * availableHeight;
+  };
+
+  return `
+<svg viewBox="0 0 ${width} ${height}"
+     id="oa-svg"
+     style="width:100%; height:auto; font-family:monospace; overflow:visible; background:${codeBg};">
+
+  <!-- LEFT AXIS LABEL -->
+  <text x="5" y="${height / 2}" font-size="9"
+        fill="${secondary}" text-anchor="middle"
+        transform="rotate(-90, 5, ${height / 2})">Works</text>
+
+  <!-- LEFT AXIS: top marker -->
+  <circle cx="18" cy="${paddingY}" r="10" fill="${secondary}" />
+  <text x="18" y="${paddingY + 4}" font-size="11" font-weight="bold"
+        fill="${invertFont}" text-anchor="middle">${maxPubs}</text>
+
+  <!-- LEFT AXIS: mid tick -->
+  <line x1="${paddingX - 5}" y1="${midY}"
+        x2="${paddingX - 10}" y2="${midY}"
+        stroke="${secondary}" stroke-opacity="0.5" />
+  <text x="12" y="${midY + 4}" font-size="9"
+        fill="${secondary}" text-anchor="middle">${midPubs}</text>
+
+  <!-- LEFT AXIS: bottom marker -->
+  <circle cx="18" cy="${height - paddingY}" r="10" fill="${secondary}" />
+  <text x="18" y="${height - paddingY + 4}" font-size="11" font-weight="bold"
+        fill="${invertFont}" text-anchor="middle">0</text>
+
+  <!-- LEFT AXIS: spine -->
+  <line x1="${paddingX - 5}" y1="${paddingY}"
+        x2="${paddingX - 5}" y2="${height - paddingY}"
+        stroke="${secondary}" stroke-opacity="0.4" />
+
+  <!-- PUBLICATION BARS -->
+  ${timeline.map((d, i) => `
+    <rect class="oa-bar"
+          data-year="${d.year}"
+          data-pubs="${d.pubs}"
+          x="${paddingX + (i * barWidth) + 2}"
+          y="${height - paddingY - getBarH(d.pubs)}"
+          width="${barWidth - 4}"
+          height="${getBarH(d.pubs)}"
+          fill="${secondary}"
+          opacity="0.8"
+          rx="2" />
+  `).join("")}
+
+  <!-- YEAR LABELS -->
+  <text x="${paddingX}" y="${height - 10}" font-size="10"
+        fill="${secondary}">${timeline[0].year}</text>
+
+  <text x="${width - paddingX}" y="${height - 10}" font-size="10"
+        fill="${secondary}" text-anchor="end">${timeline[timeline.length - 1].year}</text>
+
+</svg>`;
+}
 
 /* ---------------------------- */
-/* MAIN LOADER */
+/* MAIN LOADER                  */
 /* ---------------------------- */
 
 async function loadOpenAlexMetrics(elementId) {
@@ -277,16 +228,16 @@ async function loadOpenAlexMetrics(elementId) {
   if (!element)
     return;
 
-  const cutoffYear = new Date().getFullYear() - 5;
+  const cutoffYear = new Date().getFullYear() - graphDisplayYears;
 
   try {
 
-    const raw = await fetchOpenAlexData();
-
+    const raw  = await fetchOpenAlexData();
     const data = processData(raw.author, raw.works, cutoffYear);
 
-    const graphTimeline =
-      data.timeline.slice(-graphDisplayYears);
+    /* Slice to the configured display window */
+
+    const graphTimeline = data.timeline.slice(-graphDisplayYears);
 
     element.innerHTML = `
 
@@ -334,7 +285,7 @@ $ openalex --metrics
 
 <div id="oa-chart-container" style="position:relative;margin-top:10px">
 
-<a href="https://openalex.org/authors/A5065083669" class="panel-terminal">$ openalex --timeline</a>
+<a href="https://openalex.org/authors/A5065083669" class="panel-terminal">$ openalex --timeline --limit=${graphDisplayYears}y</a>
 
 <div id="oa-tooltip"
      style="
@@ -365,6 +316,53 @@ ${renderChartSVG(graphTimeline)}
 
 `;
 
+    /* ------------------------------------ */
+    /* TOOLTIP                              */
+    /* Attached after innerHTML is set so   */
+    /* the bar elements exist in the DOM    */
+    /* ------------------------------------ */
+
+    const tooltip   = document.getElementById("oa-tooltip");
+    const container = document.getElementById("oa-chart-container");
+
+    document.querySelectorAll(".oa-bar").forEach(bar => {
+
+      bar.addEventListener("mouseenter", () => {
+
+        tooltip.innerHTML = `
+<strong>${bar.dataset.year}</strong><br>
+works: ${bar.dataset.pubs}
+`;
+        tooltip.style.opacity = 1;
+
+      });
+
+      bar.addEventListener("mousemove", (e) => {
+
+        const rect   = container.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        /* Flip tooltip to left side when near right edge */
+
+        if (mouseX > rect.width / 2) {
+          tooltip.style.left  = "auto";
+          tooltip.style.right = (rect.width - mouseX + 15) + "px";
+        } else {
+          tooltip.style.right = "auto";
+          tooltip.style.left  = (mouseX + 15) + "px";
+        }
+
+        tooltip.style.top = (mouseY - 40) + "px";
+
+      });
+
+      bar.addEventListener("mouseleave", () => {
+        tooltip.style.opacity = 0;
+      });
+
+    });
+
   }
   catch (err) {
 
@@ -376,62 +374,12 @@ ${renderChartSVG(graphTimeline)}
 }
 
 /* ---------------------------- */
-/* TOOLTIP INTERACTION */
-/* ---------------------------- */
-
-const tooltip = document.getElementById("oa-tooltip");
-const container = document.getElementById("oa-chart-container");
-
-document.querySelectorAll(".oa-bar").forEach(bar => {
-
-  bar.addEventListener("mouseenter", () => {
-
-    tooltip.innerHTML = `
-<strong>${bar.dataset.year}</strong><br>
-works: ${bar.dataset.pubs}<br>
-citations: ${bar.dataset.cites}
-`;
-
-    tooltip.style.opacity = 1;
-
-  });
-
-  bar.addEventListener("mousemove", (e) => {
-
-    const rect = container.getBoundingClientRect();
-
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    /* prevent sidebar cutoff */
-
-    if (mouseX > rect.width / 2) {
-
-      tooltip.style.left = "auto";
-      tooltip.style.right = (rect.width - mouseX + 15) + "px";
-
-    } else {
-
-      tooltip.style.right = "auto";
-      tooltip.style.left = (mouseX + 15) + "px";
-
-    }
-
-    tooltip.style.top = (mouseY - 40) + "px";
-
-  });
-
-  bar.addEventListener("mouseleave", () => {
-    tooltip.style.opacity = 0;
-  });
-
-});
-
-/* ---------------------------- */
-/* RUN */
+/* RUN                          */
 /* ---------------------------- */
 
 loadOpenAlexMetrics("openalex-metrics");
+
+/* Re-render on theme switch to pick up new CSS color values */
 
 document.addEventListener("theme-changed", () => {
   loadOpenAlexMetrics("openalex-metrics");
