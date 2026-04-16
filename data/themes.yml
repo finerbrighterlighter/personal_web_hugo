@@ -53,7 +53,6 @@
     code_bg: "#ebdbb2"
 - id: catppuccin
   label: Catppuccin
-  default: [dark, light]
   dark:
     background: "#1e1e2e"
     font: "#cdd6f4"
@@ -174,6 +173,7 @@
     code_bg: "#f6f8fa"
 - id: rosepine
   label: Rosé Pine
+  default: [dark, light]
   dark:
     # Main variant — dark warm-black with brown-purple undertones
     background: "#191724"

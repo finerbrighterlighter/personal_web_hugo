@@ -141,7 +141,7 @@ function renderChartSVG(timeline) {
   /* Read theme colors from CSS custom properties */
 
   const css = getComputedStyle(document.documentElement);
-
+  const primary    = css.getPropertyValue("--primary-color").trim();
   const secondary  = css.getPropertyValue("--secondary-color").trim();
   const invertFont = css.getPropertyValue("--invert-font-color").trim();
   const codeBg     = css.getPropertyValue("--code-bg-color").trim();
@@ -151,8 +151,6 @@ function renderChartSVG(timeline) {
   const maxPubs         = Math.max(...timeline.map(d => d.pubs), 1);
   const availableHeight = height - paddingY * 2;
   const barWidth        = (width - paddingX * 2) / timeline.length;
-  const midPubs         = Math.round(maxPubs / 2);
-  const midY            = height / 2;
 
   /* Linear bar height — proportional to max, anchored at 0 */
 
@@ -166,25 +164,13 @@ function renderChartSVG(timeline) {
      id="oa-svg"
      style="width:100%; height:auto; font-family:monospace; overflow:visible; background:${codeBg};">
 
-  <!-- LEFT AXIS LABEL -->
-  <text x="5" y="${height / 2}" font-size="9"
-        fill="${secondary}" text-anchor="middle"
-        transform="rotate(-90, 5, ${height / 2})">Works</text>
-
   <!-- LEFT AXIS: top marker -->
-  <circle cx="18" cy="${paddingY}" r="10" fill="${secondary}" />
+  <circle cx="18" cy="${paddingY}" r="10" fill="${primary}" />
   <text x="18" y="${paddingY + 4}" font-size="11" font-weight="bold"
         fill="${invertFont}" text-anchor="middle">${maxPubs}</text>
 
-  <!-- LEFT AXIS: mid tick -->
-  <line x1="${paddingX - 5}" y1="${midY}"
-        x2="${paddingX - 10}" y2="${midY}"
-        stroke="${secondary}" stroke-opacity="0.5" />
-  <text x="12" y="${midY + 4}" font-size="9"
-        fill="${secondary}" text-anchor="middle">${midPubs}</text>
-
   <!-- LEFT AXIS: bottom marker -->
-  <circle cx="18" cy="${height - paddingY}" r="10" fill="${secondary}" />
+  <circle cx="18" cy="${height - paddingY}" r="10" fill="${primary}" />
   <text x="18" y="${height - paddingY + 4}" font-size="11" font-weight="bold"
         fill="${invertFont}" text-anchor="middle">0</text>
 
@@ -202,7 +188,7 @@ function renderChartSVG(timeline) {
           y="${height - paddingY - getBarH(d.pubs)}"
           width="${barWidth - 4}"
           height="${getBarH(d.pubs)}"
-          fill="${secondary}"
+          fill="${primary}"
           opacity="0.8"
           rx="2" />
   `).join("")}
