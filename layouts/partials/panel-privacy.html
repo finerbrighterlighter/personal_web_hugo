@@ -27,8 +27,8 @@
 
       <div class="panel-terminal">$ cache --info</div>
       <div class="privacy-info">
-        <div>[scope] themes, api calls</div>
-        <div>[limit] {{ site.Params.cacheTTLMinutes | default 60 }} minutes</div>
+        <div>[include] themes, api calls</div>
+        <div id="cache-expire-line">[expires] {{ site.Params.cacheTTLMinutes | default 60 }} minutes</div>
       </div>
 
     </div>
