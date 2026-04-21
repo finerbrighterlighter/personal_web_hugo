@@ -7,13 +7,13 @@
     const select = document.getElementById('theme-palette-select');
 
     // ── helpers ──────────────────────────────────────────────────────────────
-    
+
     function isDefault(t, mode) {
         return Array.isArray(t.default)
             ? t.default.includes(mode)
             : t.default === mode;
     }
- 
+
     const defaultDark  = data.find(t => isDefault(t, 'dark'));
     const defaultLight = data.find(t => isDefault(t, 'light'));
 
@@ -64,26 +64,19 @@
         select.value = mode + '-' + paletteId;
     }
 
-    // Puts ✓ only in the OTHER mode's group — the native select checkmark
-    // already marks the current mode's active option, so we avoid doubling.
-    function updateTicks(currentMode) {
-        const otherMode = currentMode === 'dark' ? 'light' : 'dark';
-        const otherId   = getActivePalette(otherMode).id;
- 
-        const otherGroup   = otherMode === 'light' ? lightGroup : darkGroup;
-        const currentGroup = currentMode === 'dark' ? darkGroup  : lightGroup;
- 
-        otherGroup.querySelectorAll('option').forEach(opt => {
-            const id = opt.value.slice((otherMode + '-').length);
-            // opt.textContent = (id === otherId ? '✓ ' : '  ') + findById(id).label;
-        });
- 
-        currentGroup.querySelectorAll('option').forEach(opt => {
-            const id = opt.value.slice((currentMode + '-').length);
-            // opt.textContent = findById(id).label;
+    // Bolds the session-active palette in each group so both cycle targets are visible.
+    function updateTicks() {
+        [[lightGroup, 'light'], [darkGroup, 'dark']].forEach(([group, mode]) => {
+            const activeId = getActivePalette(mode).id;
+            group.querySelectorAll('option').forEach(opt => {
+                const id = opt.value.slice((mode + '-').length);
+                opt.textContent      = findById(id).label;
+                opt.style.fontWeight = id === activeId ? 'bold' : '';
+                opt.style.fontStyle  = id === activeId ? 'italic' : '';
+            });
         });
     }
-    
+
 
     // ── build dropdown ────────────────────────────────────────────────────────
 
@@ -112,38 +105,38 @@
     function dispatchThemeChanged() {
         document.dispatchEvent(new CustomEvent('theme-changed'));
     }
- 
+
     // ── toggle: switch between the two ticked themes ──────────────────────────
- 
+
     toggle.addEventListener('click', function () {
         const current = getCurrentMode();
         const next    = current === 'dark' ? 'light' : 'dark';
- 
+
         root.dataset.theme = next;
         localStorage.setItem('theme-mode', next);
- 
+
         updateEmoji(next);
         updateSelectValue(next);
         updateTicks(next);
         dispatchThemeChanged();
     });
- 
+
     // ── dropdown: pick any mode + palette, tick moves ─────────────────────────
- 
+
     select.addEventListener('change', function () {
         const dash      = select.value.indexOf('-');
         const mode      = select.value.slice(0, dash);
         const paletteId = select.value.slice(dash + 1);
- 
+
         const palette = findById(paletteId);
         if (!palette) return;
- 
+
         applyPalette(palette, mode);
- 
+
         root.dataset.theme = mode;
         localStorage.setItem('theme-mode',            mode);
         localStorage.setItem('theme-palette-' + mode, paletteId);
- 
+
         updateEmoji(mode);
         updateSelectValue(mode);
         updateTicks(mode);

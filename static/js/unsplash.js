@@ -58,13 +58,14 @@ async function getUnsplash(username, accessKey, limit, elementID) {
      Check session cache first
   ----------------------------------------- */
 
-  const cached = sessionStorage.getItem(cacheKey);
-
-  if (cached) {
-
-    renderUnsplash(JSON.parse(cached), elementID);
-    return;
-
+  const TTL = (window.CONFIG?.cacheTTLMinutes ?? 60) * 60 * 1000;
+  const raw = localStorage.getItem(cacheKey);
+  if (raw) {
+    try {
+      const { data, ts } = JSON.parse(raw);
+      if (Date.now() - ts <= TTL) { renderUnsplash(data, elementID); return; }
+    } catch {}
+    localStorage.removeItem(cacheKey);
   }
 
   try {
@@ -101,7 +102,7 @@ async function getUnsplash(username, accessKey, limit, elementID) {
        Save to session cache
     ----------------------------------------- */
 
-    sessionStorage.setItem(cacheKey, JSON.stringify(photos));
+    localStorage.setItem(cacheKey, JSON.stringify({ data: photos, ts: Date.now() }));
 
 
     /* -----------------------------------------

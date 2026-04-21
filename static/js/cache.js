@@ -1,13 +1,20 @@
+const TTL = (window.CONFIG?.cacheTTLMinutes ?? 60) * 60 * 1000;
+
 export function getCache(key) {
-  const cached = sessionStorage.getItem(key);
-  if (!cached) return null;
+  const raw = localStorage.getItem(key);
+  if (!raw) return null;
   try {
-    return JSON.parse(cached);
+    const { data, ts } = JSON.parse(raw);
+    if (Date.now() - ts > TTL) {
+      localStorage.removeItem(key);
+      return null;
+    }
+    return data;
   } catch {
     return null;
   }
 }
 
 export function setCache(key, data) {
-  sessionStorage.setItem(key, JSON.stringify(data));
+  localStorage.setItem(key, JSON.stringify({ data, ts: Date.now() }));
 }

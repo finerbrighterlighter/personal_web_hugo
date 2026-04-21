@@ -122,13 +122,14 @@ async function loadWatched(username, limit, elementID) {
      If cached, render immediately
   ----------------------------------------- */
 
-  const cached = sessionStorage.getItem(cacheKey);
-
-  if (cached) {
-
-    renderWatched(JSON.parse(cached), elementID);
-    return;
-
+  const TTL = (window.CONFIG?.cacheTTLMinutes ?? 60) * 60 * 1000;
+  const raw = localStorage.getItem(cacheKey);
+  if (raw) {
+    try {
+      const { data, ts } = JSON.parse(raw);
+      if (Date.now() - ts <= TTL) { renderWatched(data, elementID); return; }
+    } catch {}
+    localStorage.removeItem(cacheKey);
   }
 
   try {
@@ -207,7 +208,7 @@ async function loadWatched(username, limit, elementID) {
        Save to session cache
     ----------------------------------------- */
 
-    sessionStorage.setItem(cacheKey, JSON.stringify(result));
+    localStorage.setItem(cacheKey, JSON.stringify({ data: result, ts: Date.now() }));
 
 
     /* -----------------------------------------

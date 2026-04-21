@@ -14,12 +14,14 @@ async function fetchOpenAlexData() {
 
   const cacheKey = "openalex-author-data";
 
-  /* Return cached data if available for this tab session */
-
-  const cached = sessionStorage.getItem(cacheKey);
-
-  if (cached) {
-    return JSON.parse(cached);
+  const TTL = (window.CONFIG?.cacheTTLMinutes ?? 60) * 60 * 1000;
+  const raw = localStorage.getItem(cacheKey);
+  if (raw) {
+    try {
+      const { data, ts } = JSON.parse(raw);
+      if (Date.now() - ts <= TTL) return data;
+    } catch {}
+    localStorage.removeItem(cacheKey);
   }
 
   /* Fetch author summary and full works list in parallel */
@@ -37,7 +39,7 @@ async function fetchOpenAlexData() {
     works: (await worksRes.json()).results
   };
 
-  sessionStorage.setItem(cacheKey, JSON.stringify(data));
+  localStorage.setItem(cacheKey, JSON.stringify({ data, ts: Date.now() }));
 
   return data;
 }

@@ -5,9 +5,9 @@
         <span class="control minimize"></span>
         <span class="control maximize"></span>
       </div>
-      <div class="window-title">traffic.sh</div>
+      <div class="window-title">privacy.sh</div>
     </div>
-  
+
     <div class="window-content">
 
       <div class="panel-terminal"><a href="https://stats.htunteza.com">$ goatcounter --privacy</a></div>
@@ -18,13 +18,18 @@
         <div>[✓] no cross-site tracking</div>
         <div>[✓] no personal profiling</div>
 
-      <div>
-        docs →
-        <a href="https://www.goatcounter.com/help/privacy">[Privacy]</a>
-        <a href="https://www.goatcounter.com/help/gdpr">[GDPR]</a>
+        <div>
+          docs →
+          <a href="https://www.goatcounter.com/help/privacy">[Privacy]</a>
+          <a href="https://www.goatcounter.com/help/gdpr">[GDPR]</a>
+        </div>
       </div>
-    </div>
 
-  
+      <div class="panel-terminal">$ cache --info</div>
+      <div class="privacy-info">
+        <div>[scope] themes, api calls</div>
+        <div>[limit] {{ site.Params.cacheTTLMinutes | default 60 }} minutes</div>
+      </div>
+
     </div>
   </div>
