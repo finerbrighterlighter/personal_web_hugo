@@ -85,11 +85,13 @@ function renderRecentTrack(data, element) {
 }
 
 function renderTopAlbums(data, element, limit) {
+  const albums = data.topalbums?.album;
+  if (!albums?.length) return;
+
   element.innerHTML = "";
   const frag = document.createDocumentFragment();
 
-  for (let i = 0; i < limit; i++) {
-    const album = data.topalbums.album[i];
+  for (const album of albums) {
     const imageUrl = album.image?.[1]?.["#text"];
     if (!imageUrl) continue;
 

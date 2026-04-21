@@ -52,6 +52,22 @@
     --tablet-min-width: 768px;
     --tablet-max-width: 1250px;
     --desktop-min-width: 1251px;
+
+    /* type scale */
+    --font-xs:   0.7rem;
+    --font-sm:   0.75rem;
+    --font-base: 0.8rem;
+    --font-md:   0.85rem;
+    --font-lg:   0.9rem;
+    --font-xl:   1rem;
+
+    /* spacing scale */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
 }
 
 /* Palette vars (--dark-*, --light-*) are applied at runtime by the inline
@@ -199,15 +215,15 @@ strong {
 .category-header {
     border-bottom: 1px solid var(--secondary-color);
     margin-top: 3rem;
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-4);
 }
 
 .year-header {
-    margin-top: 1.5rem;
+    margin-top: var(--space-6);
 }
 
 .spacer {
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-4);
 }
 
 .img-responsive {
@@ -227,7 +243,7 @@ strong {
 /* Degree title */
 
 .education-title a {
-    font-size: 0.85rem;
+    font-size: var(--font-md);
     color: var(--font-color);
     line-height: 1.35;
 }
@@ -240,7 +256,7 @@ strong {
 /* University */
 
 .education-university a {
-    font-size: 0.7rem;
+    font-size: var(--font-xs);
     color: var(--secondary-color);
     line-height: 1.3;
     overflow-wrap: anywhere;
@@ -262,7 +278,7 @@ strong {
 /* Time */
 
 .education-time {
-    font-size: 0.7rem;
+    font-size: var(--font-xs);
     color: var(--secondary-color);
     white-space: nowrap;
     margin-bottom: 1cap;
@@ -270,8 +286,8 @@ strong {
 
 
 .profile-details {
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
+    font-size: var(--font-md);
+    margin-bottom: var(--space-4);
 }
 
 .experience-header {
@@ -285,18 +301,18 @@ strong {
 }
 
 .experience-details {
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
+    font-size: var(--font-md);
+    margin-bottom: var(--space-4);
 }
 
 .experience-collapse summary {
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: var(--font-lg);
     color: var(--secondary-color);
 }
 
 .project {
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-4);
   }
   
 .project-header {
@@ -319,21 +335,21 @@ strong {
 }
 
 .project-role {
-    font-size: 0.8rem;
+    font-size: var(--font-base);
     font-style: italic;
     color: var(--secondary-color);
     white-space: nowrap;
 }
 
 .project-tagline {
-    font-size: 0.8rem;
+    font-size: var(--font-base);
     color: var(--secondary-color);
 }
 
 .project-collapse summary {
     cursor: pointer;
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
+    margin-top: var(--space-2);
+    font-size: var(--font-lg);
     color: var(--secondary-color);
 }
 
@@ -491,7 +507,7 @@ figure {
 }
 
 .post p{
-    font-size: 0.8rem;
+    font-size: var(--font-base);
 }
 
 .post-company {
@@ -565,7 +581,7 @@ p.social a {
   min-height: 1px;
   max-height: 1000px; /* large enough to never clip; pairs with 0 on .collapsed to enable CSS height transition */
   height: auto;
-  padding: 1.5rem;
+  padding: var(--space-6);
   flex-grow: 1;
   color: #e8e9ed;
 }
@@ -600,7 +616,7 @@ p.social a {
 .maximize { background: #27c93f; }
 
 .window-title {
-    font-size: 0.8rem;
+    font-size: var(--font-base);
     color: var(--font-color);
     font-family: monospace;
 }
@@ -612,14 +628,14 @@ p.social a {
 
 .profile-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: var(--space-8);
 }
 
 #author-name {
-    margin-top: 1rem;
+    margin-top: var(--space-4);
     margin-bottom: 0;
     color: var(--primary-color);
-    font-size: 1rem;
+    font-size: var(--font-xl);
 }
 
 #job-title {
@@ -702,7 +718,7 @@ p.social a {
     align-items: center;
     margin-bottom: 0.8rem;
     font-family: var(--font-stack);
-    font-size: 0.85rem;
+    font-size: var(--font-md);
 }
 
 .sidebar-links li::after {
@@ -753,7 +769,7 @@ p.social a {
     background: var(--background-color);
     padding: 12px 20px;
     border-top: 1px dashed var(--secondary-color);
-    font-size: 0.8rem;
+    font-size: var(--font-base);
     color: var(--primary-color);
     white-space: nowrap;
     overflow: hidden;
@@ -779,7 +795,7 @@ p.social a {
 
 .lasttrack {
     font-family: var(--font-stack);
-    font-size: 0.8rem;
+    font-size: var(--font-base);
     background-color: var(--background-color);
     display: inline-flex;
     align-items: center;
@@ -837,7 +853,7 @@ p.social a {
 /* right bar */
 /* ============================= */
 .panel-terminal {
-  font-size: 0.8rem;
+  font-size: var(--font-base);
   font-family: var(--font-stack); /* pre resets to browser monospace without this */
   color: var(--font-color);
   border: none;
@@ -864,7 +880,7 @@ p.social a {
   border-collapse: collapse;
   border: none;
   font-family: var(--font-stack);
-  font-size: 0.7rem;
+  font-size: var(--font-xs);
 }
 
 .cli-table th,
@@ -920,12 +936,15 @@ p.social a {
 
 
 .works-filter-panel {
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--space-6);
 }
 
 #works-filters {
     margin-bottom: 0;
-    font-size: 0.72rem;
+    font-size: var(--font-xs);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
 }
 
 .search-input-wrap {
@@ -960,16 +979,16 @@ input.works-search::placeholder {
 }
 
 .works-count {
-    font-size: 0.75rem;
+    font-size: var(--font-sm);
     color: var(--secondary-color);
     font-style: italic;
-    margin: 0.25rem 0 0;
+    margin: 0;
 }
 
 @media (min-width: 768px) {
     .works-filter-panel {
         position: sticky;
-        top: 0;
+        top: 20px;
         z-index: 10;
     }
 }
@@ -987,7 +1006,6 @@ input.works-search::placeholder {
 }
 
 #works-filters .filter-group {
-    margin-bottom: 0.3rem;
     display: flex;
     align-items: baseline;
     gap: 6px;
@@ -1005,7 +1023,7 @@ input.works-search::placeholder {
 
 #works-filters button {
     margin: 1px;
-    padding: 2px 6px;
+    padding: 2px 10px;
     border-radius: 999px;
     border: 1px solid var(--secondary-color);
     background: transparent;
@@ -1013,6 +1031,7 @@ input.works-search::placeholder {
     cursor: pointer;
     transition: all 0.15s ease;
     font-family: var(--font-stack);
+    font-size: inherit;
 }
 
 #works-filters button:hover {
@@ -1073,7 +1092,7 @@ input.works-search::placeholder {
 
 .privacy-info{
     font-weight: 700;
-    font-size: 0.7rem;
+    font-size: var(--font-xs);
     font-family: var(--font-stack);
     color: var(--secondary-color);
 }
@@ -1106,7 +1125,7 @@ input.works-search::placeholder {
 .api-error {
     color: var(--error-color);
     font-family: var(--font-stack);
-    font-size: 0.8rem;
+    font-size: var(--font-base);
     animation: textBlink 1s step-end infinite;
 }
 
@@ -1128,10 +1147,10 @@ input.works-search::placeholder {
 /* ============================= */
 
 .terminal-layout {
-    margin-top: 2rem;
+    margin-top: var(--space-8);
     display: grid;
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: var(--space-8);
 }
 
 .sidebar,
@@ -1257,6 +1276,14 @@ input.works-search::placeholder {
     .footer {
         margin-top: 50px;
         padding-top: 5px;
+    }
+
+    #works-filters {
+        font-size: 0.6rem;
+    }
+
+    #works-filters button {
+        padding: 1px 4px;
     }
 
 }
