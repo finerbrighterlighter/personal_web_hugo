@@ -72,7 +72,7 @@ document.querySelector('.author-link').addEventListener('click', function (e) {
   if (!avatar) return;
 
   const nameEl = document.getElementById("author-name");
-  const roleEl = document.getElementById("tag-line");
+  const roleEl = document.getElementById("job-title");
 
   /*
   ---------------------------------------------------------
