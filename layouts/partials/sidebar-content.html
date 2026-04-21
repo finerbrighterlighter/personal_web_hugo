@@ -16,33 +16,33 @@
 </div>
 
 <ul class="sidebar-links">
-    
+
     {{ with $data.email }}
-    <li> 📧 <a href="mailto:{{ . }}">{{ . }}</a></li>
+    <li><span class="sidebar-label">[mail]</span><a href="mailto:{{ . }}">{{ . }}</a></li>
     {{ end }}
 
     {{ with $data.phone }}
-    <li> 📞 <a href="tel:{{ . }}"></span>{{ . }}</a></li>
+    <li><span class="sidebar-label">[tel]</span><a href="tel:{{ . }}">{{ . }}</a></li>
     {{ end }}
 
     {{ if and $data.area $data.location }}
-    <li> 🕒 <a href="https://time.is/{{ $data.location }}" target="_blank" id="timezone" title="{{ title $data.area }}/{{ title $data.location }}">{{ title $data.area }}/{{ title $data.location }}</a></li>
+    <li><span class="sidebar-label">[time]</span><a href="https://time.is/{{ $data.location }}" target="_blank" id="timezone" title="{{ title $data.area }}/{{ title $data.location }}">{{ title $data.area }}/{{ title $data.location }}</a></li>
     {{ end }}
 
     {{ with $data.website }}
-    <li> 🌐 <a href="https://{{ . }}" target="_blank">{{ $data.websitename | default . }}</a></li>
+    <li><span class="sidebar-label">[web]</span><a href="https://{{ . }}" target="_blank">{{ $data.websitename | default . }}</a></li>
     {{ end }}
 
     {{ with $data.orcid }}
-    <li> 🆔 <a href="https://orcid.org/{{ . }}" target="_blank">ORCID</a></li>
+    <li><span class="sidebar-label">[author]</span><a href="https://orcid.org/{{ . }}" target="_blank">orcid</a></li>
     {{ end }}
 
     {{ with $data.cv }}
-    <li> 📄 <a href="{{ . | relURL }}" target="_blank">Download CV</a></li>
+    <li><span class="sidebar-label">[cv]</span><a href="{{ . | relURL }}" target="_blank">{{ path.Base . }}</a></li>
     {{ end }}
 
     {{ with $data.vcard }}
-    <li> 📇 <a href="{{ . | relURL }}">Add to Contacts</a></li>
+    <li><span class="sidebar-label">[vcard]</span><a href="{{ . | relURL }}">Add to contact</a></li>
     {{ end }}
 </ul>
 

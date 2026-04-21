@@ -413,9 +413,18 @@ figure {
     opacity: 1;
 }
 
+.select-wrap {
+    display: inline-flex;
+    align-items: center;
+    color: var(--secondary-color);
+}
+
+.select-wrap::before { content: '['; }
+.select-wrap::after  { content: ']'; }
+
 .theme-palette-select {
     background: transparent;
-    border: 1px dashed var(--secondary-color);
+    border: none;
     font-family: var(--font-stack);
     color: var(--secondary-color);
     font-size: var(--global-font-size);
@@ -704,8 +713,15 @@ p.social a {
     font-weight: bold;
 }
 
-.sidebar-links a {
+.sidebar-label {
+    display: inline-block;
+    width: 8ch;
+    flex-shrink: 0;
     color: var(--secondary-color);
+}
+
+.sidebar-links a {
+    color: var(--font-color);
     text-decoration: none;
     transition: opacity 0.2s;
     margin-left: 4px;
@@ -808,7 +824,10 @@ p.social a {
     align-items: center;
 
     padding-left: 0.5rem;
-    padding-right: 0.4rem;
+    padding-right: 0.6rem;
+
+    font-family: var(--font-stack);
+    color: var(--secondary-color);
 
     background: var(--background-color);
     z-index: 2; /* sits above the scrolling marquee so the icon doesn't scroll away */

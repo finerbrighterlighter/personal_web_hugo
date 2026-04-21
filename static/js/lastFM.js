@@ -56,26 +56,32 @@ function renderRecentTrack(data, element) {
   const track = data.recenttracks.track[0];
 
   const isNowPlaying = !!track["@attr"]?.nowplaying;
-  const icon = isNowPlaying ? "🔊" : "🔈";
-  const statusText = isNowPlaying ? "now listening:" : "last played:";
-  const titleAttr = isNowPlaying ? "'Rare moment! You caught this live — I’m listening right now'": "";
+  const label     = isNowPlaying ? "[now]" : "[last]";
+  const titleAttr = isNowPlaying ? "Rare moment! You caught this live — I’m listening right now" : "";
 
-  const artist = track.artist["#text"].replace(/'/g, '"');
-  const song = track.name.replace(/'/g, '"');
+  const artist = track.artist["#text"];
+  const song = track.name;
   const songURL = track.url;
 
-  element.innerHTML = `
-    <span class="footer-icon" title=${titleAttr}>${icon}</span>
-    <div class="scrobble-marquee">
-      <a href="https://www.last.fm/user/${LASTFM_USER}/library" target="_blank" rel="noreferrer noopener">
-        ${statusText}
-      </a>
-      &nbsp;
-      <a href="${songURL}" target="_blank" rel="noreferrer noopener">
-        ${artist} - ${song}
-      </a>
-    </div>
-  `;
+  const icon = document.createElement("span");
+  icon.className = "footer-icon";
+  icon.textContent = label;
+  if (titleAttr) icon.title = titleAttr;
+
+  const marquee = document.createElement("div");
+  marquee.className = "scrobble-marquee";
+
+  const link = document.createElement("a");
+  link.href = songURL;
+  link.target = "_blank";
+  link.rel = "noreferrer noopener";
+  link.textContent = `${artist} - ${song}`;
+
+  marquee.appendChild(link);
+
+  element.textContent = "";
+  element.appendChild(icon);
+  element.appendChild(marquee);
 }
 
 function renderTopAlbums(data, element, limit) {
@@ -87,8 +93,8 @@ function renderTopAlbums(data, element, limit) {
     const imageUrl = album.image?.[1]?.["#text"];
     if (!imageUrl) continue;
 
-    const artist = album.artist.name.replace(/'/g, '"');
-    const name = album.name.replace(/'/g, '"');
+    const artist = album.artist.name;
+    const name = album.name;
 
     const link = document.createElement("a");
     link.href = album.url;

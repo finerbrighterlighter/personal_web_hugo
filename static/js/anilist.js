@@ -125,8 +125,8 @@ function renderAniList(data, element, limit) {
 
     const img = document.createElement("img");
     img.src = work.coverImage.medium;
-    img.title = title.replace(/'/g, "");
-    img.alt = title.replace(/'/g, "");
+    img.title = title;
+    img.alt = title;
     img.loading = "lazy";
     img.decoding = "async";
 

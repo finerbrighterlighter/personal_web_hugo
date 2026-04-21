@@ -12,6 +12,11 @@ promptHost = "homepage"
 buildFuture = true
 
 [[params.navlinks]]
+name = "Home"
+url = "/"
+host = "homepage"
+
+[[params.navlinks]]
 name = "Works"
 url = "/works/"
 host = "academia"

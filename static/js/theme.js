@@ -56,7 +56,7 @@
     // ── UI sync ───────────────────────────────────────────────────────────────
 
     function updateEmoji(mode) {
-        toggle.textContent = mode === 'dark' ? '☀️' : '🌙';
+        toggle.textContent = mode === 'dark' ? '○' : '●';
     }
 
     function updateSelectValue(mode) {
@@ -98,7 +98,7 @@
 
         const do_ = document.createElement('option');
         do_.value       = 'dark-' + theme.id;
-        do_.textContent = theme.label;
+        do_.textContent = '[' + theme.label + ']';
         darkGroup.appendChild(do_);
     });
 
