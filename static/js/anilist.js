@@ -102,6 +102,7 @@ async function getLastRead(username, media, limit, elementID) {
 
   } catch (err) {
     console.error("AniList request failed:", err);
+    if (element) element.innerHTML = '<span class="api-error">$ api is not aping 🐒</span>';
   }
 }
 

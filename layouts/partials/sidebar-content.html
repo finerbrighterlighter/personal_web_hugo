@@ -1,7 +1,7 @@
 {{ $data := .Site.Data.homepage.sidebar }}
 {{ $edu := .Site.Data.homepage.education }}
 
-<div class="profile-header" style="text-align: center; margin-bottom: 2rem;">
+<div class="profile-header">
     {{ with $data.avatar }}
     <div class="avatar-wrapper">
       <img src="{{ $data.avatar }}" alt="Profile" class="sidebar-avatar" id="avatar">
@@ -11,8 +11,8 @@
         <span class="scan-line l3"></span>
     </div>
     {{ end }}
-    <h2 id="author-name" style="margin-top: 1rem; margin-bottom: 0; color: var(--primary-color); font-size:1rem;">{{ $data.name }}</h2>
-    <small id="tag-line" style="opacity: 0.7; color: var(--font-color)">{{ $data.tagline }}</small>
+    <h2 id="author-name">{{ $data.name }}</h2>
+    <small id="tag-line">{{ $data.tagline }}</small>
 </div>
 
 <ul class="sidebar-links">
@@ -50,7 +50,7 @@
 
 {{ with $edu }}
 {{ range .info }}
-<div style="margin-bottom: 1rem;"></div>
+<div class="spacer"></div>
 <div class="education-title">
   <a href="{{ .diploma | relURL }}">{{ .degree }}</a>
 </div>

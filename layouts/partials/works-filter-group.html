@@ -1,0 +1,35 @@
+{{- /*
+  Renders one filter group row.
+  Params:
+    .filter   — data-filter attribute value, e.g. "condition"
+    .label    — visible heading, e.g. "Condition"
+    .values   — deduplicated sorted slice of all tag values
+    .priority — ordered slice of tags to show before the fold
+*/ -}}
+<div class="filter-group">
+  <strong>{{ .label }}</strong>
+
+  <div class="filter-tags">
+
+    <button class="active" data-filter="{{ .filter }}" data-value="all">All</button>
+
+    {{ range .priority }}
+      {{ if in $.values . }}
+        <button data-filter="{{ $.filter }}" data-value="{{ . }}">{{ . }}</button>
+      {{ end }}
+    {{ end }}
+
+    {{ if gt (len .values) (len .priority) }}
+      <button class="more-toggle">+ more</button>
+    {{ end }}
+
+    <span class="more-tags collapsed">
+      {{ range .values }}
+        {{ if not (in $.priority .) }}
+          <button data-filter="{{ $.filter }}" data-value="{{ . }}">{{ . }}</button>
+        {{ end }}
+      {{ end }}
+    </span>
+
+  </div>
+</div>

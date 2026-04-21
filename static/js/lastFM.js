@@ -68,6 +68,7 @@ async function lastFM_request(method, limit, elementID) {
 
   } catch (err) {
     console.error("LastFM request failed:", err);
+    if (element) element.innerHTML = '<span class="api-error">$ api is not aping 🐒</span>';
   }
 }
 

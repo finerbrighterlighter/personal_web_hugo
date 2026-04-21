@@ -19,7 +19,7 @@
 <!-- ============================= -->
 
 <meta name="description" content="{{ with .Params.description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
-<meta name="author" content="Htun Teza">
+<meta name="author" content="{{ .Site.Params.author }}">
 {{ if eq .Params.private true }}
 <meta name="robots" content="noindex, nofollow">
 {{ else }}

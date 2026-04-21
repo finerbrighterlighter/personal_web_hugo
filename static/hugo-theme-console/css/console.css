@@ -41,12 +41,10 @@
 :root {
     --global-font-size: 0.8rem;
     --global-font-color: #444;
-    --mono-font-stack: Roboto Mono, Menlo, Monaco, Lucida Console,
-        Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
-        Courier New, monospace, serif;
     --font-stack: Roboto Mono, Menlo, Monaco, Lucida Console, Liberation Mono,
         DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace,
         serif;
+    --mono-font-stack: var(--font-stack); /* alias — terminal-0.7.4.min.css uses this for code/pre */
     --global-line-height: 1.6em;
     --page-width: 95%;
     --display-h1-decoration: 1;
@@ -83,12 +81,11 @@
     --light-code-bg-color:        #e5e9f0;
 }
 
-
-
 /* ============================= */
 /* COLOR THEMES */
 /* ============================= */
 
+/* CSS-only default; overridden at runtime by [data-theme] below when JS runs */
 @media (prefers-color-scheme: dark) {
     :root {
         --background-color: var(--dark-background-color);
@@ -122,6 +119,7 @@
 /* MANUAL THEME OVERRIDE */
 /* ============================= */
 
+/* JS (theme-data.html) reads stored preference and sets data-theme on :root */
 :root[data-theme="dark"] {
     --background-color: var(--dark-background-color);
     --font-color: var(--dark-font-color);
@@ -147,7 +145,6 @@
     --code-bg-color: var(--light-code-bg-color);
 }
 
-
 /* ============================= */
 /* BASE TYPOGRAPHY */
 /* ============================= */
@@ -162,8 +159,7 @@ body {
     font-size: var(--global-font-size);
     line-height: var(--global-line-height);
     background-color: var(--background-color);
-    margin: 0;
-    margin-bottom: 10px;
+    margin: 0 0 10px;
 }
 
 h1,
@@ -200,11 +196,26 @@ strong {
     box-sizing: border-box;
 }
 
-/* ============================= */
-/* BASIC ELEMENTS */
-/* ============================= */
+.category-header {
+    border-bottom: 1px solid var(--secondary-color);
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+}
 
-  
+.year-header {
+    margin-top: 1.5rem;
+}
+
+.spacer {
+    margin-bottom: 1rem;
+}
+
+.img-responsive {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
 /* ============================= */
 /* EDUCATION */
 /* ============================= */
@@ -241,6 +252,7 @@ strong {
 
 .uni-country {
     opacity: 0.9;
+    display: none; /* shown only on desktop where sidebar is wide enough — see desktop media query */
 }
 
 .uni-country::before {
@@ -330,10 +342,7 @@ strong {
 }
 
 figure {
-    margin-top: 15px;
-    margin-bottom: 15px;
-    margin-left: 60px;
-    margin-right: 60px;
+    margin: 15px 60px;
 }
 
 .image-grid img {
@@ -352,11 +361,11 @@ figure {
 
 .content-column-content p,
 .content-column-content li {
-    color: #666;
+    color: var(--secondary-color);
 }
 
 .content-column-content .command {
-    color: #aaa;
+    color: var(--tertiary-color);
 }
 
 /* ============================= */
@@ -391,7 +400,8 @@ figure {
     background: none;
     border: none;
     padding: 0;
-    margin-left: 0px;
+    margin-left: 0;
+    margin-right: 5px;
     font-size: 1.1rem;
     cursor: pointer;
     color: var(--font-color);
@@ -405,9 +415,8 @@ figure {
 
 .theme-palette-select {
     background: transparent;
-    border: none;
     border: 1px dashed var(--secondary-color);
-    font-family: var(--mono-font-stack);
+    font-family: var(--font-stack);
     color: var(--secondary-color);
     font-size: var(--global-font-size);
     padding: 1px 3px;
@@ -452,15 +461,15 @@ figure {
 
 .posts-list {
     position: relative;
-    padding-left: 130px;
+    padding-left: 130px; /* must match .date width below */
     top: 0;
 }
 
 .posts-list .date {
     display: inline-block;
     position: absolute;
-    left: 0px;
-    width: 130px;
+    left: 0;
+    width: 130px; /* must match .posts-list padding-left above */
     z-index: 400;
     padding-top: 0;
 }
@@ -476,13 +485,17 @@ figure {
     font-size: 0.8rem;
 }
 
+.post-company {
+    opacity: 0.6;
+}
+
 /* ============================= */
 /* SOCIAL */
 /* ============================= */
 
 p.social a {
     margin: 0 0 10px 0;
-    color: #999999;
+    color: var(--secondary-color);
     display: inline-block;
     width: 30px;
     height: 30px;
@@ -521,12 +534,8 @@ p.social a {
 }
 
 /* ============================= */
-/* TERMINAL LAYOUT */
+/* TERMINAL WINDOW */
 /* ============================= */
-
-.terminal-layout {
-    margin-top: 2rem;
-}
 
 .terminal-window {
     background: var(--background-color);
@@ -545,7 +554,7 @@ p.social a {
 .window-content {
   overflow: hidden;
   min-height: 1px;
-  max-height: 1000px;;
+  max-height: 1000px; /* large enough to never clip; pairs with 0 on .collapsed to enable CSS height transition */
   height: auto;
   padding: 1.5rem;
   flex-grow: 1;
@@ -591,6 +600,22 @@ p.social a {
 /* ============================= */
 /* SIDEBAR */
 /* ============================= */
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+#author-name {
+    margin-top: 1rem;
+    margin-bottom: 0;
+    color: var(--primary-color);
+    font-size: 1rem;
+}
+
+#tag-line {
+    opacity: 0.7;
+}
 
 .sidebar-avatar {
     max-width: 100%;
@@ -649,46 +674,11 @@ p.social a {
   animation-delay: 0.45s;
 }
 
-/* wiggly scan motion */
-@keyframes avatarScan {
-
-  0% {
-    top: -10%;
-    opacity: 0;
-    transform: translateX(-3px);
-  }
-
-  10% {
-    opacity: 1;
-  }
-
-  30% {
-    transform: translateX(3px);
-  }
-
-  60% {
-    transform: translateX(-2px);
-  }
-
-  100% {
-    top: 110%;
-    opacity: 0;
-    transform: translateX(2px);
-  }
-}
-
 .typing {
-  border-right: 2px solid var(--invert-font-color);
+  border-right: 2px solid var(--invert-font-color); /* right border simulates a blinking text cursor */
   padding-right: 3px;
   white-space: nowrap;
   overflow: hidden;
-}
-
-@keyframes cursorBlink {
-  50% { border-color: transparent; }
-}
-
-.typing {
   animation: cursorBlink 1s step-end infinite;
 }
 
@@ -702,12 +692,12 @@ p.social a {
     display: flex;
     align-items: center;
     margin-bottom: 0.8rem;
-    font-family: var(--mono-font-stack);
+    font-family: var(--font-stack);
     font-size: 0.85rem;
 }
 
 .sidebar-links li::after {
-    content:"$";
+    content:"$"; /* decorative shell prompt marker */
     color: var(--secondary-color);
     margin-right: 12px;
     opacity: 0.6;
@@ -757,13 +747,13 @@ p.social a {
 }
 
 .window-footer a {
-    color: #ccc;
+    color: var(--secondary-color);
     font-style: italic;
 }
 
 .scrobble-marquee {
     display: inline-block;
-    padding-left: 100%;
+    padding-left: 100%; /* pushes text off-screen to the right before scroll begins */
     animation: marquee 15s linear infinite;
 }
 
@@ -772,7 +762,7 @@ p.social a {
 }
 
 .lasttrack {
-    font-family: var(--mono-font-stack, "Courier New", Courier, monospace);
+    font-family: var(--font-stack);
     font-size: 0.8rem;
     background-color: var(--background-color);
     display: inline-flex;
@@ -820,8 +810,8 @@ p.social a {
     padding-left: 0.5rem;
     padding-right: 0.4rem;
 
-    background: var(--background-color); /* same as card background */
-    z-index: 2;
+    background: var(--background-color);
+    z-index: 2; /* sits above the scrolling marquee so the icon doesn't scroll away */
 }
 
 /* ============================= */
@@ -829,6 +819,7 @@ p.social a {
 /* ============================= */
 .panel-terminal {
   font-size: 0.8rem;
+  font-family: var(--font-stack); /* pre resets to browser monospace without this */
   color: var(--font-color);
   border: none;
   padding: 0;
@@ -853,7 +844,7 @@ p.social a {
   table-layout: fixed;
   border-collapse: collapse;
   border: none;
-  font-family: var(--mono-font-stack);
+  font-family: var(--font-stack);
   font-size: 0.7rem;
 }
 
@@ -928,22 +919,30 @@ p.social a {
 #works-filters .filter-group {
     margin-bottom: 0.5rem;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    align-items: baseline;
     gap: 6px;
+}
+
+#works-filters .filter-group strong {
+    min-width: 6rem; /* wide enough for "Condition"; keeps all labels the same column width */
+    flex-shrink: 0;
+}
+
+#works-filters .filter-group .filter-tags {
+    flex: 1;
+    min-width: 0; /* lets flex child shrink below content size so tags wrap internally */
 }
 
 #works-filters button {
     margin: 2px;
     padding: 4px 8px;
-    border-radius: 4px;
+    border-radius: 999px;
     border: 1px solid var(--secondary-color);
     background: transparent;
     color: var(--font-color);
     cursor: pointer;
     transition: all 0.15s ease;
-    border-radius: 999px;
-    font-family: var(--mono-font-stack);
+    font-family: var(--font-stack);
 }
 
 #works-filters button:hover {
@@ -964,9 +963,11 @@ p.social a {
   }
   
 .more-tags {
-    display: contents;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%; /* forces its own row in the parent flex container */
 }
-
 
 .more-tags.collapsed {
     display: none;
@@ -989,7 +990,7 @@ p.social a {
 .privacy-info{
     font-weight: 700;
     font-size: 0.7rem;
-    font-family: var(--mono-font-stack);
+    font-family: var(--font-stack);
     color: var(--secondary-color);
 }
 
@@ -1010,22 +1011,32 @@ p.social a {
 /* ANIMATIONS */
 /* ============================= */
 
+@keyframes cursorBlink {
+  50% { border-color: transparent; }
+}
+
+@keyframes textBlink {
+  50% { opacity: 0; }
+}
+
+.api-error {
+    color: var(--error-color);
+    font-family: var(--font-stack);
+    font-size: 0.8rem;
+    animation: textBlink 1s step-end infinite;
+}
+
+@keyframes avatarScan {
+  0%   { top: -10%; opacity: 0; transform: translateX(-3px); }
+  10%  { opacity: 1; }
+  30%  { transform: translateX(3px); }
+  60%  { transform: translateX(-2px); }
+  100% { top: 110%; opacity: 0; transform: translateX(2px); }
+}
+
 @keyframes marquee {
     0% { transform: translateX(0); }
     100% { transform: translateX(-100%); }
-}
-
-/* ============================= */
-/* RESPONSIVE VARIABLES */
-/* ============================= */
-
-@media only screen and (max-width: 767px) {
-    :root {
-        --global-font-size: 0.85rem;
-        --global-font-color: #444;
-        --global-line-height: 1.6em;
-    }
-    
 }
 
 /* ============================= */
@@ -1033,11 +1044,10 @@ p.social a {
 /* ============================= */
 
 .terminal-layout {
-
+    margin-top: 2rem;
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
-    
 }
 
 .sidebar,
@@ -1064,11 +1074,6 @@ p.social a {
         top: 20px;
     }
 
-    .uni-country {
-        /* hide country in narrow sidebar */
-        display: none;
-    }
-
     /* #typed-command {
         display: none;
     } */
@@ -1082,15 +1087,17 @@ p.social a {
 @media (min-width: 1251px) {
 
     .terminal-layout {
-        display: grid;
         grid-template-columns: 25% 1fr 25%;
-        gap: 2rem;
         align-items: start;
     }
 
     .sidebar {
         position: sticky;
         top: 20px;
+    }
+
+    .uni-country {
+        display: inline;
     }
 
 }
@@ -1101,6 +1108,12 @@ p.social a {
 /* ============================= */
 
 @media (max-width: 767px) {
+
+    :root {
+        --global-font-size: 0.85rem;
+        --global-font-color: #444;
+        --global-line-height: 1.6em;
+    }
 
     .site-name {
         width: 2ch;
@@ -1130,7 +1143,7 @@ p.social a {
     }
 
     .experience-header .time {
-        display: none;;
+        display: none;
     }
 
     .project-role {
@@ -1162,12 +1175,4 @@ p.social a {
         padding-top: 5px;
     }
 
-    .uni-country {
-        /* hide country in narrow sidebar */
-        display: none;
-    }
-
 }
-
-
-

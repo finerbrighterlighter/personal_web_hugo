@@ -1,132 +1,25 @@
 {{ define "main" }}
-<h2 class="category-header" style="border-bottom:1px solid #555; margin-top:3rem;">
-  Tags
-</h2>
+<h2 class="category-header">Tags</h2>
 
 <div id="works-filters">
 
   {{ $papers := where site.RegularPages "Section" "works" }}
 
-  <!-- CONDITION -->
-  <div class="filter-group">
-    <strong>Condition</strong>
+  {{ $conditions := slice }}
+  {{ range $papers }}{{ with .Params.conditions }}{{ $conditions = $conditions | append . }}{{ end }}{{ end }}
+  {{ $conditions = $conditions | uniq | sort }}
 
-    <div class="filter-tags">
+  {{ $datasource := slice }}
+  {{ range $papers }}{{ with .Params.datasource }}{{ $datasource = $datasource | append . }}{{ end }}{{ end }}
+  {{ $datasource = $datasource | uniq | sort }}
 
-      <button class="active" data-filter="condition" data-value="all">All</button>
+  {{ $methods := slice }}
+  {{ range $papers }}{{ with .Params.methods }}{{ $methods = $methods | append . }}{{ end }}{{ end }}
+  {{ $methods = $methods | uniq | sort }}
 
-      {{ $conditions := slice }}
-      {{ range $papers }}
-        {{ with .Params.conditions }}
-          {{ $conditions = $conditions | append . }}
-        {{ end }}
-      {{ end }}
-      {{ $conditions = $conditions | uniq | sort }}
-
-      {{ $priority := .Site.Data.work_filters.conditions }}
-
-      <!-- show priority tags -->
-      {{ range $priority }}
-        {{ if in $conditions . }}
-          <button data-filter="condition" data-value="{{ . }}">{{ . }}</button>
-        {{ end }}
-      {{ end }}
-
-      <!-- remaining tags -->
-      <span class="more-tags collapsed">
-        {{ range $conditions }}
-          {{ if not (in $priority .) }}
-            <button data-filter="condition" data-value="{{ . }}">{{ . }}</button>
-          {{ end }}
-        {{ end }}
-      </span>
-
-      {{ if gt (len $conditions) (len $priority) }}
-        <button class="more-toggle">+ more</button>
-      {{ end }}
-
-    </div>
-  </div>
-
-
-  <!-- DATA SOURCE -->
-  <div class="filter-group">
-    <strong>Data</strong>
-
-    <div class="filter-tags">
-
-      <button class="active" data-filter="datasource" data-value="all">All</button>
-
-      {{ $datasource := slice }}
-      {{ range $papers }}
-        {{ with .Params.datasource }}
-          {{ $datasource = $datasource | append . }}
-        {{ end }}
-      {{ end }}
-      {{ $datasource = $datasource | uniq | sort }}
-
-      {{ $priority := .Site.Data.work_filters.datasource }}
-
-      {{ range $priority }}
-        {{ if in $datasource . }}
-          <button data-filter="datasource" data-value="{{ . }}">{{ . }}</button>
-        {{ end }}
-      {{ end }}
-
-      <span class="more-tags collapsed">
-        {{ range $datasource }}
-          {{ if not (in $priority .) }}
-            <button data-filter="datasource" data-value="{{ . }}">{{ . }}</button>
-          {{ end }}
-        {{ end }}
-      </span>
-
-      {{ if gt (len $datasource) (len $priority) }}
-        <button class="more-toggle">+ more</button>
-      {{ end }}
-
-    </div>
-  </div>
-
-
-  <!-- METHOD -->
-  <div class="filter-group">
-    <strong>Method</strong>
-
-    <div class="filter-tags">
-
-      <button class="active" data-filter="method" data-value="all">All</button>
-
-      {{ $methods := slice }}
-      {{ range $papers }}
-        {{ with .Params.methods }}
-          {{ $methods = $methods | append . }}
-        {{ end }}
-      {{ end }}
-      {{ $methods = $methods | uniq | sort }}
-
-      {{ $priority := .Site.Data.work_filters.methods }}
-
-      {{ range $priority }}
-        {{ if in $methods . }}
-          <button data-filter="method" data-value="{{ . }}">{{ . }}</button>
-        {{ end }}
-      {{ end }}
-
-      <span class="more-tags collapsed">
-        {{ range $methods }}
-          {{ if not (in $priority .) }}
-            <button data-filter="method" data-value="{{ . }}">{{ . }}</button>
-          {{ end }}
-        {{ end }}
-      </span>
-
-      {{ if gt (len $methods) (len $priority) }}
-        <button class="more-toggle">+ more</button>
-      {{ end }}
-
-    </div>
-  </div>
+  {{ partial "works-filter-group.html" (dict "filter" "condition" "label" "Condition" "values" $conditions "priority" .Site.Data.work_filters.conditions) }}
+  {{ partial "works-filter-group.html" (dict "filter" "datasource" "label" "Data"      "values" $datasource "priority" .Site.Data.work_filters.datasource) }}
+  {{ partial "works-filter-group.html" (dict "filter" "method"     "label" "Method"    "values" $methods    "priority" .Site.Data.work_filters.methods) }}
 
 </div>
 
@@ -143,9 +36,7 @@
 
     <div class="works-category">
 
-      <h2 class="category-header" style="border-bottom:1px solid #555; margin-top:3rem;">
-        {{ replace ($cat | title) "-" " " }}
-      </h2>
+      <h2 class="category-header">{{ replace ($cat | title) "-" " " }}</h2>
 
       <div class="category-content">
 
@@ -156,7 +47,7 @@
 
           <div class="year-group">
 
-            <h3 class="year-header" style="margin-top:1.5rem;">
+            <h3 class="year-header">
               {{ .Key }}
             </h3>
 
@@ -224,7 +115,7 @@
 
                 </small>
 
-                <div style="margin-bottom:1rem;"></div>
+                <div class="spacer"></div>
 
               </div>
 

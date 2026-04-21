@@ -4,7 +4,7 @@
 
 <div class="works-grouped">
 
-  <h2 style="border-bottom: 1px solid #555; margin-top: 3rem;">
+  <h2 class="category-header">
     {{ $bld.title }}
   </h2>
 
@@ -34,7 +34,7 @@
     <small>Telephone: {{ . }}</small>
   {{ end }}
 
-  <div style="margin-bottom: 1rem;"></div>
+  <div class="spacer"></div>
 
   {{ end }}
 
@@ -51,7 +51,7 @@
 {{ $datesorted := sort $withExif "Exif.Date" "desc" }}
 {{ $namesorted := sort $withoutExif "Name" "asc" }}
 
-<h2 style="border-bottom: 1px solid #555; margin-top: 3rem;">
+<h2 class="category-header">
 Gallery
 </h2>
 

@@ -219,6 +219,8 @@ async function loadWatched(username, limit, elementID) {
   catch (err) {
 
     console.error("Trakt widget failed:", err);
+    const el = document.getElementById(elementID);
+    if (el) el.innerHTML = '<span class="api-error">$ api is not aping 🐒</span>';
 
   }
 

@@ -113,6 +113,8 @@ async function getUnsplash(username, accessKey, limit, elementID) {
   catch (err) {
 
     console.error("Unsplash widget failed:", err);
+    const el = document.getElementById(elementID);
+    if (el) el.innerHTML = '<span class="api-error">$ api is not aping 🐒</span>';
 
   }
 

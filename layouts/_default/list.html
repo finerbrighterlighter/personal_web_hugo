@@ -5,7 +5,7 @@
 {{/* Filter out private posts first, then group by Year */}}
 {{ $publicPages := where .Pages ".Params.private" "!=" true }}
 {{ range $publicPages.GroupByPublishDate "2006" }}
-    <h2 style="border-bottom: 1px solid #555; margin-top: 3rem;">{{ .Key }}</h2>
+    <h2 class="category-header">{{ .Key }}</h2>
     
     <div class="posts-list">
         {{ range .Pages }}
@@ -18,7 +18,7 @@
                     </h2>
                     
                     {{ with .Params.company }}
-                        <small style="opacity: 0.6;">{{ . }}</small><br/>
+                        <small class="post-company">{{ . }}</small><br/>
                     {{ end }}
 
                     {{/* Plainify strips all HTML/Links from the summary */}}

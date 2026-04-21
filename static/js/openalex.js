@@ -352,8 +352,7 @@ works: ${bar.dataset.pubs}
   }
   catch (err) {
 
-    element.innerHTML =
-      `<pre style="color:red">Error: ${err.message}</pre>`;
+    element.innerHTML = '<span class="api-error">$ api is not aping 🐒</span>';
 
   }
 
