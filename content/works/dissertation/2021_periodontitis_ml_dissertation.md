@@ -9,11 +9,11 @@ authors:
   given: Htun
   highlight: true
 - family: Pattanateepapon
-  given: A.
+  given: Anuchate
 - family: Lertpimonchai
-  given: A.
+  given: Attawood
 - family: Thakkinstian
-  given: A.
+  given: Ammarin
 
 scholar: qjMakFHDy7sC
 
