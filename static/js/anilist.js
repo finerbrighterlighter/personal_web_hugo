@@ -1,27 +1,6 @@
+import { getCache, setCache } from "./cache.js";
+
 const ANILIST_URL = "https://graphql.anilist.co";
-
-/*
-------------------------------------------------------
-Session cache helpers
-Store API responses for the lifetime of the tab only.
-This avoids repeating the AniList API request on every
-page navigation within the site.
-------------------------------------------------------
-*/
-function getCache(key) {
-  const cached = sessionStorage.getItem(key);
-  if (!cached) return null;
-
-  try {
-    return JSON.parse(cached);
-  } catch {
-    return null;
-  }
-}
-
-function setCache(key, data) {
-  sessionStorage.setItem(key, JSON.stringify(data));
-}
 
 async function getLastRead(username, media, limit, elementID) {
 
@@ -117,8 +96,10 @@ function renderAniList(data, element, limit) {
 
   element.innerHTML = "";
 
-  const entries =
-    data.data.MediaListCollection.lists[0].entries;
+  const lists = data.data?.MediaListCollection?.lists;
+  if (!lists?.length) return;
+
+  const entries = lists[0].entries;
 
   const frag = document.createDocumentFragment();
 

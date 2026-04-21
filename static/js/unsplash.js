@@ -50,6 +50,8 @@ function renderUnsplash(photos, elementID) {
 
 async function getUnsplash(username, accessKey, limit, elementID) {
 
+  if (!document.getElementById(elementID)) return;
+
   const cacheKey = `unsplash-${username}-${limit}`;
 
   /* -----------------------------------------

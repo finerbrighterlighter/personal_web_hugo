@@ -984,6 +984,20 @@ p.social a {
   }
 
 /* ============================= */
+/* UTILITIES */
+/* ============================= */
+
+.hidden {
+    display: none !important;
+}
+
+.loading-dots {
+    color: var(--secondary-color);
+    font-style: italic;
+    animation: textBlink 1.2s step-end infinite;
+}
+
+/* ============================= */
 /* PRIVACY */
 /* ============================= */
 

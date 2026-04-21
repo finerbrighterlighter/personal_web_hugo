@@ -203,7 +203,6 @@ function generateLine() {
 
 const target = document.getElementById("typed-command");
 
-let lineIndex = 0;
 let charIndex = 0;
 let mistakeMade = false;
 let currentLine = "";

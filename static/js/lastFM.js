@@ -1,27 +1,7 @@
+import { getCache, setCache } from "./cache.js";
+
 const LASTFM_USER = "fibrili";
 const LASTFM_API = CONFIG.lastfm;
-
-/*
---------------------------------------------------------
-Session cache helper
-Stores API responses in sessionStorage so they persist
-while the browser tab is open but disappear afterwards.
---------------------------------------------------------
-*/
-function getCache(key) {
-  const cached = sessionStorage.getItem(key);
-  if (!cached) return null;
-
-  try {
-    return JSON.parse(cached);
-  } catch {
-    return null;
-  }
-}
-
-function setCache(key, data) {
-  sessionStorage.setItem(key, JSON.stringify(data));
-}
 
 async function lastFM_request(method, limit, elementID) {
 

@@ -315,10 +315,12 @@ ${renderChartSVG(graphTimeline)}
 
       bar.addEventListener("mouseenter", () => {
 
-        tooltip.innerHTML = `
-<strong>${bar.dataset.year}</strong><br>
-works: ${bar.dataset.pubs}
-`;
+        tooltip.textContent = "";
+        const label = document.createElement("strong");
+        label.textContent = bar.dataset.year;
+        tooltip.appendChild(label);
+        tooltip.appendChild(document.createElement("br"));
+        tooltip.appendChild(document.createTextNode(`works: ${bar.dataset.pubs}`));
         tooltip.style.opacity = 1;
 
       });

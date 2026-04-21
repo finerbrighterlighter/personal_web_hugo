@@ -35,17 +35,17 @@ function updateVisibility() {
       (filters.datasource === "all" || datasource.includes(filters.datasource)) &&
       (filters.method === "all" || method.includes(filters.method));
 
-    post.style.display = visible ? "" : "none";
+    post.classList.toggle("hidden", !visible);
   });
 
   document.querySelectorAll(".year-group").forEach(group => {
-    const visible = group.querySelectorAll(".post:not([style*='display: none'])").length;
-    group.style.display = visible ? "" : "none";
+    const visible = group.querySelectorAll(".post:not(.hidden)").length;
+    group.classList.toggle("hidden", !visible);
   });
 
   document.querySelectorAll(".works-category").forEach(cat => {
-    const visible = cat.querySelectorAll(".post:not([style*='display: none'])").length;
-    cat.style.display = visible ? "" : "none";
+    const visible = cat.querySelectorAll(".post:not(.hidden)").length;
+    cat.classList.toggle("hidden", !visible);
   });
 }
 

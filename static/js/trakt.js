@@ -113,6 +113,8 @@ function renderWatched(items, elementID) {
 
 async function loadWatched(username, limit, elementID) {
 
+  if (!document.getElementById(elementID)) return;
+
   const cacheKey = `trakt-${username}-${limit}`;
 
   /* -----------------------------------------
