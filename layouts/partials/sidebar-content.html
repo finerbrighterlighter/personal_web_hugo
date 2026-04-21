@@ -42,7 +42,7 @@
     {{ end }}
 
     {{ with $data.vcard }}
-    <li><span class="sidebar-label">[vcard]</span><a href="{{ . | relURL }}">Add to contact</a></li>
+    <li><span class="sidebar-label">[vcard]</span><a href="{{ . | relURL }}">{{ path.Base . }}</a></li>
     {{ end }}
 </ul>
 
