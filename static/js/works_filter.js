@@ -1,72 +1,91 @@
-const buttons = document.querySelectorAll("#works-filters button[data-filter]");
-const posts = document.querySelectorAll(".post");
-document.querySelectorAll(".more-toggle").forEach(btn => {
+const buttons  = document.querySelectorAll("#works-filters button[data-filter]");
+const posts    = document.querySelectorAll(".post");
+const countEl  = document.getElementById("works-count");
 
-    btn.addEventListener("click", () => {
-  
-      const tags = btn.parentElement.querySelector(".more-tags");
-  
-      tags.classList.toggle("collapsed");
-  
-      btn.textContent = tags.classList.contains("collapsed")
-        ? "+ more"
-        : "− less";
-  
-    });
-  
+/* ── more-toggle ─────────────────────────────────────────────────────────── */
+
+document.querySelectorAll(".more-toggle").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const tags = btn.parentElement.querySelector(".more-tags");
+    tags.classList.toggle("collapsed");
+    btn.textContent = tags.classList.contains("collapsed") ? "+ more" : "− less";
   });
-  
+});
+
+/* ── filter state ────────────────────────────────────────────────────────── */
+
 let filters = {
-  condition: "all",
+  condition:  "all",
   datasource: "all",
-  method: "all"
+  method:     "all",
+  year:       "all"
 };
+
+let searchQuery = "";
+
+/* ── visibility ──────────────────────────────────────────────────────────── */
 
 function updateVisibility() {
 
   posts.forEach(post => {
-
-    const cond = post.dataset.condition || "";
+    const cond       = post.dataset.condition  || "";
     const datasource = post.dataset.datasource || "";
-    const method = post.dataset.method || "";
+    const method     = post.dataset.method     || "";
+    const year       = post.dataset.year       || "";
+    const searchable = (post.dataset.search    || "").toLowerCase();
 
     const visible =
-      (filters.condition === "all" || cond.includes(filters.condition)) &&
+      (filters.condition  === "all" || cond.includes(filters.condition))       &&
       (filters.datasource === "all" || datasource.includes(filters.datasource)) &&
-      (filters.method === "all" || method.includes(filters.method));
+      (filters.method     === "all" || method.includes(filters.method))         &&
+      (filters.year       === "all" || year === filters.year)                   &&
+      (!searchQuery || searchable.includes(searchQuery));
 
     post.classList.toggle("hidden", !visible);
   });
 
   document.querySelectorAll(".year-group").forEach(group => {
-    const visible = group.querySelectorAll(".post:not(.hidden)").length;
-    group.classList.toggle("hidden", !visible);
+    group.classList.toggle("hidden", !group.querySelectorAll(".post:not(.hidden)").length);
   });
 
   document.querySelectorAll(".works-category").forEach(cat => {
-    const visible = cat.querySelectorAll(".post:not(.hidden)").length;
-    cat.classList.toggle("hidden", !visible);
+    cat.classList.toggle("hidden", !cat.querySelectorAll(".post:not(.hidden)").length);
+  });
+
+  if (countEl) {
+    const n = document.querySelectorAll(".post:not(.hidden)").length;
+    countEl.textContent = `showing ${n} of ${posts.length}`;
+  }
+}
+
+/* ── search ──────────────────────────────────────────────────────────────── */
+
+const searchInput = document.getElementById("works-search");
+if (searchInput) {
+  searchInput.addEventListener("input", () => {
+    searchQuery = searchInput.value.toLowerCase().trim();
+    updateVisibility();
   });
 }
 
+/* ── filter buttons ──────────────────────────────────────────────────────── */
+
 buttons.forEach(btn => {
-
   btn.addEventListener("click", () => {
-
-    const type = btn.dataset.filter;
+    const type  = btn.dataset.filter;
     const value = btn.dataset.value;
 
     filters[type] = value;
 
-    /* remove active from same group */
     document
       .querySelectorAll(`#works-filters button[data-filter="${type}"]`)
       .forEach(b => b.classList.remove("active"));
 
-    /* activate clicked button */
     btn.classList.add("active");
-
     updateVisibility();
   });
-
 });
+
+/* ── init ────────────────────────────────────────────────────────────────── */
+
+updateVisibility();

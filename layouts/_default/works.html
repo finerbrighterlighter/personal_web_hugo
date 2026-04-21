@@ -1,6 +1,16 @@
 {{ define "main" }}
-<h2 class="category-header">Tags</h2>
 
+<div class="terminal-window works-filter-panel">
+  <div class="window-header">
+    <div class="window-controls">
+      <span class="control close"></span>
+      <span class="control minimize"></span>
+      <span class="control maximize"></span>
+    </div>
+    <div class="window-title">filters.sh</div>
+  </div>
+
+  <div class="window-content">
 <div id="works-filters">
 
   {{ $papers := where site.RegularPages "Section" "works" }}
@@ -17,10 +27,30 @@
   {{ range $papers }}{{ with .Params.methods }}{{ $methods = $methods | append . }}{{ end }}{{ end }}
   {{ $methods = $methods | uniq | sort }}
 
+  {{ $years := slice }}
+  {{ range $papers }}{{ $years = $years | append (.Date.Format "2006") }}{{ end }}
+  {{ $years = $years | uniq | sort | collections.Reverse }}
+  {{ $priorityYears := first 3 $years }}
+
   {{ partial "works-filter-group.html" (dict "filter" "condition" "label" "Condition" "values" $conditions "priority" .Site.Data.work_filters.conditions) }}
   {{ partial "works-filter-group.html" (dict "filter" "datasource" "label" "Data"      "values" $datasource "priority" .Site.Data.work_filters.datasource) }}
   {{ partial "works-filter-group.html" (dict "filter" "method"     "label" "Method"    "values" $methods    "priority" .Site.Data.work_filters.methods) }}
+  {{ partial "works-filter-group.html" (dict "filter" "year"       "label" "Year"      "values" $years      "priority" $priorityYears) }}
 
+  <div class="filter-group">
+    <strong>search</strong>
+    <div class="filter-tags">
+      <span class="search-input-wrap">
+        <input type="text" id="works-search" class="works-search"
+               placeholder="keyword..." autocomplete="off" spellcheck="false" />
+      </span>
+    </div>
+  </div>
+
+  <p id="works-count" class="works-count"></p>
+
+</div>
+  </div>
 </div>
 
 <br/>
@@ -59,6 +89,8 @@
                    data-condition="{{ with .Params.conditions }}{{ delimit . "," }}{{ end }}"
                    data-datasource="{{ with .Params.datasource }}{{ delimit . "," }}{{ end }}"
                    data-method="{{ with .Params.methods }}{{ delimit . "," }}{{ end }}"
+                   data-year="{{ .Date.Format "2006" }}"
+                   data-search="{{ .Title }} {{ .Params.venue }} {{ with .Params.authors }}{{ range . }}{{ .given }} {{ .family }} {{ end }}{{ end }}{{ with .Params.conditions }}{{ delimit . " " }}{{ end }} {{ with .Params.datasource }}{{ delimit . " " }}{{ end }} {{ with .Params.methods }}{{ delimit . " " }}{{ end }} {{ .Date.Format "2006" }}"
                    itemscope itemtype="https://schema.org/ScholarlyArticle">
 
                 <meta itemprop="datePublished" content="{{ .Date }}">
