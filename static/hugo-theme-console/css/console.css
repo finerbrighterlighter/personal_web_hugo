@@ -1101,6 +1101,11 @@ input.works-search::placeholder {
 /* TERMINAL CURSOR */
 /* ============================= */
 
+header.terminal-logo {
+    overflow: hidden;
+    min-width: 0;
+}
+
 .terminal-prompt::after {
     animation: cursor 1s infinite;
     width: 10px;

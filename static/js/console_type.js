@@ -207,12 +207,22 @@ let charIndex = 0;
 let mistakeMade = false;
 let currentLine = "";
 
-/* screen width limit */
-let widthLimit = window.innerWidth * 0.6;
+const minTypingWidth = 120;
 
+/* screen width limit — space remaining after the prompt prefix */
 function updateWidthLimit() {
-    widthLimit = window.innerWidth * 0.6;
+    const available = window.innerWidth - target.getBoundingClientRect().left - 20;
+    if (available < minTypingWidth) {
+        target.style.display = "none";
+        widthLimit = 0;
+    } else {
+        target.style.display = "";
+        widthLimit = available;
+    }
 }
+
+let widthLimit = 0;
+updateWidthLimit();
 
 window.addEventListener("resize", updateWidthLimit);
 window.addEventListener("orientationchange", updateWidthLimit);
