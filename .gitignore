@@ -10,3 +10,7 @@ resources/_gen/
 
 # macOS junk
 .DS_Store
+
+# LLM / Claude
+CLAUDE.md
+.claude/

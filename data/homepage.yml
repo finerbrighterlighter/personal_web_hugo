@@ -27,7 +27,7 @@ sidebar:
   scholar_profile: 7waEOqcAAAAJ
 
   vcard: general/hteza.vcf #place a vcf file inside /general/ folder and provide the name of the file below
-  cv: general/cv_htunteza.pdf
+  cv: general/cv/cv_htunteza.pdf
 
 career_profile:
   title: "Career Profile"
@@ -50,7 +50,7 @@ education:
     - degree: Bachelor of Dental Surgery
       diploma: general/bds_transcript_htunteza.pdf
       university: *udmy
-      time: 2012 - 2018
+      time: 2012 - 2019
       details:
 
 experiences:

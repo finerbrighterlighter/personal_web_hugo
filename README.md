@@ -59,6 +59,20 @@ The site is compiled by Hugo into the `public/` directory during deployment.
 
 ---
 
+## 📄 CV Generation
+
+The downloadable CV is auto-generated from site data using a Python script (`scripts/build_cv.py`). It pulls personal data from `data/cv.yml` and publications/conferences directly from the Hugo works pages, so adding a new publication to the site automatically includes it in the next CV build.
+
+Output is written to `static/general/cv/`. Run after any relevant data change:
+
+```bash
+conda run -n hugo python scripts/build_cv.py
+```
+
+Requires the `hugo` conda environment with `weasyprint` and `pyyaml`. See the script header for setup instructions.
+
+---
+
 ## 🚧 Status
 
 This is a **work in progress** and still under active development.
