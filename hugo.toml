@@ -11,6 +11,7 @@ promptName = "hteza"
 promptHost = "homepage"
 buildFuture = true
 cacheTTLMinutes = 60
+researchTagLimit = 10
 
 [[params.navlinks]]
 name = "Home"

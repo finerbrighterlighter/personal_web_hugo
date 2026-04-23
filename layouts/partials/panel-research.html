@@ -1,0 +1,24 @@
+{{ $allTags := slice }}
+{{ range where site.RegularPages "Section" "works" }}
+  {{ with .Params.conditions }}{{ $allTags = $allTags | append . }}{{ end }}
+  {{ with .Params.methods }}{{ $allTags = $allTags | append . }}{{ end }}
+  {{ with .Params.datasource }}{{ $allTags = $allTags | append . }}{{ end }}
+{{ end }}
+
+<div class="terminal-window panel">
+  <div class="window-header">
+    <div class="window-controls">
+      <span class="control close"></span>
+      <span class="control minimize"></span>
+      <span class="control maximize"></span>
+    </div>
+    <div class="window-title">topics.sh</div>
+  </div>
+  <div class="window-content">
+    <pre class="panel-terminal"><a href="{{ "/works" | relURL }}">$ research --top-tags</a></pre>
+    <div id="research-cloud"></div>
+    <script>
+      window.__researchTags = {{ $allTags | jsonify | safeJS }};
+    </script>
+  </div>
+</div>
