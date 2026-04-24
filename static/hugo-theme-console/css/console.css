@@ -957,6 +957,8 @@ p.social a {
 .search-input-wrap::before { content: '['; }
 .search-input-wrap::after  { content: ']'; }
 
+
+
 input.works-search,
 input.works-search:focus,
 input.works-search:active {
@@ -1102,7 +1104,6 @@ input.works-search::placeholder {
 /* ============================= */
 
 header.terminal-logo {
-    overflow: hidden;
     min-width: 0;
 }
 
@@ -1182,9 +1183,9 @@ header.terminal-logo {
         top: 20px;
     }
 
-    /* #typed-command {
+    #typed-command {
         display: none;
-    } */
+    }
 
 }
 

@@ -70,7 +70,7 @@ const MAX_HEIGHT  = '13em'; // clips the cloud to ~5 lines; set to '' to disable
     const a = document.createElement('a');
     a.href  = `/works/?search=${encodeURIComponent(tag)}`;
     a.title = `${count} work${count !== 1 ? 's' : ''}`;
-    a.style.cssText = `font-size:${size.toFixed(1)}px;opacity:${alpha.toFixed(2)};text-decoration:none;`;
+    a.style.cssText = `font-size:${size.toFixed(1)}px;opacity:${alpha.toFixed(2)};color:var(--secondary-color);text-decoration:none;`;
 
     const span = document.createElement('span');
     span.textContent = tag;
