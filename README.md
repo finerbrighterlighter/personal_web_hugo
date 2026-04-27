@@ -32,15 +32,15 @@ Additional layout and UI components were customized for this site.
 
 The right column of the layout is made up of collapsible terminal-style windows, each representing a live data source or site utility. All panels share the same visual style: a title bar with macOS-style window controls, and content displayed as terminal output.
 
-| Panel (window title) | Template | Source |
-|---|---|---|
-| `publications.sh` | `panel-openalex.html` | [OpenAlex](https://openalex.org/) API — citation count, h-index, i10-index |
-| `topics.sh` | `panel-research.html` | Hugo build-time — tag cloud from works front matter |
-| `music.sh` | `panel-lastfm.html` | [Last.fm](https://www.last.fm/) API — recent scrobbles and curated playlists (`data/playlists.yml`) |
-| `manga.sh` | `panel-anilist.html` | [AniList](https://anilist.co/) API — recently read manga |
-| `screen.sh` | `panel-trakt.html` | [Trakt](https://trakt.tv/) + [TMDB](https://www.themoviedb.org/) APIs — recently watched TV and film |
-| `photos.sh` | `panel-unsplash.html` | [Unsplash](https://unsplash.com/) API — latest uploaded photos |
-| `privacy.sh` | `panel-privacy.html` | Static — analytics disclosure ([GoatCounter](https://www.goatcounter.com/)) and cache flush button |
+| Panel (window title) | Template                | Source                                                                                              |
+| -------------------- | ----------------------- | --------------------------------------------------------------------------------------------------- |
+| `publications.sh`  | `panel-openalex.html` | [OpenAlex](https://openalex.org/) API — citation count, h-index, i10-index                            |
+| `topics.sh`        | `panel-research.html` | Hugo build-time — tag cloud from works front matter                                                |
+| `music.sh`         | `panel-lastfm.html`   | [Last.fm](https://www.last.fm/) API — recent scrobbles and curated playlists (`data/playlists.yml`) |
+| `manga.sh`         | `panel-anilist.html`  | [AniList](https://anilist.co/) API — recently read manga                                              |
+| `screen.sh`        | `panel-trakt.html`    | [Trakt](https://trakt.tv/) + [TMDB](https://www.themoviedb.org/) APIs — recently watched TV and film     |
+| `photos.sh`        | `panel-unsplash.html` | [Unsplash](https://unsplash.com/) API — latest uploaded photos                                        |
+| `privacy.sh`       | `panel-privacy.html`  | Static — analytics disclosure ([GoatCounter](https://www.goatcounter.com/)) and cache flush button    |
 
 ### Caching
 
@@ -58,6 +58,8 @@ HUGO_LASTFM_KEY
 ```
 
 For local development, export these before running `hugo server`.
+
+Alternatively, use a `.env` file in working directory (Check `.env.example` file for reference); in conjection with dotenv python package: you can run `dotenv run hugo serve -w`
 
 ### Topics panel
 
@@ -99,6 +101,7 @@ Requires the `hugo` conda environment with `weasyprint` and `pyyaml`. See the sc
 An [`/llms.txt`](https://llmstxt.org/) file is served at the site root to help AI agents navigate content. It is generated automatically at build time by Hugo's custom output format — no manual maintenance required. When a new publication is added, it appears in `llms.txt` on the next build.
 
 The file includes:
+
 - Links to all publications (DOI or mirror, not the internal Hugo page)
 - Links to recent posts
 - Links to key pages (About, CV, Works)
