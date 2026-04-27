@@ -28,19 +28,40 @@ Additional layout and UI components were customized for this site.
 
 ---
 
-## 🧩 Sidebar Integrations
+## 🧩 Right-Column Panels
 
-Several panels pull data from external services using small JavaScript modules.
+The right column of the layout is made up of collapsible terminal-style windows, each representing a live data source or site utility. All panels share the same visual style: a title bar with macOS-style window controls, and content displayed as terminal output.
 
-Examples include:
+| Panel (window title) | Template | Source |
+|---|---|---|
+| `publications.sh` | `panel-openalex.html` | [OpenAlex](https://openalex.org/) API — citation count, h-index, i10-index |
+| `topics.sh` | `panel-research.html` | Hugo build-time — tag cloud from works front matter |
+| `music.sh` | `panel-lastfm.html` | [Last.fm](https://www.last.fm/) API — recent scrobbles and curated playlists (`data/playlists.yml`) |
+| `manga.sh` | `panel-anilist.html` | [AniList](https://anilist.co/) API — recently read manga |
+| `screen.sh` | `panel-trakt.html` | [Trakt](https://trakt.tv/) + [TMDB](https://www.themoviedb.org/) APIs — recently watched TV and film |
+| `photos.sh` | `panel-unsplash.html` | [Unsplash](https://unsplash.com/) API — latest uploaded photos |
+| `privacy.sh` | `panel-privacy.html` | Static — analytics disclosure ([GoatCounter](https://www.goatcounter.com/)) and cache flush button |
 
-* **Last.fm** – recent scrobbles and now playing
-* **AniList** – anime watching activity
-* **Trakt** – television viewing activity
-* **OpenAlex** – publication and citation metrics
-* **Unsplash** – photography feed
+### Caching
 
-These integrations rely on public APIs and small client-side scripts.
+All API panels cache their responses in `localStorage` with a configurable TTL (default 60 minutes, set via `cacheTTLMinutes` in `hugo.toml`). This avoids hitting rate limits on every page load and keeps the site fast. The privacy panel exposes a manual flush button to clear all cached responses.
+
+### API Keys
+
+Keys are injected at Netlify build time as environment variables and templated into `assets/js/config.js`:
+
+```
+HUGO_UNSPLASH_KEY
+HUGO_TRAKT_KEY
+HUGO_TMDB_KEY
+HUGO_LASTFM_KEY
+```
+
+For local development, export these before running `hugo server`.
+
+### Topics panel
+
+The `topics.sh` panel is the exception — it has no API. At build time, Hugo collects all `conditions`, `methods`, and `datasource` tags from the works pages and injects them as a JSON array into the page. The client-side `research.js` script counts frequencies, scales font size and opacity, and renders a word cloud. Tag limit is configurable via `researchTagLimit` in `hugo.toml`. Clicking a tag opens the works page with that tag pre-filled in the search box.
 
 ---
 
