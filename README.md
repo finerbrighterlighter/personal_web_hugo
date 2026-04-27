@@ -73,6 +73,19 @@ Requires the `hugo` conda environment with `weasyprint` and `pyyaml`. See the sc
 
 ---
 
+## 🤖 LLM Discoverability
+
+An [`/llms.txt`](https://llmstxt.org/) file is served at the site root to help AI agents navigate content. It is generated automatically at build time by Hugo's custom output format — no manual maintenance required. When a new publication is added, it appears in `llms.txt` on the next build.
+
+The file includes:
+- Links to all publications (DOI or mirror, not the internal Hugo page)
+- Links to recent posts
+- Links to key pages (About, CV, Works)
+
+A pointer is included in `robots.txt` under `LLMs:`.
+
+---
+
 ## 🚧 Status
 
 This is a **work in progress** and still under active development.
