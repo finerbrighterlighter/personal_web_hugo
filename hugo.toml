@@ -33,6 +33,15 @@ name = "Blood"
 url = "/blood/"
 host = "rhesus"
 
+[outputFormats.llmstxt]
+  mediaType      = "text/plain"
+  baseName       = "llms"
+  isPlainText    = true
+  notAlternative = true
+
+[outputs]
+  home = ["HTML", "llmstxt"]
+
 [security]
 enableInlineShortcodes = false
 

@@ -1,0 +1,45 @@
+# {{ .Site.Title }}
+
+> {{ .Site.Params.description }}
+
+## About
+
+- [About]({{ "/about/" | absURL }}): Research background, methods, and experience.
+- [CV (PDF)]({{ "/general/cv_htunteza.pdf" | absURL }}): Full curriculum vitae.
+- [Works]({{ "/works/" | absURL }}): All publications, filterable by condition, method, and data source.
+- [Posts]({{ "/posts/" | absURL }}): Blog and notes.
+
+## Publications
+
+{{ $cats := slice "journal" "conference-speaking" "conference-poster" "preprint" "dissertation" "report" -}}
+{{ range $cats -}}
+  {{ $cat := . -}}
+  {{ $papers := where (where site.RegularPages "Section" "works") "Params.type" $cat -}}
+  {{ if $papers -}}
+### {{ replace ($cat | title) "-" " " }}
+
+{{ range sort $papers "Date" "desc" -}}
+{{- $src := slice -}}{{- with .Params.sources }}{{- $src = . -}}{{- end -}}
+{{- $ft     := index (where $src "text" "fulltext") 0 -}}
+{{- $pm     := index (where $src "text" "pubmed")   0 -}}
+{{- $poster := index (where $src "text" "poster")   0 -}}
+{{- $mirror := index (where $src "text" "mirror")   0 -}}
+{{- $url := .Permalink -}}
+{{- with $ft     }}{{- $url = .url -}}{{- else -}}
+  {{- with $pm     }}{{- $url = .url -}}{{- else -}}
+    {{- with $poster }}{{- $url = .url -}}{{- else -}}
+      {{- with $mirror }}{{- $url = .url | absURL -}}{{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+- [{{ .Title }}]({{ $url }}): {{ with .Params.venue }}{{ . }}, {{ end }}{{ .Date.Format "2006" }}.
+{{ end }}
+  {{ end -}}
+{{ end -}}
+
+## Posts
+
+{{ $posts := where site.RegularPages "Section" "posts" -}}
+{{ range sort $posts "Date" "desc" | first 10 -}}
+- [{{ .Title }}]({{ .Permalink }}): {{ .Date.Format "January 2006" }}.
+{{ end -}}
