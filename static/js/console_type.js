@@ -70,7 +70,7 @@ const slogans = [
     "Blood connects us all",
     "Give Blood. Give Now. Give Often",
     "Be there for someone else",
-    "Give blood. Share life",
+    "Give blood, share life",
     "Safe Blood For All",
     "Safe Blood Saves Lives",
     "Give blood and keep the world beating",
@@ -95,7 +95,7 @@ const commands = [
 ];
 
 
-/* ========================================================= 
+/* =========================================================
     PROBABILITY SETTINGS
     Chance of printing a normal terminal command instead
    of a slogan message
@@ -154,6 +154,20 @@ const eraseChance = 0.35;
 
 
 /* =========================================================
+   DEDICATION
+
+   Typed when the Accessible theme is selected.
+   No typos — it should come out clean.
+========================================================= */
+const DEDICATIONS = [
+    "echo 'For Sam — who made me think twice about every color picker since'",
+    "echo 'For Sam — who taught me that not everyone sees the world the same way'",
+    "echo 'For Sam — without whom I would never have looked at colors the same way'",
+    "echo 'For Sam — without whom I would never have realized the importance of colors'",
+];
+
+
+/* =========================================================
    Convert slogans into terminal-style commands
 
    Each slogan becomes something like:
@@ -206,6 +220,17 @@ const target = document.getElementById("typed-command");
 let charIndex = 0;
 let mistakeMade = false;
 let currentLine = "";
+let isDedication = false;
+
+/* =========================================================
+   CANCELLATION TOKEN
+
+   A shared object reference. All in-flight setTimeout
+   callbacks capture the token at the time they were
+   scheduled. If the token is replaced (e.g. on dedication
+   interrupt), stale callbacks see a mismatch and bail out.
+========================================================= */
+let token = {};
 
 const minTypingWidth = 120;
 
@@ -246,7 +271,9 @@ function measureText(text) {
 }
 
 /* backspace helper */
-function backspace(count, callback) {
+function backspace(count, t, callback) {
+
+    if (t !== token) return;
 
     if (count <= 0) {
         callback();
@@ -256,15 +283,21 @@ function backspace(count, callback) {
     target.textContent =
         target.textContent.slice(0, -1);
 
-    setTimeout(() => backspace(count - 1, callback), backspaceSpeed);
+    setTimeout(() => backspace(count - 1, t, callback), backspaceSpeed);
 }
 
-/* choose next slogan that fits */
-function nextLine() {
+/* choose next line that fits */
+function nextLine(t) {
+
+    if (t !== token) return;
+
+    isDedication = false;
 
     const doErase = Math.random() < eraseChance;
 
     const continueNext = () => {
+
+        if (t !== token) return;
 
         target.textContent = "";
         charIndex = 0;
@@ -282,7 +315,7 @@ function nextLine() {
 
                 currentLine = candidate;
 
-                setTimeout(typeLine, randomIdle());
+                setTimeout(() => typeLine(t), randomIdle());
                 return;
             }
 
@@ -293,7 +326,7 @@ function nextLine() {
 
     if (doErase && target.textContent.length > 0) {
 
-        backspace(target.textContent.length, () => {
+        backspace(target.textContent.length, t, () => {
             setTimeout(continueNext, 300);
         });
 
@@ -306,15 +339,18 @@ function nextLine() {
 
 
 /* typing logic */
-function typeLine() {
+function typeLine(t) {
+
+    if (t !== token) return;
 
     if (charIndex >= currentLine.length) {
-        setTimeout(nextLine, randomIdle());
+        const pause = isDedication ? 60000 : randomIdle();
+        setTimeout(() => nextLine(t), pause);
         return;
     }
 
-    /* possible safe mistake */
-    if (!mistakeMade && Math.random() < errorChance && charIndex > 6) {
+    /* no typos on the dedication — it should come out clean */
+    if (!isDedication && !mistakeMade && Math.random() < errorChance && charIndex > 6) {
 
         mistakeMade = true;
 
@@ -332,9 +368,9 @@ function typeLine() {
 
                 setTimeout(() => {
 
-                    backspace(skipped.length, () => {
+                    backspace(skipped.length, t, () => {
                         charIndex -= skipped.length;
-                        typeLine();
+                        typeLine(t);
                     });
 
                 }, 400);
@@ -348,7 +384,7 @@ function typeLine() {
         target.textContent += "'";
         setTimeout(() => {
 
-            backspace(1, typeLine);
+            backspace(1, t, () => typeLine(t));
 
         }, 300);
 
@@ -358,9 +394,45 @@ function typeLine() {
     target.textContent += currentLine[charIndex];
     charIndex++;
 
-    setTimeout(typeLine, typingSpeed);
+    setTimeout(() => typeLine(t), typingSpeed);
 }
 
 
+/* =========================================================
+   ACCESSIBLE THEME — DEDICATION TRIGGER
+
+   Fires when the user switches to the Accessible palette.
+   Interrupts whatever is currently typing and types the
+   dedication instead. Does not re-fire if they toggle
+   dark/light while still on the Accessible palette.
+========================================================= */
+let accessibleWasActive = false;
+
+document.addEventListener('theme-changed', () => {
+
+    const mode = document.documentElement.dataset.theme || 'light';
+    const paletteId = localStorage.getItem('theme-palette-' + mode);
+    const isAccessible = paletteId === 'colorblind';
+
+    if (isAccessible && !accessibleWasActive) {
+
+        /* replace token — all in-flight callbacks will bail */
+        token = {};
+        const t = token;
+
+        isDedication = true;
+        target.textContent = '';
+        charIndex = 0;
+        mistakeMade = false;
+        currentLine = DEDICATIONS[Math.floor(Math.random() * DEDICATIONS.length)];
+
+        setTimeout(() => typeLine(t), 600);
+    }
+
+    accessibleWasActive = isAccessible;
+});
+
+
 /* start */
-nextLine();
+const t = token;
+nextLine(t);

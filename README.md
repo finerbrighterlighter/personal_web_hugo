@@ -10,11 +10,11 @@ Previous version was built with Jekyll: [finerbrighterlighter.github.io](https:/
 
 ## Stack
 
-- **Generator:** Hugo
-- **Hosting:** Netlify (CI/CD on push to main)
-- **Domain:** Porkbun -> htunteza.com
-- **Analytics:** GoatCounter (stats.htunteza.com)
-- **Theme base:** hugo-theme-console (terminal aesthetic)
+- **Generator:** [Hugo](https://gohugo.io) (Go-based static site generator)
+- **Hosting:** [Netlify](https://www.netlify.com) (CI/CD on push to main)
+- **Domain:** [Porkbun](https://porkbun.com) -> htunteza.com
+- **Analytics:** [GoatCounter](https://www.goatcounter.com) (stats.htunteza.com)
+- **Theme base:** [hugo-theme-console (terminal aesthetic)](https://github.com/mrmierzejewski/hugo-theme-console/)
 
 ---
 
@@ -118,7 +118,6 @@ Includes links to all publication DOIs/mirrors, recent posts, and key pages (Abo
 
 ## Other Things
 
-
 The hostname changes per section: `hteza@notebook` on posts, `hteza@academia` on works.
 
 The shell prompt in the nav header types out commands continuously — a mix of CLIs from the daily rotation (`btop`, `lazydocker`, `yay`, `conda activate`, HPC `sbatch` jobs, Singularity containers) and blood donation slogans dressed up as terminal commands (`bloodctl say`, `donate-cli message`). 
@@ -126,6 +125,8 @@ The shell prompt in the nav header types out commands continuously — a mix of 
 It makes typos. It backtracks. It pauses like it is thinking. It will do this every time you visit, indefinitely, because these are things worth noticing and this is one way to make sure you do.
 
 Clicking `[Me]` in the footer links to my personal webpage.
+
+The palette selector includes a theme called `Colorblind` — built for Romen Samuel Rodis y Wabina, a friend with red-green color blindness. Colors are derived from the Okabe & Ito (2008) Color Universal Design palette, the standard recommended by Nature journals for deuteranopia/protanopia. Blues replace greens as the primary accent; the error color is Okabe Vermillion rather than red. Selecting it types a dedication in the prompt. It stays up for a minute.
 
 The privacy panel has two cache flush options: now, and in 10 seconds. There is no practical reason to use it over the immediate flush. Some people will use it every time.
 

@@ -33,13 +33,13 @@
                 {{- if ne . "" -}}
                   {{- $path = printf "%s/%s" $path . -}}/<a href="{{ $path | relURL }}">{{ . }}</a>
                 {{- end -}}
-              {{- end -}}$ <span id="typed-command"></span>
+              {{- end -}}$ <span id="typed-command" aria-hidden="true"></span>
             </div>
 
 
           </header>
           
-          <nav class="terminal-menu">
+          <nav class="terminal-menu" aria-label="Site navigation">
             <ul vocab="https://schema.org/" typeof="BreadcrumbList">
               {{ range .Site.Params.navlinks }}
               {{ if not (eq $.RelPermalink .url) }}
@@ -64,9 +64,9 @@
 
     <div class="container terminal-layout {{ .Site.Params.animateStyle }}">
         
-        <aside class="terminal-window sidebar">
+        <aside class="terminal-window sidebar" aria-label="Profile">
             <div class="window-header">
-                <div class="window-controls">
+                <div class="window-controls" aria-hidden="true">
                     <span class="control close"></span>
                     <span class="control minimize"></span>
                     <span class="control maximize"></span>
@@ -86,7 +86,7 @@
             {{ partial "footer.html" . }}
         </main>
         
-        <aside class="right-panels">
+        <aside class="right-panels" aria-label="Live data panels">
           {{ partial "panel-openalex.html" . }}
           {{ partial "panel-research.html" . }}
           {{ partial "panel-lastfm.html" . }}

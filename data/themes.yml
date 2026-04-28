@@ -5,6 +5,7 @@
 # if we want a theme to be the default for both modes, we can set default: [dark, light]
 - id: nord
   label: Nord
+  default: [dark, light]
   dark:
     background: "#2e3440"
     font: "#eceff4"
@@ -171,9 +172,37 @@
     progress_bar_background: "#d0d7de"
     progress_bar_fill: "#0969da"
     code_bg: "#f6f8fa"
+# Designed for red-green color blindness (deuteranopia / protanopia).
+# Colors derived from the Okabe & Ito (2008) Color Universal Design palette —
+# the standard recommended by Nature journals and the scientific community.
+# Primary: Okabe Sky Blue (#56B4E9 / #0072B2).
+# Error: Okabe Vermillion (#D55E00) — orange-shifted, not red, safe for all CVD types.
+- id: colorblind
+  label: Colorblind
+  dark:
+    background: "#1c1c1c"
+    font: "#f0efeb"
+    invert_font: "#1c1c1c"
+    primary: "#56b4e9"
+    secondary: "#e69f00"
+    tertiary: "#2e2e2e"
+    error: "#d55e00"
+    progress_bar_background: "#2e2e2e"
+    progress_bar_fill: "#56b4e9"
+    code_bg: "#2a2a2a"
+  light:
+    background: "#fafafa"
+    font: "#1c1c1c"
+    invert_font: "#fafafa"
+    primary: "#0072b2"
+    secondary: "#6b5e4a"
+    tertiary: "#dcdcdc"
+    error: "#d55e00"
+    progress_bar_background: "#dcdcdc"
+    progress_bar_fill: "#0072b2"
+    code_bg: "#efefef"
 - id: rosepine
   label: Rosé Pine
-  default: [dark, light]
   dark:
     # Main variant — dark warm-black with brown-purple undertones
     background: "#191724"

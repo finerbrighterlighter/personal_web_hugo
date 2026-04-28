@@ -17,6 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const header = win.querySelector(".window-header");
 
+    // Make the header keyboard-navigable as a toggle button
+    header.setAttribute("role", "button");
+    header.setAttribute("tabindex", "0");
+
     // --------------------------------------------------
     // RIGHT SIDEBAR: restore saved state
     // Each panel stores its state using its window title
@@ -37,27 +41,33 @@ document.addEventListener("DOMContentLoaded", () => {
       win.dataset.storageKey = key;
     }
 
+    // Set initial aria-expanded to match current visual state
+    header.setAttribute("aria-expanded", !win.classList.contains("collapsed"));
+
+    function togglePanel() {
+      win.classList.toggle("collapsed");
+      header.setAttribute("aria-expanded", !win.classList.contains("collapsed"));
+
+      if (win.classList.contains("panel")) {
+        const key = win.dataset.storageKey;
+        sessionStorage.setItem(key, win.classList.contains("collapsed"));
+      }
+    }
+
     // --------------------------------------------------
     // Click header to toggle collapse
     // Ignore clicks on the fake window control buttons
     // --------------------------------------------------
     header.addEventListener("click", (e) => {
-
       if (e.target.closest(".window-controls")) return;
+      togglePanel();
+    });
 
-      win.classList.toggle("collapsed");
-
-      // --------------------------------------------------
-      // Save state only for right sidebar panels
-      // --------------------------------------------------
-      if (win.classList.contains("panel")) {
-
-        const key = win.dataset.storageKey;
-
-        sessionStorage.setItem(
-          key,
-          win.classList.contains("collapsed")
-        );
+    // Keyboard: Enter or Space activates the toggle
+    header.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        togglePanel();
       }
     });
   });
@@ -76,6 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function applyLayout(e) {
 
     document.querySelectorAll(".sidebar").forEach(win => {
+      const header = win.querySelector(".window-header");
 
       if (e.matches && !isHome) {
         win.classList.add("collapsed");
@@ -83,6 +94,9 @@ document.addEventListener("DOMContentLoaded", () => {
         win.classList.remove("collapsed");
       }
 
+      if (header) {
+        header.setAttribute("aria-expanded", !win.classList.contains("collapsed"));
+      }
     });
 
   }
