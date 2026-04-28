@@ -166,6 +166,8 @@ const DEDICATIONS = [
     "echo 'For Sam — without whom I would never have realized the importance of colors'",
 ];
 
+const DEDICATION_MOBILE = "echo 'Sam see color'";
+
 
 /* =========================================================
    Convert slogans into terminal-style commands
@@ -424,7 +426,9 @@ document.addEventListener('theme-changed', () => {
         target.textContent = '';
         charIndex = 0;
         mistakeMade = false;
-        currentLine = DEDICATIONS[Math.floor(Math.random() * DEDICATIONS.length)];
+        currentLine = window.innerWidth < 768
+            ? DEDICATION_MOBILE
+            : DEDICATIONS[Math.floor(Math.random() * DEDICATIONS.length)];
 
         setTimeout(() => typeLine(t), 600);
     }

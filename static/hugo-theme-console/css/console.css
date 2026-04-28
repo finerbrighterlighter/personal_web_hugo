@@ -1291,7 +1291,7 @@ header.terminal-logo {
     .terminal-menu ul {
         display: flex;
         flex-direction: row;
-        align-items: flex-start;
+        align-items: center;
         justify-content: flex-start;
         margin-top: 0;
     }
