@@ -128,7 +128,15 @@ Clicking `[Me]` in the footer links to my personal webpage.
 
 The palette selector includes a theme called `Colorblind` — built for Romen Samuel Rodis y Wabina, a friend with red-green color blindness. Colors are derived from the Okabe & Ito (2008) Color Universal Design palette, the standard recommended by Nature journals for deuteranopia/protanopia. Blues replace greens as the primary accent; the error color is Okabe Vermillion rather than red. Selecting it types a dedication in the prompt. It stays up for a minute.
 
+Next to the palette selector sits an Ishihara plate icon — colored when the theme is off, black and white when it is on. Clicking it toggles the Colorblind theme in the current light/dark mode without opening the dropdown.
+
 The privacy panel has two cache flush options: now, and in 10 seconds. There is no practical reason to use it over the immediate flush. Some people will use it every time.
+
+---
+
+## Attributions
+
+- [Eye test icons](https://www.flaticon.com/free-icons/eye-test) created by Freepik - Flaticon
 
 ---
 

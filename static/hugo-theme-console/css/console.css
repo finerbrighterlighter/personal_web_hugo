@@ -462,6 +462,39 @@ figure {
     color: var(--font-color);
 }
 
+.cvd-shortcut {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    margin-left: 5px;
+    cursor: pointer;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+}
+
+.cvd-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    display: none;
+    opacity: 0.75;
+    transition: opacity 0.15s ease;
+}
+
+.cvd-shortcut:hover .cvd-icon {
+    opacity: 1;
+}
+
+/* not on colorblind theme — show colored plate as invitation */
+.cvd-shortcut[aria-pressed="false"] .cvd-icon-on  { display: block; }
+
+/* on colorblind theme — show B&W plate */
+.cvd-shortcut[aria-pressed="true"]  .cvd-icon-off { display: block; }
+
+/* invert B&W plate in dark mode so it doesn't disappear */
+[data-theme="dark"] .cvd-icon-off { filter: invert(1); }
+
 
 /* ============================= */
 /* MASONRY / BOXES */

@@ -118,6 +118,7 @@
         updateEmoji(next);
         updateSelectValue(next);
         updateTicks(next);
+        updateCvdBtn(next);
         dispatchThemeChanged();
     });
 
@@ -140,7 +141,49 @@
         updateEmoji(mode);
         updateSelectValue(mode);
         updateTicks(mode);
+        updateCvdBtn(mode);
         dispatchThemeChanged();
     });
+
+    // ── CVD shortcut ──────────────────────────────────────────────────────────
+
+    const cvdBtn = document.getElementById('cvd-shortcut');
+
+    function syncSelectTo(mode, paletteId) {
+        const target = mode + '-' + paletteId;
+        Array.from(select.options).forEach(opt => {
+            opt.selected = opt.value === target;
+        });
+    }
+
+    function updateCvdBtn(mode) {
+        if (!cvdBtn) return;
+        const active = getActivePalette(mode).id === 'colorblind';
+        cvdBtn.setAttribute('aria-pressed', String(active));
+    }
+
+    if (cvdBtn) {
+        updateCvdBtn(initialMode);
+
+        cvdBtn.addEventListener('click', function () {
+            const mode    = getCurrentMode();
+            const current = getActivePalette(mode).id;
+
+            const targetId = current === 'colorblind'
+                ? (mode === 'dark' ? defaultDark : defaultLight).id
+                : 'colorblind';
+
+            const palette = findById(targetId);
+            if (!palette) return;
+
+            applyPalette(palette, mode);
+            localStorage.setItem('theme-palette-' + mode, targetId);
+
+            syncSelectTo(mode, targetId);
+            updateTicks();
+            updateCvdBtn(mode);
+            dispatchThemeChanged();
+        });
+    }
 
 })();
