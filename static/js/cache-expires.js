@@ -41,13 +41,12 @@ function doFlush() {
 const btns = document.getElementById('cache-flush-btns');
 
 function setBtns(text) {
-  btns.innerHTML = `<a>${text}</a>`;
+  btns.innerHTML = `<span>${text}</span>`;
 }
 
 const clearBtn = document.getElementById('cache-clear-btn');
 if (clearBtn) {
-  clearBtn.addEventListener('click', (e) => {
-    e.preventDefault();
+  clearBtn.addEventListener('click', () => {
     setBtns('[flushing]');
     doFlush();
   });
@@ -56,8 +55,7 @@ if (clearBtn) {
 const slowBtn = document.getElementById('cache-slow-btn');
 if (slowBtn) {
   let running = false;
-  slowBtn.addEventListener('click', (e) => {
-    e.preventDefault();
+  slowBtn.addEventListener('click', () => {
     if (running) return;
     running = true;
     const steps = [

@@ -70,7 +70,11 @@ function writeToURL() {
 function syncButtonStates() {
   for (const [type, val] of Object.entries(filters)) {
     document.querySelectorAll(`#works-filters button[data-filter="${type}"]`)
-      .forEach(b => b.classList.toggle('active', b.dataset.value === val));
+      .forEach(b => {
+        const active = b.dataset.value === val;
+        b.classList.toggle('active', active);
+        b.setAttribute('aria-pressed', String(active));
+      });
   }
 }
 
@@ -116,10 +120,14 @@ function updateVisibility() {
 /* ── More-toggle (expand hidden filter tags) ────────────────────────────── */
 
 document.querySelectorAll(".more-toggle").forEach(btn => {
+  const tags = btn.parentElement.querySelector(".more-tags");
+  btn.setAttribute("aria-expanded", String(!tags.classList.contains("collapsed")));
+
   btn.addEventListener("click", () => {
-    const tags = btn.parentElement.querySelector(".more-tags");
     tags.classList.toggle("collapsed");
-    btn.textContent = tags.classList.contains("collapsed") ? "+ more" : "− less";
+    const expanded = !tags.classList.contains("collapsed");
+    btn.textContent = expanded ? "− less" : "+ more";
+    btn.setAttribute("aria-expanded", String(expanded));
   });
 });
 

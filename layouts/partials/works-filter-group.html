@@ -6,27 +6,27 @@
     .values   — deduplicated sorted slice of all tag values
     .priority — ordered slice of tags to show before the fold
 */ -}}
-<div class="filter-group">
-  <strong>{{ .label }}</strong>
+<div class="filter-group" role="group" aria-labelledby="filter-label-{{ .filter }}">
+  <strong id="filter-label-{{ .filter }}">{{ .label }}</strong>
 
   <div class="filter-tags">
 
-    <button class="active" data-filter="{{ .filter }}" data-value="all">All</button>
+    <button class="active" data-filter="{{ .filter }}" data-value="all" aria-pressed="true">All</button>
 
     {{ range .priority }}
       {{ if in $.values . }}
-        <button data-filter="{{ $.filter }}" data-value="{{ . }}">{{ . }}</button>
+        <button data-filter="{{ $.filter }}" data-value="{{ . }}" aria-pressed="false">{{ . }}</button>
       {{ end }}
     {{ end }}
 
     {{ if gt (len .values) (len .priority) }}
-      <button class="more-toggle">+ more</button>
+      <button class="more-toggle" aria-expanded="false" aria-controls="more-tags-{{ $.filter }}">+ more</button>
     {{ end }}
 
-    <span class="more-tags collapsed">
+    <span class="more-tags collapsed" id="more-tags-{{ .filter }}">
       {{ range .values }}
         {{ if not (in $.priority .) }}
-          <button data-filter="{{ $.filter }}" data-value="{{ . }}">{{ . }}</button>
+          <button data-filter="{{ $.filter }}" data-value="{{ . }}" aria-pressed="false">{{ . }}</button>
         {{ end }}
       {{ end }}
     </span>

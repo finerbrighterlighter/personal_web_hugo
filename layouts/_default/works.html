@@ -42,12 +42,13 @@
     <div class="filter-tags">
       <span class="search-input-wrap">
         <input type="text" id="works-search" class="works-search"
-               placeholder="keyword..." autocomplete="off" spellcheck="false" />
+               placeholder="keyword..." autocomplete="off" spellcheck="false"
+               aria-label="Search publications" />
       </span>
     </div>
   </div>
 
-  <p id="works-count" class="works-count"></p>
+  <p id="works-count" class="works-count" aria-live="polite" aria-atomic="true"></p>
 
 </div>
   </div>
@@ -95,10 +96,10 @@
 
                 <meta itemprop="datePublished" content="{{ .Date }}">
 
-                <h2 itemprop="name">
+                <h4 itemprop="name">
                   <i class="{{ .Params.icon | default "fas fa-file-alt" }}"></i>
                   {{ .Title }}
-                </h2>
+                </h4>
 
                 <small>
                   <i itemprop="isPartOf">{{ .Params.venue }}</i>

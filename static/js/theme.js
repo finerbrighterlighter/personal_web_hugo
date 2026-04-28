@@ -101,6 +101,7 @@
     updateEmoji(initialMode);
     updateSelectValue(initialMode);
     updateTicks(initialMode);
+    root.dataset.palette = getActivePalette(initialMode).id;
 
     function dispatchThemeChanged() {
         document.dispatchEvent(new CustomEvent('theme-changed'));
@@ -119,6 +120,7 @@
         updateSelectValue(next);
         updateTicks(next);
         updateCvdBtn(next);
+        root.dataset.palette = getActivePalette(next).id;
         dispatchThemeChanged();
     });
 
@@ -142,6 +144,7 @@
         updateSelectValue(mode);
         updateTicks(mode);
         updateCvdBtn(mode);
+        root.dataset.palette = paletteId;
         dispatchThemeChanged();
     });
 
@@ -182,6 +185,7 @@
             syncSelectTo(mode, targetId);
             updateTicks();
             updateCvdBtn(mode);
+            root.dataset.palette = targetId;
             dispatchThemeChanged();
         });
     }
