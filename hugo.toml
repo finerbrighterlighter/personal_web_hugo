@@ -42,6 +42,8 @@ host = "rhesus"
 [outputs]
   home = ["HTML", "llmstxt"]
 
+[taxonomies]
+
 [security]
 enableInlineShortcodes = false
 

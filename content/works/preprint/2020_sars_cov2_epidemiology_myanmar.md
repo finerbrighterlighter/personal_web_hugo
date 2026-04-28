@@ -6,20 +6,20 @@ venue: "medRxiv"
 
 authors:
 - family: Thway
-  given: A.M.
+  given: Aung Min
 - family: Teza
   given: Htun
   highlight: true
 - family: Win
-  given: T.T.
+  given: Tun Tun
 - family: Htun
-  given: Y.M.
+  given: Ye Min
 - family: Aung
-  given: M.M.
+  given: Moe Myint
 - family: Win
-  given: Y.N.
+  given: Yan Naung
 - family: Tun
-  given: K.M.
+  given: Kyaw Myo
 
 scholar: u-x6o8ySG0sC
 

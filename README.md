@@ -1,54 +1,64 @@
-# 🧪 Personal Website (Beta Build)
+# htunteza.com
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/ca043d57-11d9-487c-9e6f-dae968d5ccc7/deploy-status)](https://app.netlify.com/projects/hugoteza/deploys)
 
-This is the beta build of my personal website — a simple site built with [Hugo](https://gohugo.io), deployed via [Netlify](https://www.netlify.com/). The custom domain is managed through [Porkbun](https://porkbun.com).
+Personal website for [Htun Teza](https://htunteza.com) — a terminal-aesthetic static site built with Hugo, deployed via Netlify.
 
-This project is an ongoing experiment in building a small, modular personal site. The goal is to keep things simple: static pages, lightweight JavaScript panels, and a terminal-style interface.
-
-The codebase is still evolving. Some parts are experimental, some are inelegant, and some are probably unnecessary — but the site works, and that’s a good start.
-
-Previous version was built using Jekyll and can be found [here](https://github.com/finerbrighterlighter/finerbrighterlighter.github.io).
+Previous version was built with Jekyll: [finerbrighterlighter.github.io](https://github.com/finerbrighterlighter/finerbrighterlighter.github.io).
 
 ---
 
-## ⚙️ Stack
+## Stack
 
-* **Static site generator:** [Hugo](https://gohugo.io)
-* **Hosting / CI deployment:** [Netlify](https://www.netlify.com/)
-* **Domain registrar:** [Porkbun](https://porkbun.com)
-
----
-
-## 🎨 Theme & Credits
-
-The visual style is based on the **Hugo Console Theme**, which provides the terminal-inspired interface.
-
-Additional layout and UI components were customized for this site.
+- **Generator:** Hugo
+- **Hosting:** Netlify (CI/CD on push to main)
+- **Domain:** Porkbun -> htunteza.com
+- **Analytics:** GoatCounter (stats.htunteza.com)
+- **Theme base:** hugo-theme-console (terminal aesthetic)
 
 ---
 
-## 🧩 Right-Column Panels
+## Layout
 
-The right column of the layout is made up of collapsible terminal-style windows, each representing a live data source or site utility. All panels share the same visual style: a title bar with macOS-style window controls, and content displayed as terminal output.
+Three-column layout defined in `layouts/_default/baseof.html`:
 
-| Panel (window title) | Template                | Source                                                                                              |
-| -------------------- | ----------------------- | --------------------------------------------------------------------------------------------------- |
-| `publications.sh`  | `panel-openalex.html` | [OpenAlex](https://openalex.org/) API — citation count, h-index, i10-index                            |
-| `topics.sh`        | `panel-research.html` | Hugo build-time — tag cloud from works front matter                                                |
-| `music.sh`         | `panel-lastfm.html`   | [Last.fm](https://www.last.fm/) API — recent scrobbles and curated playlists (`data/playlists.yml`) |
-| `manga.sh`         | `panel-anilist.html`  | [AniList](https://anilist.co/) API — recently read manga                                              |
-| `screen.sh`        | `panel-trakt.html`    | [Trakt](https://trakt.tv/) + [TMDB](https://www.themoviedb.org/) APIs — recently watched TV and film     |
-| `photos.sh`        | `panel-unsplash.html` | [Unsplash](https://unsplash.com/) API — latest uploaded photos                                        |
-| `privacy.sh`       | `panel-privacy.html`  | Static — analytics disclosure ([GoatCounter](https://www.goatcounter.com/)) and cache flush button    |
+- **Left** — `sidebar-content.html`: avatar, contact links, education. Data from `data/homepage.yml`.
+- **Main** — page-specific templates, content routed by section.
+- **Right** — `panel-*.html` partials: collapsible terminal windows pulling live data.
 
-### Caching
+---
 
-All API panels cache their responses in `localStorage` with a configurable TTL (default 60 minutes, set via `cacheTTLMinutes` in `hugo.toml`). This avoids hitting rate limits on every page load and keeps the site fast. The privacy panel exposes a manual flush button to clear all cached responses.
+## Content Sections
 
-### API Keys
+| URL | Template | Notes |
+|---|---|---|
+| `/` | `layouts/index.html` | Career profile from `data/homepage.yml` |
+| `/works/` | `layouts/_default/works.html` | Academic publications, client-side filter by condition/method/datasource/year |
+| `/posts/` | `layouts/_default/list.html` | Blog posts grouped by year; supports `private: true` front matter |
+| `/blood/` | `layouts/_default/blood.html` | Personal blood test records; data from `data/blood.yml` |
+| `/about/` | `layouts/_default/single.html` | Standard page |
 
-Keys are injected at Netlify build time as environment variables and templated into `assets/js/config.js`:
+---
+
+## Right Panels
+
+| Window title | Template | Source |
+|---|---|---|
+| `publications.sh` | `panel-openalex.html` | OpenAlex API — citation count, h-index, i10-index |
+| `topics.sh` | `panel-research.html` | Build-time tag cloud from works front matter; limit via `researchTagLimit` in `hugo.toml` |
+| `music.sh` | `panel-lastfm.html` | Last.fm API + `data/playlists.yml` |
+| `manga.sh` | `panel-anilist.html` | AniList API — recently read manga |
+| `screen.sh` | `panel-trakt.html` | Trakt + TMDB APIs — recently watched |
+| `photos.sh` | `panel-unsplash.html` | Unsplash API — latest uploads |
+| `privacy.sh` | `panel-privacy.html` | GoatCounter disclosure + manual cache flush |
+
+All API panels cache responses in `localStorage`. TTL is configurable via `cacheTTLMinutes` in `hugo.toml` (default: 60 minutes).
+
+---
+
+## API Keys
+
+Injected at build time as Hugo env vars, templated into `assets/js/config.js` via esbuild:
 
 ```
 HUGO_UNSPLASH_KEY
@@ -57,67 +67,77 @@ HUGO_TMDB_KEY
 HUGO_LASTFM_KEY
 ```
 
-For local development, export these before running `hugo server`.
+Set in Netlify environment for production. For local dev, export vars or use `.env.example` with dotenv:
 
-Alternatively, use a `.env` file in working directory (Check `.env.example` file for reference); in conjection with dotenv python package: you can run `dotenv run hugo serve -w`
-
-### Topics panel
-
-The `topics.sh` panel is the exception — it has no API. At build time, Hugo collects all `conditions`, `methods`, and `datasource` tags from the works pages and injects them as a JSON array into the page. The client-side `research.js` script counts frequencies, scales font size and opacity, and renders a word cloud. Tag limit is configurable via `researchTagLimit` in `hugo.toml`. Clicking a tag opens the works page with that tag pre-filled in the search box.
+```bash
+dotenv run hugo server -w
+```
 
 ---
 
-## 📂 Repository Structure (Simplified)
+## Local Dev
 
-```
-content/     → pages, posts, publications
-layouts/     → Hugo templates
-partials/    → reusable UI components
-static/      → static assets (docs, images, JS)
-data/        → YAML data sources for the site
-assets/      → site configuration and scripts
+```bash
+hugo server          # dev server (analytics disabled)
+hugo --gc --minify   # production build
 ```
 
-The site is compiled by Hugo into the `public/` directory during deployment.
+Output goes to `public/` (not committed).
 
 ---
 
-## 📄 CV Generation
+## CV Generation
 
-The downloadable CV is auto-generated from site data using a Python script (`scripts/build_cv.py`). It pulls personal data from `data/cv.yml` and publications/conferences directly from the Hugo works pages, so adding a new publication to the site automatically includes it in the next CV build.
+The downloadable CV is auto-generated from site data by `scripts/build_cv.py` using WeasyPrint. Adding a publication to `content/works/` includes it automatically on the next build.
 
-Output is written to `static/general/cv/`. Run after any relevant data change:
+**Data sources:**
+- `data/cv.yml` — personal info, education, experience, awards
+- `content/works/` — publications, picked up automatically
+
+**Output:** `static/general/cv/`
+- `cv_htunteza.pdf` — current version (linked from sidebar)
+- `cv_htunteza_YYYYMMDD.pdf` — dated archive (3 most recent kept)
+
+Run after any CV data change:
 
 ```bash
 conda run -n hugo python scripts/build_cv.py
 ```
 
-Requires the `hugo` conda environment with `weasyprint` and `pyyaml`. See the script header for setup instructions.
+Requires conda env `hugo` (Python 3.11, weasyprint, pyyaml).
 
 ---
 
-## 🤖 LLM Discoverability
+## LLMs.txt
 
-An [`/llms.txt`](https://llmstxt.org/) file is served at the site root to help AI agents navigate content. It is generated automatically at build time by Hugo's custom output format — no manual maintenance required. When a new publication is added, it appears in `llms.txt` on the next build.
+`/llms.txt` is served at the site root to help AI agents navigate content. Generated automatically at build time via Hugo's custom output format — no manual maintenance required.
 
-The file includes:
-
-- Links to all publications (DOI or mirror, not the internal Hugo page)
-- Links to recent posts
-- Links to key pages (About, CV, Works)
-
-A pointer is included in `robots.txt` under `LLMs:`.
+Includes links to all publication DOIs/mirrors, recent posts, and key pages (About, CV, Works). A pointer is included in `robots.txt` under `LLMs:`.
 
 ---
 
-## 🚧 Status
+## Other Things
 
-This is a **work in progress** and still under active development.
 
-Things will break.
-Layouts will change.
-Panels may appear and disappear.
+The hostname changes per section: `hteza@notebook` on posts, `hteza@academia` on works.
 
-But the site is live, which is always the most important milestone.
+The shell prompt in the nav header types out commands continuously — a mix of CLIs from the daily rotation (`btop`, `lazydocker`, `yay`, `conda activate`, HPC `sbatch` jobs, Singularity containers) and blood donation slogans dressed up as terminal commands (`bloodctl say`, `donate-cli message`). 
+
+It makes typos. It backtracks. It pauses like it is thinking. It will do this every time you visit, indefinitely, because these are things worth noticing and this is one way to make sure you do.
+
+Clicking `[Me]` in the footer links to my personal webpage.
+
+The privacy panel has two cache flush options: now, and in 10 seconds. There is no practical reason to use it over the immediate flush. Some people will use it every time.
 
 ---
+
+## Repository Structure
+
+```
+assets/     config.js (esbuild entry, API keys templated in)
+content/    pages, posts, works, blood records
+data/       YAML data sources
+layouts/    Hugo templates and partials
+scripts/    build_cv.py
+static/     JS modules, fonts, images, CV PDFs
+```
