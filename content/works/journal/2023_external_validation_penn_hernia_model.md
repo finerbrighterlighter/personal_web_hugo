@@ -5,29 +5,18 @@ type: journal
 venue: "Surgeon"
 
 authors:
-- family: Tansawet
-  given: Amarit
-- family: Numthavaj
-  given: Pawin
-- family: Teza
-  given: Htun
+- id: amarit
+- id: pawin
+- id: me-ceb
   highlight: true
-- family: Pattanateepapon
-  given: Anuchate
-- family: Piebpien
-  given: Pongsathorn
-- family: Poprom
-  given: Napaphat
-- family: Techaponsatorn
-  given: Suphakarn
-- family: McKay
-  given: Gareth J.
-- family: Attia
-  given: John
-- family: Sumritpradit
-  given: Preeda
-- family: Thakkinstian
-  given: Ammarin
+- id: anuchate
+- id: pongsathorn
+- id: napaphat
+- id: suphakarn
+- id: mckay
+- id: attia
+- id: preeda
+- id: ammarin
 
 scholar: zYLM7Y9cAGgC
 

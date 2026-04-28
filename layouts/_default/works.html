@@ -59,6 +59,7 @@
 
 {{ $categories := slice "journal" "conference-speaking" "conference-poster" "preprint" "dissertation" "report" }}
 {{ $papers := where site.RegularPages "Section" "works" }}
+{{ $rm := partial "researcher-map.html" . }}
 
 <div class="works-grouped">
 
@@ -91,18 +92,18 @@
                    data-datasource="{{ with .Params.datasource }}{{ delimit . "," }}{{ end }}"
                    data-method="{{ with .Params.methods }}{{ delimit . "," }}{{ end }}"
                    data-year="{{ .Date.Format "2006" }}"
-                   data-search="{{ .Title }} {{ .Params.venue }} {{ with .Params.authors }}{{ range . }}{{ .given }} {{ .family }} {{ end }}{{ end }}{{ with .Params.conditions }}{{ delimit . " " }}{{ end }} {{ with .Params.datasource }}{{ delimit . " " }}{{ end }} {{ with .Params.methods }}{{ delimit . " " }}{{ end }} {{ .Date.Format "2006" }} {{ .Plain }}"
+                   data-search="{{ .Title }} {{ .Params.venue }} {{ with .Params.authors }}{{ range . }}{{ .given }} {{ .family }} {{ end }}{{ end }}{{ with .Params.conditions }}{{ delimit . " " }}{{ end }} {{ with .Params.datasource }}{{ delimit . " " }}{{ end }} {{ with .Params.methods }}{{ delimit . " " }}{{ end }} {{ .Date.Format "2006" }} {{ .Params.type }} {{ .Plain }}"
                    itemscope itemtype="https://schema.org/ScholarlyArticle">
 
                 <meta itemprop="datePublished" content="{{ .Date }}">
 
                 <h4 itemprop="name">
                   <i class="{{ .Params.icon | default "fas fa-file-alt" }}"></i>
-                  {{ if .Content }}
-                    <a class="work-title-link" href="{{ .Permalink }}">{{ .Title }}</a>
-                  {{ else }}
+                  {{- if hasPrefix .Params.type "conference-" -}}
                     {{ .Title }}
-                  {{ end }}
+                  {{- else -}}
+                    <a class="work-title-link" href="{{ .RelPermalink }}">{{ .Title }}</a>
+                  {{- end -}}
                 </h4>
 
                 <small>
@@ -115,8 +116,17 @@
                   {{ $count := len $authors }}
 
                   {{ range $i, $a := $authors }}
+                    {{- $given := $a.given -}}
+                    {{- $family := $a.family -}}
+                    {{- with $a.id -}}
+                      {{- $person := index $rm . -}}
+                      {{- with $person -}}
+                        {{- $given = $person.given -}}
+                        {{- $family = $person.family -}}
+                      {{- end -}}
+                    {{- end -}}
                     {{ if $a.highlight }}<b>{{ end }}
-                      {{ $a.given }} {{ $a.family }}
+                      {{- $given }} {{ $family -}}
                     {{ if $a.highlight }}</b>{{ end }}
                     {{ if lt (add $i 1) $count }}, {{ end }}
                   {{ end }}

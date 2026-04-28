@@ -5,14 +5,10 @@ type: conference-speaking
 venue: "Ministry of Health – Academy of Medicine of Malaysia Scientific Meeting — Selangor, Malaysia"
 
 authors:
-- family: Thakkinstian
-  given: Ammarin
-- family: Lolak
-  given: Sermkiat
-- family: Looaresuwan
-  given: Panu
-- family: Teza
-  given: Htun
+- id: ammarin
+- id: sermkiat
+- id: panu
+- id: me-ceb
   highlight: true
 
 sources:

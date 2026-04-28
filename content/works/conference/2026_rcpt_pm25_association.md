@@ -5,13 +5,10 @@ type: conference-speaking
 venue: "42nd Royal College of Physicians of Thailand Annual Meeting 2026 — Pattaya, Thailand"
 
 authors:
-- family: Numthavaj
-  given: Pawin
-- family: Teza
-  given: Htun
+- id: pawin
+- id: me-ceb
   highlight: true
-- family: Win
-  given: Tint Lwin
+- id: tint-lwin
 
 sources:
 - text: schedule

@@ -5,21 +5,14 @@ type: journal
 venue: "JMIR Formative Research"
 
 authors:
-- family: Teza
-  given: Htun
+- id: me-ceb
   highlight: true
-- family: Pattanateepapon
-  given: Anuchate
-- family: Lertpimonchai
-  given: Attawood
-- family: Vathesatogkit
-  given: Prin
-- family: McKay
-  given: Gareth J.
-- family: Attia
-  given: John
-- family: Thakkinstian
-  given: Ammarin
+- id: anuchate
+- id: attawood
+- id: prin
+- id: mckay
+- id: attia
+- id: ammarin
 
 scholar: Tyk-4Ss8FVUC
 

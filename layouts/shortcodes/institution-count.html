@@ -1,0 +1,40 @@
+{{- $rm := dict -}}
+{{- range site.Data.researchers -}}
+  {{- $rm = merge $rm (dict .id .) -}}
+{{- end -}}
+
+{{- $ids := slice -}}
+{{- range where site.RegularPages "Section" "works" -}}
+  {{- range .Params.authors -}}
+    {{- with .id -}}
+      {{- if and (ne . "me-ceb") (not (in $ids .)) -}}
+        {{- $ids = $ids | append . -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $keywords := slice "University" "Hospital" "Academy" "Institute" "College" "Unit" -}}
+{{- $orgs := slice -}}
+{{- range $ids -}}
+  {{- $person := index $rm . -}}
+  {{- with $person -}}
+    {{- range .affiliations -}}
+      {{- $org := "" -}}
+      {{- range (split . ",") -}}
+        {{- $seg := . | strings.TrimSpace -}}
+        {{- if not $org -}}
+          {{- range $keywords -}}
+            {{- if strings.Contains $seg . -}}
+              {{- $org = $seg -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+      {{- if and $org (not (in $orgs $org)) -}}
+        {{- $orgs = $orgs | append $org -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- len $orgs -}}

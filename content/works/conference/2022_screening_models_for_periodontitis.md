@@ -5,15 +5,11 @@ type: conference-poster
 venue: "International Society for Clinical Biostatistics Annual Conference — Newcastle, UK"
 
 authors:
-- family: Teza
-  given: Htun
+- id: me-ceb
   highlight: true
-- family: Pattanateepapon
-  given: Anuchate
-- family: Lertpimonchai
-  given: Attawood
-- family: Thakkinstian
-  given: Ammarin
+- id: anuchate
+- id: attawood
+- id: ammarin
 
 sources:
 - text: poster

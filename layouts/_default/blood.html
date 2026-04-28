@@ -45,10 +45,10 @@
 {{ $images := $bundle.Resources.ByType "image" }}
 
 
-{{ $withExif := where $images "Exif.Date" "!=" nil }}
-{{ $withoutExif := where $images "Exif.Date" "==" nil }}
+{{ $withExif := where $images "Meta.Date" "!=" nil }}
+{{ $withoutExif := where $images "Meta.Date" "==" nil }}
 
-{{ $datesorted := sort $withExif "Exif.Date" "desc" }}
+{{ $datesorted := sort $withExif "Meta.Date" "desc" }}
 {{ $namesorted := sort $withoutExif "Name" "asc" }}
 
 <h2 class="category-header">
@@ -60,7 +60,7 @@ Gallery
   {{ range $datesorted }}
     {{ $thumb := .Fill "400x400 center" }}
     <a href="{{ .RelPermalink }}"
-       title="{{ with .Exif }}{{ .Date }}{{ else }}{{ .Name }}{{ end }}">
+       title="{{ with .Meta }}{{ .Date }}{{ else }}{{ .Name }}{{ end }}">
       <img
         src="{{ $thumb.RelPermalink }}"
         alt="{{ .Name }}"

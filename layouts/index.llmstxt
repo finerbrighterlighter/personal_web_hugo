@@ -2,15 +2,16 @@
 
 > {{ .Site.Params.description }}
 
-## About
+## Key pages
 
-- [About]({{ "/about/" | absURL }}): Research background, methods, and experience.
-- [CV (PDF)]({{ "/general/cv_htunteza.pdf" | absURL }}): Full curriculum vitae.
+- [About]({{ "/about/" | absURL }}): Research background, collaborators, and experience.
+- [CV (PDF)]({{ "/general/cv/cv_htunteza.pdf" | absURL }}): Full curriculum vitae.
 - [Works]({{ "/works/" | absURL }}): All publications, filterable by condition, method, and data source.
 - [Posts]({{ "/posts/" | absURL }}): Blog and notes.
 
 ## Publications
 
+{{ $renderedTypes := slice "journal" "preprint" "dissertation" "report" -}}
 {{ $cats := slice "journal" "conference-speaking" "conference-poster" "preprint" "dissertation" "report" -}}
 {{ range $cats -}}
   {{ $cat := . -}}
@@ -24,15 +25,20 @@
 {{- $pm     := index (where $src "text" "pubmed")   0 -}}
 {{- $poster := index (where $src "text" "poster")   0 -}}
 {{- $mirror := index (where $src "text" "mirror")   0 -}}
-{{- $url := .Permalink -}}
-{{- with $ft     }}{{- $url = .url -}}{{- else -}}
-  {{- with $pm     }}{{- $url = .url -}}{{- else -}}
-    {{- with $poster }}{{- $url = .url -}}{{- else -}}
-      {{- with $mirror }}{{- $url = .url | absURL -}}{{- end -}}
+{{- $hasRendered := in $renderedTypes $cat -}}
+{{- $extURL := "" -}}
+{{- with $ft     }}{{- $extURL = .url -}}{{- else -}}
+  {{- with $pm     }}{{- $extURL = .url -}}{{- else -}}
+    {{- with $poster }}{{- $extURL = .url -}}{{- else -}}
+      {{- with $mirror }}{{- $extURL = .url | absURL -}}{{- end -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
-- [{{ .Title }}]({{ $url }}): {{ with .Params.venue }}{{ . }}, {{ end }}{{ .Date.Format "2006" }}.{{ with .Plain | htmlUnescape }} Abstract: {{ . }}{{ end }}
+{{- $url := "" -}}
+{{- if $hasRendered -}}{{- $url = .Permalink -}}{{- else if $extURL -}}{{- $url = $extURL -}}{{- end -}}
+{{- if $url -}}
+- [{{ .Title }}]({{ $url }}): {{ with .Params.venue }}{{ . }}, {{ end }}{{ .Date.Format "2006" }}.
+{{ end -}}
 {{ end }}
   {{ end -}}
 {{ end -}}

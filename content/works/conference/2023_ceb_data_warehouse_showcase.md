@@ -5,19 +5,13 @@ type: conference-speaking
 venue: "Ramathibodi International Academic Conference (RIAC 2023) — Bangkok, Thailand"
 
 authors:
-- family: Looaresuwan
-  given: Panu
-- family: Ponthongmak
-  given: Wanchana
-- family: Teza
-  given: Htun
+- id: panu
+- id: wanchana
+- id: me-ceb
   highlight: true
-- family: Ratanatharathom
-  given: Cholatid
-- family: Saowaprut
-  given: Prut
-- family: Wabina
-  given: Romen Samuel
+- id: cholatid
+- id: prut
+- id: romen
 
 sources:
 - text: schedule

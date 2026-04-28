@@ -22,21 +22,66 @@
     {{- end }}
   </h1>
 
+  {{ $rm := partial "researcher-map.html" . }}
+
+  {{/* Build ordered unique affiliation list across all authors */}}
+  {{ $affiliations := slice }}
+  {{ range .Params.authors }}
+    {{ with .id }}
+      {{ $person := index $rm . }}
+      {{ with $person }}
+        {{ range $person.affiliations }}
+          {{ if not (in $affiliations .) }}
+            {{ $affiliations = $affiliations | append . }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{ $multiAff := gt (len $affiliations) 1 }}
+
   <p class="work-authors" itemprop="author">
     {{ $authors := .Params.authors }}
     {{ $count := len $authors }}
     {{ range $i, $a := $authors }}
+      {{- $given := $a.given -}}
+      {{- $family := $a.family -}}
+      {{- $affNums := slice -}}
+      {{- with $a.id -}}
+        {{- $person := index $rm . -}}
+        {{- with $person -}}
+          {{- $given = $person.given -}}
+          {{- $family = $person.family -}}
+          {{- range $person.affiliations -}}
+            {{- $thisAff := . -}}
+            {{- $idx := 0 -}}
+            {{- range $j, $aff := $affiliations -}}
+              {{- if eq $aff $thisAff -}}{{- $idx = add $j 1 -}}{{- end -}}
+            {{- end -}}
+            {{- $affNums = $affNums | append $idx -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
       {{ if $a.highlight }}<strong>{{ end -}}
-        {{- $a.given }} {{ $a.family -}}
+        {{- $given }} {{ $family -}}
       {{- if $a.highlight }}</strong>{{ end -}}
+      {{- if and $multiAff $affNums -}}<sup>{{ delimit $affNums "," }}</sup>{{- end -}}
       {{- if lt (add $i 1) $count }}, {{ end }}
     {{ end }}
   </p>
 
+  {{ with $affiliations }}
+  <p class="work-affiliations">
+    {{ range $i, $aff := . }}
+      {{ if $multiAff }}<sup>{{ add $i 1 }}</sup> {{ end }}{{ $aff }}<br>
+    {{ end }}
+  </p>
+  {{ end }}
+
   <p class="work-meta">
     <i itemprop="isPartOf">{{ .Params.venue }}</i>
     &nbsp;·&nbsp;
-    Available online
     <time itemprop="datePublished" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time>
   </p>
 
@@ -50,7 +95,6 @@
   <section class="work-links">
     <h2>Find this paper</h2>
     <p>
-
 
       {{ with $pm }}
         <a class="work-link-btn" href="{{ .url }}" target="_blank" rel="noopener" itemprop="url">
@@ -79,6 +123,18 @@
            {{ if hasPrefix $url "http" }}target="_blank" rel="noopener"{{ end }}
            itemprop="url">
           Author copy
+        </a>
+      {{ end }}
+
+      {{- $doi := "" -}}
+      {{- range $src -}}
+        {{- if and (not $doi) (strings.Contains .url "doi.org/") -}}
+          {{- $doi = .url | strings.TrimPrefix "https://doi.org/" | strings.TrimPrefix "http://doi.org/" -}}
+        {{- end -}}
+      {{- end -}}
+      {{ with $doi }}
+        <a class="work-link-btn" href="https://doi2bib.org/bib/{{ . }}" target="_blank" rel="noopener">
+          BibTeX
         </a>
       {{ end }}
 

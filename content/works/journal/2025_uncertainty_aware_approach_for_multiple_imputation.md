@@ -5,27 +5,17 @@ type: journal
 venue: "Journal of Big Data"
 
 authors:
-- family: Wabina
-  given: Romen Samuel 
-- family: Looaresuwan
-  given: Panu
-- family: Sonsilphong
-  given: Suphachoke
-- family: Teza
-  given: Htun
+- id: romen
+- id: panu
+- id: suphachoke
+- id: me-ceb
   highlight: true
-- family: Ponthongmak
-  given: Wanchana
-- family: McKay
-  given: Gareth J.
-- family: Attia
-  given: John
-- family: Pattanateepapon
-  given: Anuchate
-- family: Panitchoke
-  given: Anupol
-- family: Thakkinstian
-  given: Ammarin
+- id: wanchana
+- id: mckay
+- id: attia
+- id: anuchate
+- id: anupol
+- id: ammarin
 
 scholar: W7OEmFMy1HYC
 

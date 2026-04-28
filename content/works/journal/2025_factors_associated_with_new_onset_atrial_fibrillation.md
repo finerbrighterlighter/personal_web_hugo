@@ -5,23 +5,15 @@ type: journal
 venue: "American Journal of Hypertension"
 
 authors:
-- family: Limpijankit
-  given: Varisa
-- family: Sasiprapha
-  given: Thinnakrit
-- family: Teza
-  given: Htun
+- id: varisa
+- id: thinnakrit
+- id: me-ceb
   highlight: true
-- family: Pattanateepapon
-  given: Anuchate
-- family: Siriyotha
-  given: Sukanya
-- family: Boonmanunt
-  given: Suparee
-- family: Attia
-  given: John
-- family: Thakkinstian
-  given: Ammarin
+- id: anuchate
+- id: sukanya
+- id: suparee
+- id: attia
+- id: ammarin
 
 scholar: eQOLeE2rZwMC
 

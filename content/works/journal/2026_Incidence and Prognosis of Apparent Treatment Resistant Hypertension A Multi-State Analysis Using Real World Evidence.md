@@ -5,25 +5,16 @@ type: journal
 venue: "Clinical Hypertension"
 
 authors:
-- family: Teza
-  given: Htun
+- id: me-ceb
   highlight: true
-- family: Anothaisintawee
-  given: Thunyarat
-- family: Limpijankit
-  given: Thosaphol
-- family: Tansawet
-  given: Amarit
-- family: Boonmanunt
-  given: Suparee
-- family: Pattanateepapon
-  given: Anuchate
-- family: McKay
-  given: Gareth J.
-- family: Attia
-  given: John
-- family: Thakkinstian
-  given: Ammarin
+- id: thunyarat
+- id: thosaphol
+- id: amarit
+- id: suparee
+- id: anuchate
+- id: mckay
+- id: attia
+- id: ammarin
 
 scholar: WF5omc3nYNoC
 

@@ -132,6 +132,7 @@
 <div class="posts-list">
   {{ $papers := where site.RegularPages "Section" "works" }}
   {{ $cutoff := now.AddDate -1 0 0 }}
+  {{ $rm := partial "researcher-map.html" . }}
 
   {{ range $papers.ByDate.Reverse }}
     {{ if ge .Date $cutoff }}
@@ -140,7 +141,11 @@
 
         <h2>
           <i class="{{ .Params.icon | default "fas fa-file-alt" }}"></i>
-          {{ .Title }}
+          {{- if hasPrefix .Params.type "conference-" -}}
+            {{ .Title }}
+          {{- else -}}
+            <a class="work-title-link" href="{{ .RelPermalink }}">{{ .Title }}</a>
+          {{- end -}}
         </h2>
 
         <small><i>{{ .Params.venue }}</i></small><br>
@@ -152,26 +157,32 @@
           {{ $myIndex := -1 }}
 
           {{ range $i, $a := $authors }}
-            {{ if eq $a.family "Teza" }}
-              {{ $myIndex = $i }}
-            {{ end }}
+            {{ if $a.highlight }}{{ $myIndex = $i }}{{ end }}
           {{ end }}
 
           {{ $limit := $authorLimit }}
-
           {{ if ge $myIndex $authorLimit }}
             {{ $limit = add $myIndex 1 }}
           {{ end }}
 
           {{ range $i, $a := $authors }}
             {{ if lt $i $limit }}
-              {{ if $a.highlight }}<b>{{ end }}
-                {{ $a.family }} {{ substr $a.given 0 1 }}.
-              {{ if $a.highlight }}</b>{{ end }}
+              {{- $given := $a.given -}}
+              {{- $family := $a.family -}}
+              {{- with $a.id -}}
+                {{- $person := index $rm . -}}
+                {{- with $person -}}
+                  {{- $given = $person.given -}}
+                  {{- $family = $person.family -}}
+                {{- end -}}
+              {{- end -}}
+              {{ if $a.highlight }}<b>{{ end -}}
+                {{- $family }} {{ substr $given 0 1 }}.
+              {{- if $a.highlight }}</b>{{ end }}
               {{ if lt (add $i 1) $limit }}, {{ end }}
             {{ end }}
           {{ end }}
-        
+
           {{ if gt $count $limit }} et al.{{ end }}
         </small>
         <br>
@@ -184,7 +195,7 @@
           {{ range .Params.sources }}
             {{ $isExternal := hasPrefix .url "http" }}
             {{ $finalURL := .url }}
-            
+
             {{ if not $isExternal }}
               {{ $finalURL = .url | relURL }}
             {{ end }}

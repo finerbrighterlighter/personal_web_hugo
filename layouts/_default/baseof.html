@@ -31,7 +31,9 @@
               </a> :~{{- $path := "" -}}
               {{- range (split .RelPermalink "/") -}}
                 {{- if ne . "" -}}
-                  {{- $path = printf "%s/%s" $path . -}}/<a href="{{ $path | relURL }}">{{ . }}</a>
+                  {{- $path = printf "%s/%s" $path . -}}
+                  {{- $pg := site.GetPage $path -}}
+                  /{{ if $pg }}<a href="{{ $path | relURL }}">{{ . }}</a>{{ else }}<a href="{{ "/works/" | relURL }}?search={{ . }}">{{ . }}</a>{{ end }}
                 {{- end -}}
               {{- end -}}$ <span id="typed-command" aria-hidden="true"></span>
             </div>
@@ -42,7 +44,7 @@
           <nav class="terminal-menu" aria-label="Site navigation">
             <ul vocab="https://schema.org/" typeof="BreadcrumbList">
               {{ range .Site.Params.navlinks }}
-              {{ if not (eq $.RelPermalink .url) }}
+              {{ if and (not .hidden) (not (eq $.RelPermalink .url)) }}
               <li>
                 <a href="{{ .url | relURL }}">{{ .name }}</a>
               </li>

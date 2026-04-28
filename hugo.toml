@@ -33,6 +33,12 @@ name = "Blood"
 url = "/blood/"
 host = "rhesus"
 
+[[params.navlinks]]
+name = "About"
+url = "/about/"
+host = "biography"
+hidden = true
+
 [outputFormats.llmstxt]
   mediaType      = "text/plain"
   baseName       = "llms"

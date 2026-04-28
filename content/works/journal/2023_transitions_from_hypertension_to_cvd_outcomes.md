@@ -5,27 +5,17 @@ type: journal
 venue: "Frontiers in Cardiovascular Medicine"
 
 authors:
-- family: Teza
-  given: Htun
+- id: me-ceb
   highlight: true
-- family: Boonmanunt
-  given: Suparee
-- family: Unwanatham
-  given: Nattawut
-- family: Thadanipon
-  given: Kunlawat
-- family: Limpijankit
-  given: Thosaphol
-- family: Pattanaprateep
-  given: Oraluck
-- family: Pattanateepapon
-  given: Anuchate
-- family: McKay
-  given: Gareth J.
-- family: Attia
-  given: John
-- family: Thakkinstian
-  given: Ammarin
+- id: suparee
+- id: nattawut
+- id: kunlawat
+- id: thosaphol
+- id: oraluck
+- id: anuchate
+- id: mckay
+- id: attia
+- id: ammarin
 
 scholar: IjCSPb-OGe4C
 

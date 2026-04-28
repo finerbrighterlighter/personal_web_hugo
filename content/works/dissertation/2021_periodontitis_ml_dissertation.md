@@ -5,15 +5,11 @@ type: dissertation
 venue: "Mahidol University, Bangkok"
 
 authors:
-- family: Teza
-  given: Htun
+- id: me-ceb
   highlight: true
-- family: Pattanateepapon
-  given: Anuchate
-- family: Lertpimonchai
-  given: Attawood
-- family: Thakkinstian
-  given: Ammarin
+- id: anuchate
+- id: attawood
+- id: ammarin
 
 scholar: qjMakFHDy7sC
 

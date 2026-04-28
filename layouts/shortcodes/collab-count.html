@@ -1,0 +1,11 @@
+{{- $ids := slice -}}
+{{- range where site.RegularPages "Section" "works" -}}
+  {{- range .Params.authors -}}
+    {{- with .id -}}
+      {{- if and (ne . "me-ceb") (not (in $ids .)) -}}
+        {{- $ids = $ids | append . -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- len $ids -}}

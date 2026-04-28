@@ -34,9 +34,10 @@ Three-column layout defined in `layouts/_default/baseof.html`:
 |---|---|---|
 | `/` | `layouts/index.html` | Career profile from `data/homepage.yml` |
 | `/works/` | `layouts/_default/works.html` | Academic publications, client-side filter by condition/method/datasource/year |
+| `/works/<type>/<slug>/` | `layouts/_default/work.html` | Individual publication page with affiliations, BibTeX button; only journal/preprint/dissertation/report — conferences suppressed |
 | `/posts/` | `layouts/_default/list.html` | Blog posts grouped by year; supports `private: true` front matter |
 | `/blood/` | `layouts/_default/blood.html` | Personal blood test records; data from `data/blood.yml` |
-| `/about/` | `layouts/_default/single.html` | Standard page |
+| `/about/` | `layouts/about/single.html` | Content from `content/about/index.md`; hidden from nav; reached via `[Me]` footer link |
 
 ---
 
@@ -86,12 +87,21 @@ Output goes to `public/` (not committed).
 
 ---
 
+## Researchers
+
+Collaborator data lives in `data/researchers.yml` as a flat list — each entry has `id`, `given`, `family`, `orcid`, and `affiliations`. Works files reference collaborators by `id` in their `authors` front matter. The partial `layouts/partials/researcher-map.html` builds a lookup dict used across templates and the CV script.
+
+ID convention: `<firstname>-<institution>`. When someone moves institutions, a new entry is added with a new suffix; they share the same ORCID. `me-ceb` is the site owner's current primary id.
+
+---
+
 ## CV Generation
 
 The downloadable CV is auto-generated from site data by `scripts/build_cv.py` using WeasyPrint. Adding a publication to `content/works/` includes it automatically on the next build.
 
 **Data sources:**
 - `data/cv.yml` — personal info, education, experience, awards
+- `data/researchers.yml` — author names resolved by id
 - `content/works/` — publications, picked up automatically
 
 **Output:** `static/general/cv/`

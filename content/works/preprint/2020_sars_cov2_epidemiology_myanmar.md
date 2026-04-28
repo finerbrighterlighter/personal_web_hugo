@@ -5,21 +5,14 @@ type: preprint
 venue: "medRxiv"
 
 authors:
-- family: Thway
-  given: Aung Min
-- family: Teza
-  given: Htun
+- id: aung-min
+- id: me-ceb
   highlight: true
-- family: Win
-  given: Tun Tun
-- family: Htun
-  given: Ye Min
-- family: Aung
-  given: Moe Myint
-- family: Win
-  given: Yan Naung
-- family: Tun
-  given: Kyaw Myo
+- id: tun-tun
+- id: ye-min
+- id: moe-myint
+- id: yan-naung
+- id: kyaw-myo
 
 scholar: u-x6o8ySG0sC
 

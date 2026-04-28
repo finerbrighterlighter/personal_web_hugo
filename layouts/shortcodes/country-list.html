@@ -1,0 +1,76 @@
+{{- $rm := dict -}}
+{{- range site.Data.researchers -}}
+  {{- $rm = merge $rm (dict .id .) -}}
+{{- end -}}
+
+{{- $ids := slice -}}
+{{- range where site.RegularPages "Section" "works" -}}
+  {{- range .Params.authors -}}
+    {{- with .id -}}
+      {{- if and (ne . "me-ceb") (not (in $ids .)) -}}
+        {{- $ids = $ids | append . -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $expand := dict
+  "UK"  "the United Kingdom"
+  "USA" "the United States"
+  "US"  "the United States"
+  "UAE" "the United Arab Emirates"
+-}}
+
+{{- $keywords := slice "University" "Hospital" "Academy" "Institute" "College" "Unit" -}}
+
+{{/* Count unique institutions per country — same institution+country pair counted once */}}
+{{- $countMap := dict -}}
+{{- $seen := slice -}}
+{{- range $ids -}}
+  {{- $person := index $rm . -}}
+  {{- with $person -}}
+    {{- range .affiliations -}}
+      {{- $parts := split . "," -}}
+      {{- $raw := index $parts (sub (len $parts) 1) | strings.TrimSpace -}}
+      {{- $country := $raw -}}
+      {{- with index $expand $raw -}}{{- $country = . -}}{{- end -}}
+
+      {{- $org := "" -}}
+      {{- range $parts -}}
+        {{- $seg := . | strings.TrimSpace -}}
+        {{- if not $org -}}
+          {{- range $keywords -}}
+            {{- if strings.Contains $seg . -}}{{- $org = $seg -}}{{- end -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+
+      {{- $key := printf "%s|%s" $org $country -}}
+      {{- if and $org $country (not (in $seen $key)) -}}
+        {{- $seen = $seen | append $key -}}
+        {{- $cur := index $countMap $country | default 0 -}}
+        {{- $countMap = merge $countMap (dict $country (add $cur 1)) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $entries := slice -}}
+{{- range $country, $count := $countMap -}}
+  {{- $entries = $entries | append (dict "name" $country "count" $count) -}}
+{{- end -}}
+{{- $sorted := sort $entries "count" "desc" -}}
+
+{{- $names := slice -}}
+{{- range $sorted -}}{{- $names = $names | append .name -}}{{- end -}}
+
+{{- $n := len $names -}}
+{{- if eq $n 1 -}}
+  {{- index $names 0 -}}
+{{- else if eq $n 2 -}}
+  {{- index $names 0 }} and {{ index $names 1 -}}
+{{- else -}}
+  {{- range $i, $c := $names -}}
+    {{- if eq $i (sub $n 1) -}}and {{ $c }}{{- else -}}{{ $c }}, {{ end -}}
+  {{- end -}}
+{{- end -}}

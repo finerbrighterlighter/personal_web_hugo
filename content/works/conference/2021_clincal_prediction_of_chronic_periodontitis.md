@@ -5,17 +5,12 @@ type: conference-poster
 venue: "The 7th Regional Conference on Graduate Research 2021 — Khon Kaen, Thailand"
 
 authors:
-- family: Teza
-  given: Htun
+- id: me-ceb
   highlight: true
-- family: Pattanateepapon
-  given: Anuchate
-- family: Lertpimonchai
-  given: Attawood
-- family: Vathesatogkit
-  given: Prin
-- family: Thakkinstian
-  given: Ammarin
+- id: anuchate
+- id: attawood
+- id: prin
+- id: ammarin
 
 scholar: d1gkVwhDpl0C
 

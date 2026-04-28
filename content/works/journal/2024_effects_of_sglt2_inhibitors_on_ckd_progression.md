@@ -5,23 +5,15 @@ type: journal
 venue: "Diabetology & Metabolic Syndrome"
 
 authors:
-- family: Tansawet
-  given: Amarit
-- family: Looareesuwan
-  given: Panu
-- family: Teza
-  given: Htun
+- id: amarit
+- id: panu
+- id: me-ceb
   highlight: true
-- family: Boongrid
-  given: Sarinya
-- family: McKay
-  given: Gareth J.
-- family: Attia
-  given: John
-- family: Pattanaprateep
-  given: Oraluck
-- family: Thakkinstian
-  given: Ammarin
+- id: sarinya
+- id: mckay
+- id: attia
+- id: oraluck
+- id: ammarin
 
 scholar: Y0pCki6q_DkC
 

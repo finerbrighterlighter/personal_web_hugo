@@ -76,15 +76,42 @@ def load_works(section):
     return pages
 
 
+def load_researcher_map():
+    """Build a flat {id: {given, family, ...}} dict from data/researchers.yml."""
+    rm = {}
+    for p in load_yaml(DATA / "researchers.yml"):
+        if p.get("id"):
+            rm[p["id"]] = p
+    return rm
+
+
+_RESEARCHER_MAP = None
+
+
+def get_researcher_map():
+    global _RESEARCHER_MAP
+    if _RESEARCHER_MAP is None:
+        _RESEARCHER_MAP = load_researcher_map()
+    return _RESEARCHER_MAP
+
+
 def fmt_authors(authors):
     """Format an authors list into 'Family I, Family I, ...' with bolded highlights.
 
-    Expects each author dict to have 'family', 'given', and optional 'highlight'.
-    highlight: true bolds the name (used to mark self).
+    Each author entry may have either an 'id' (looked up from researchers.yml)
+    or inline 'family'/'given' fields. highlight: true bolds the name.
     """
+    rm = get_researcher_map()
     parts = []
     for a in authors:
-        name = f"{a['family']} {a['given'][0]}"  # e.g. "Teza H"
+        if a.get("id"):
+            person = rm.get(a["id"], {})
+            given  = person.get("given", a.get("given", ""))
+            family = person.get("family", a.get("family", ""))
+        else:
+            given  = a.get("given", "")
+            family = a.get("family", "")
+        name = f"{family} {given[0]}" if given else family
         parts.append(f"<b>{name}</b>" if a.get("highlight") else name)
     return ", ".join(parts)
 

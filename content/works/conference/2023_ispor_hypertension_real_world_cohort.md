@@ -5,23 +5,15 @@ type: conference-poster
 venue: "ISPOR—The Professional Society for Health Economics and Outcomes Research 2023 — Boston, US"
 
 authors:
-- family: Teza
-  given: Htun
+- id: me-ceb
   highlight: true
-- family: Pattanaprateep
-  given: Oraluck
-- family: Boonmanunt
-  given: Suparee
-- family: Thadanipon
-  given: Kunlawat
-- family: Limpijankit
-  given: Thosaphol
-- family: Pattanateepapon
-  given: Anuchate
-- family: Unwanatham
-  given: Nattawut
-- family: Thakkinstian
-  given: Ammarin
+- id: oraluck
+- id: suparee
+- id: kunlawat
+- id: thosaphol
+- id: anuchate
+- id: nattawut
+- id: ammarin
 
 sources:
 - text: poster

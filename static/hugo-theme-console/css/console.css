@@ -996,6 +996,18 @@ p.social a {
     line-height: 1.6;
 }
 
+.work-affiliations {
+    font-size: var(--font-xs);
+    color: var(--secondary-color);
+    line-height: 1.6;
+    margin-bottom: var(--space-3);
+}
+
+.work-affiliations sup {
+    font-size: 0.65em;
+    vertical-align: super;
+}
+
 .work-meta {
     color: var(--secondary-color);
     font-size: var(--font-sm);
@@ -1050,7 +1062,7 @@ p.social a {
 
 /* works list: clickable title */
 .work-title-link {
-    color: var(--primary-color);
+    color: inherit;
     text-decoration: none;
 }
 

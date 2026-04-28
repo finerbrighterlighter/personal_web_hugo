@@ -170,11 +170,17 @@ document.querySelector('.author-link').addEventListener('click', function (e) {
 
             /*
             ---------------------------------------------------------
-            STEP 5 — Type role/tagline
+            STEP 5 — Type role/tagline, then open about page
             ---------------------------------------------------------
             */
             setTimeout(() => {
-              typeText(roleEl, roleText, 30);
+              typeText(roleEl, roleText, 30, () => {
+                if (!window.location.pathname.startsWith('/about')) {
+                  setTimeout(() => {
+                    window.location.href = '/about/';
+                  }, 500);
+                }
+              });
             }, 200);
 
           });
