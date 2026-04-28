@@ -1,0 +1,60 @@
+{{ define "main" }}
+
+<article class="work-single" itemscope itemtype="https://schema.org/ScholarlyArticle">
+
+  <h1 itemprop="name">{{ .Title }}</h1>
+
+  <p class="work-meta">
+    <i itemprop="isPartOf">{{ .Params.venue }}</i>
+    &nbsp;·&nbsp;
+    <time itemprop="datePublished" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006" }}</time>
+  </p>
+
+  <p class="work-authors" itemprop="author">
+    {{ $authors := .Params.authors }}
+    {{ $count := len $authors }}
+    {{ range $i, $a := $authors }}
+      {{ if $a.highlight }}<strong>{{ end }}
+        {{ $a.given }} {{ $a.family }}
+      {{ if $a.highlight }}</strong>{{ end }}
+      {{ if lt (add $i 1) $count }},&nbsp;{{ end }}
+    {{ end }}
+  </p>
+
+  {{ with .Content }}
+  <section class="work-abstract">
+    <h2>Abstract</h2>
+    {{ . }}
+  </section>
+  {{ end }}
+
+  {{ with .Params.sources }}
+  <section class="work-links">
+    <h2>Links</h2>
+    <p>
+      {{ range . }}
+        {{ $isExternal := hasPrefix .url "http" }}
+        {{ $finalURL := .url }}
+        {{ if not $isExternal }}{{ $finalURL = .url | relURL }}{{ end }}
+        <a class="work-link-btn"
+           href="{{ $finalURL }}"
+           {{ if $isExternal }}target="_blank" rel="noopener"{{ end }}
+           itemprop="url">
+          {{ .text }}
+        </a>
+      {{ end }}
+
+      {{ with $.Params.scholar }}
+        <a class="work-link-btn"
+           href="https://scholar.google.com/citations?view_op=view_citation&citation_for_view={{ $.Site.Data.homepage.sidebar.scholar_profile }}:{{ . }}"
+           target="_blank" rel="noopener" itemprop="sameAs">
+          scholar
+        </a>
+      {{ end }}
+    </p>
+  </section>
+  {{ end }}
+
+</article>
+
+{{ end }}

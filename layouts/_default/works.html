@@ -98,7 +98,11 @@
 
                 <h4 itemprop="name">
                   <i class="{{ .Params.icon | default "fas fa-file-alt" }}"></i>
-                  {{ .Title }}
+                  {{ if .Content }}
+                    <a class="work-title-link" href="{{ .Permalink }}">{{ .Title }}</a>
+                  {{ else }}
+                    {{ .Title }}
+                  {{ end }}
                 </h4>
 
                 <small>
