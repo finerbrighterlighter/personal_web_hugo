@@ -164,9 +164,12 @@ const DEDICATIONS = [
     "echo 'For Sam — who taught me that not everyone sees the world the same way'",
     "echo 'For Sam — without whom I would never have looked at colors the same way'",
     "echo 'For Sam — without whom I would never have realized the importance of colors'",
+    "echo 'For Sam'",
+    "echo 'Sam see color'",
+    "echo 'Hi Sam'",
+    "echo 'Sam, this is for you'",
+    "echo 'Dedicated to Sam'",
 ];
-
-const DEDICATION_MOBILE = "echo 'Sam see color'";
 
 
 /* =========================================================
@@ -426,9 +429,8 @@ document.addEventListener('theme-changed', () => {
         target.textContent = '';
         charIndex = 0;
         mistakeMade = false;
-        currentLine = window.innerWidth < 768
-            ? DEDICATION_MOBILE
-            : DEDICATIONS[Math.floor(Math.random() * DEDICATIONS.length)];
+        const shuffled = [...DEDICATIONS].sort(() => Math.random() - 0.5);
+        currentLine = shuffled.find(d => measureText(d) <= widthLimit) ?? "echo 'Hi Sam!'";
 
         setTimeout(() => typeLine(t), 600);
     }
