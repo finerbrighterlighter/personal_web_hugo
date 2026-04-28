@@ -981,16 +981,25 @@ p.social a {
     margin-bottom: var(--space-2);
 }
 
-.work-meta {
-    color: var(--secondary-color);
-    font-size: var(--font-sm);
-    margin-bottom: var(--space-2);
+.work-title-external {
+    color: inherit;
+    text-decoration: none;
+}
+
+.work-title-external:hover {
+    text-decoration: underline;
 }
 
 .work-authors {
     font-size: var(--font-sm);
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-2);
     line-height: 1.6;
+}
+
+.work-meta {
+    color: var(--secondary-color);
+    font-size: var(--font-sm);
+    margin-bottom: var(--space-6);
 }
 
 .work-abstract {
@@ -1041,7 +1050,7 @@ p.social a {
 
 /* works list: clickable title */
 .work-title-link {
-    color: inherit;
+    color: var(--primary-color);
     text-decoration: none;
 }
 

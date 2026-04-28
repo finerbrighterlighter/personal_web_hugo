@@ -439,6 +439,8 @@ document.addEventListener('theme-changed', () => {
 });
 
 
-/* start */
-const t = token;
-nextLine(t);
+/* start — skip on individual work pages */
+if (!document.querySelector('.work-single')) {
+    const t = token;
+    nextLine(t);
+}

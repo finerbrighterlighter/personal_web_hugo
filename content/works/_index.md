@@ -1,5 +1,7 @@
 ---
 title: Works
 cascade:
-  layout: work
+  - _target:
+      kind: page
+    layout: work
 ---

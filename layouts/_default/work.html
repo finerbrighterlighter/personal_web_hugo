@@ -2,23 +2,42 @@
 
 <article class="work-single" itemscope itemtype="https://schema.org/ScholarlyArticle">
 
-  <h1 itemprop="name">{{ .Title }}</h1>
+  {{- $src := slice -}}
+  {{- with .Params.sources }}{{- $src = . -}}{{- end -}}
+  {{- $ft     := index (where $src "text" "fulltext") 0 -}}
+  {{- $pm     := index (where $src "text" "pubmed")   0 -}}
+  {{- $mirror := index (where $src "text" "mirror")   0 -}}
+  {{- $titleURL := "" -}}
+  {{- with $ft     }}{{- $titleURL = .url -}}{{- else -}}
+    {{- with $pm     }}{{- $titleURL = .url -}}{{- else -}}
+      {{- with $mirror }}{{- $titleURL = .url -}}{{- end -}}
+    {{- end -}}
+  {{- end -}}
 
-  <p class="work-meta">
-    <i itemprop="isPartOf">{{ .Params.venue }}</i>
-    &nbsp;·&nbsp;
-    <time itemprop="datePublished" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006" }}</time>
-  </p>
+  <h1 itemprop="name">
+    {{ if $titleURL -}}
+      <a href="{{ $titleURL }}" target="_blank" rel="noopener" class="work-title-external">{{ .Title }}</a>
+    {{- else -}}
+      {{ .Title }}
+    {{- end }}
+  </h1>
 
   <p class="work-authors" itemprop="author">
     {{ $authors := .Params.authors }}
     {{ $count := len $authors }}
     {{ range $i, $a := $authors }}
-      {{ if $a.highlight }}<strong>{{ end }}
-        {{ $a.given }} {{ $a.family }}
-      {{ if $a.highlight }}</strong>{{ end }}
-      {{ if lt (add $i 1) $count }},&nbsp;{{ end }}
+      {{ if $a.highlight }}<strong>{{ end -}}
+        {{- $a.given }} {{ $a.family -}}
+      {{- if $a.highlight }}</strong>{{ end -}}
+      {{- if lt (add $i 1) $count }}, {{ end }}
     {{ end }}
+  </p>
+
+  <p class="work-meta">
+    <i itemprop="isPartOf">{{ .Params.venue }}</i>
+    &nbsp;·&nbsp;
+    Available online
+    <time itemprop="datePublished" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time>
   </p>
 
   {{ with .Content }}
@@ -28,19 +47,14 @@
   </section>
   {{ end }}
 
-  {{ with .Params.sources }}
   <section class="work-links">
-    <h2>Links</h2>
+    <h2>Find this paper</h2>
     <p>
-      {{ range . }}
-        {{ $isExternal := hasPrefix .url "http" }}
-        {{ $finalURL := .url }}
-        {{ if not $isExternal }}{{ $finalURL = .url | relURL }}{{ end }}
-        <a class="work-link-btn"
-           href="{{ $finalURL }}"
-           {{ if $isExternal }}target="_blank" rel="noopener"{{ end }}
-           itemprop="url">
-          {{ .text }}
+
+
+      {{ with $pm }}
+        <a class="work-link-btn" href="{{ .url }}" target="_blank" rel="noopener" itemprop="url">
+          PubMed
         </a>
       {{ end }}
 
@@ -48,12 +62,28 @@
         <a class="work-link-btn"
            href="https://scholar.google.com/citations?view_op=view_citation&citation_for_view={{ $.Site.Data.homepage.sidebar.scholar_profile }}:{{ . }}"
            target="_blank" rel="noopener" itemprop="sameAs">
-          scholar
+          Google Scholar
         </a>
       {{ end }}
+
+      {{ with $ft }}
+        <a class="work-link-btn" href="{{ .url }}" target="_blank" rel="noopener" itemprop="url">
+          Full text
+        </a>
+      {{ end }}
+
+      {{ with $mirror }}
+        {{ $url := .url }}
+        {{ if not (hasPrefix $url "http") }}{{ $url = $url | relURL }}{{ end }}
+        <a class="work-link-btn" href="{{ $url }}"
+           {{ if hasPrefix $url "http" }}target="_blank" rel="noopener"{{ end }}
+           itemprop="url">
+          Author copy
+        </a>
+      {{ end }}
+
     </p>
   </section>
-  {{ end }}
 
 </article>
 
