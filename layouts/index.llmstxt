@@ -32,7 +32,7 @@
     {{- end -}}
   {{- end -}}
 {{- end -}}
-- [{{ .Title }}]({{ $url }}): {{ with .Params.venue }}{{ . }}, {{ end }}{{ .Date.Format "2006" }}.{{ with .Plain }} Abstract: {{ . }}{{ end }}
+- [{{ .Title }}]({{ $url }}): {{ with .Params.venue }}{{ . }}, {{ end }}{{ .Date.Format "2006" }}.{{ with .Plain | htmlUnescape }} Abstract: {{ . }}{{ end }}
 {{ end }}
   {{ end -}}
 {{ end -}}
