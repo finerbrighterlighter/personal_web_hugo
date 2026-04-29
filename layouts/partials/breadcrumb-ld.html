@@ -1,0 +1,27 @@
+{{- $items := slice (dict "@type" "ListItem" "position" 1 "name" "Home" "item" .Site.BaseURL) -}}
+{{- $pos   := 2 -}}
+{{- $path  := "" -}}
+{{- $parts := slice -}}
+{{- range (split .RelPermalink "/") -}}
+  {{- if ne . "" -}}{{- $parts = $parts | append . -}}{{- end -}}
+{{- end -}}
+{{- $lastIdx := sub (len $parts) 1 -}}
+{{- range $i, $part := $parts -}}
+  {{- $path = printf "%s/%s" $path $part -}}
+  {{- $isLast := eq $i $lastIdx -}}
+  {{- $pg   := site.GetPage $path -}}
+  {{- $name := $part | title -}}
+  {{- $url  := "" -}}
+  {{- if $pg -}}
+    {{- $name = $pg.Title -}}
+    {{- $url  = cond $isLast $.Permalink (printf "%s/" $path | absURL) -}}
+  {{- else -}}
+    {{- $url = printf "%s?search=%s" ("/works/" | absURL) $part -}}
+    {{- if $isLast -}}{{- $url = $.Permalink -}}{{- $name = $.Title -}}{{- end -}}
+  {{- end -}}
+  {{- $items = $items | append (dict "@type" "ListItem" "position" $pos "name" $name "item" $url) -}}
+  {{- $pos = add $pos 1 -}}
+{{- end -}}
+{{- if gt (len $items) 1 -}}
+<script type="application/ld+json">{{ dict "@context" "https://schema.org" "@type" "BreadcrumbList" "itemListElement" $items | jsonify | safeJS }}</script>
+{{- end -}}

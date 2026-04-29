@@ -17,6 +17,7 @@
     {{- if and (eq .Section "works") .IsPage -}}
       {{- partial "work-seo.html" . -}}
     {{- end -}}
+    {{- partial "breadcrumb-ld.html" . -}}
 </head>
 
 <body class="terminal">
@@ -54,7 +55,7 @@
           </header>
           
           <nav class="terminal-menu" aria-label="Site navigation">
-            <ul vocab="https://schema.org/" typeof="BreadcrumbList">
+            <ul>
               {{ range .Site.Params.navlinks }}
               {{ if and (not .hidden) (not (eq $.RelPermalink .url)) }}
               <li>
