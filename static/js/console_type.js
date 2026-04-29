@@ -226,6 +226,7 @@ let charIndex = 0;
 let mistakeMade = false;
 let currentLine = "";
 let isDedication = false;
+let staticMode = false;
 
 /* =========================================================
    CANCELLATION TOKEN
@@ -349,13 +350,14 @@ function typeLine(t) {
     if (t !== token) return;
 
     if (charIndex >= currentLine.length) {
+        if (staticMode) return;
         const pause = isDedication ? 60000 : randomIdle();
         setTimeout(() => nextLine(t), pause);
         return;
     }
 
-    /* no typos on the dedication — it should come out clean */
-    if (!isDedication && !mistakeMade && Math.random() < errorChance && charIndex > 6) {
+    /* no typos on the dedication or static commands */
+    if (!isDedication && !staticMode && !mistakeMade && Math.random() < errorChance && charIndex > 6) {
 
         mistakeMade = true;
 
@@ -439,8 +441,11 @@ document.addEventListener('theme-changed', () => {
 });
 
 
-/* start — skip on individual work pages */
-if (!document.querySelector('.work-single')) {
-    const t = token;
-    nextLine(t);
+/* start */
+if (document.querySelector('.work-single')) {
+    staticMode = true;
+    currentLine = "less paper.pdf";
+    setTimeout(() => typeLine(token), 800);
+} else {
+    nextLine(token);
 }

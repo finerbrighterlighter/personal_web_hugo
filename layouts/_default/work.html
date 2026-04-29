@@ -1,12 +1,19 @@
 {{ define "main" }}
 
-<article class="work-single" itemscope itemtype="https://schema.org/ScholarlyArticle">
+{{- $src    := slice -}}
+{{- with .Params.sources }}{{- $src = . -}}{{- end -}}
+{{- $ft     := index (where $src "text" "fulltext") 0 -}}
+{{- $pm     := index (where $src "text" "pubmed")   0 -}}
+{{- $mirror := index (where $src "text" "mirror")   0 -}}
+{{- $doi    := "" -}}
+{{- range $src -}}
+  {{- if and (not $doi) (strings.Contains .url "doi.org/") -}}
+    {{- $doi = .url | strings.TrimPrefix "https://doi.org/" | strings.TrimPrefix "http://doi.org/" -}}
+  {{- end -}}
+{{- end -}}
 
-  {{- $src := slice -}}
-  {{- with .Params.sources }}{{- $src = . -}}{{- end -}}
-  {{- $ft     := index (where $src "text" "fulltext") 0 -}}
-  {{- $pm     := index (where $src "text" "pubmed")   0 -}}
-  {{- $mirror := index (where $src "text" "mirror")   0 -}}
+<article class="work-single" data-doi="{{ $doi }}" itemscope itemtype="https://schema.org/ScholarlyArticle">
+
   {{- $titleURL := "" -}}
   {{- with $ft     }}{{- $titleURL = .url -}}{{- else -}}
     {{- with $pm     }}{{- $titleURL = .url -}}{{- else -}}
@@ -48,11 +55,13 @@
       {{- $given := $a.given -}}
       {{- $family := $a.family -}}
       {{- $affNums := slice -}}
+      {{- $orcid := "" -}}
       {{- with $a.id -}}
         {{- $person := index $rm . -}}
         {{- with $person -}}
           {{- $given = $person.given -}}
           {{- $family = $person.family -}}
+          {{- with $person.orcid -}}{{- $orcid = . -}}{{- end -}}
           {{- range $person.affiliations -}}
             {{- $thisAff := . -}}
             {{- $idx := 0 -}}
@@ -64,7 +73,9 @@
         {{- end -}}
       {{- end -}}
       {{ if $a.highlight }}<strong>{{ end -}}
+        {{- if $orcid -}}<a href="https://orcid.org/{{ $orcid }}" target="_blank" rel="noopener">{{- end -}}
         {{- $given }} {{ $family -}}
+        {{- if $orcid -}}</a>{{- end -}}
       {{- if $a.highlight }}</strong>{{ end -}}
       {{- if and $multiAff $affNums -}}<sup>{{ delimit $affNums "," }}</sup>{{- end -}}
       {{- if lt (add $i 1) $count }}, {{ end }}
@@ -81,8 +92,10 @@
 
   <p class="work-meta">
     <i itemprop="isPartOf">{{ .Params.venue }}</i>
-    &nbsp;·&nbsp;
-    <time itemprop="datePublished" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time>
+    <span class="work-meta-right">
+      <span id="work-cite-count" class="work-cite-count"></span>
+      <time itemprop="datePublished" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time>
+    </span>
   </p>
 
   {{ with .Content }}
@@ -112,7 +125,7 @@
 
       {{ with $ft }}
         <a class="work-link-btn" href="{{ .url }}" target="_blank" rel="noopener" itemprop="url">
-          Full text
+          Publisher
         </a>
       {{ end }}
 
@@ -122,16 +135,10 @@
         <a class="work-link-btn" href="{{ $url }}"
            {{ if hasPrefix $url "http" }}target="_blank" rel="noopener"{{ end }}
            itemprop="url">
-          Author copy
+          Author Copy
         </a>
       {{ end }}
 
-      {{- $doi := "" -}}
-      {{- range $src -}}
-        {{- if and (not $doi) (strings.Contains .url "doi.org/") -}}
-          {{- $doi = .url | strings.TrimPrefix "https://doi.org/" | strings.TrimPrefix "http://doi.org/" -}}
-        {{- end -}}
-      {{- end -}}
       {{ with $doi }}
         <a class="work-link-btn" href="https://doi2bib.org/bib/{{ . }}" target="_blank" rel="noopener">
           BibTeX
@@ -140,6 +147,37 @@
 
     </p>
   </section>
+
+  {{- $hasTags := or .Params.conditions .Params.methods .Params.datasource -}}
+  {{ with $hasTags }}
+  <section class="work-tags-section">
+    <h2>Tags</h2>
+    {{ with $.Params.conditions }}
+    <div class="filter-group">
+      <strong>Condition</strong>
+      <div class="filter-tags">
+        {{ range . }}<a class="work-tag" href="{{ "/works/" | relURL }}?search={{ . }}">{{ . }}</a>{{ end }}
+      </div>
+    </div>
+    {{ end }}
+    {{ with $.Params.datasource }}
+    <div class="filter-group">
+      <strong>Data</strong>
+      <div class="filter-tags">
+        {{ range . }}<a class="work-tag" href="{{ "/works/" | relURL }}?search={{ . }}">{{ . }}</a>{{ end }}
+      </div>
+    </div>
+    {{ end }}
+    {{ with $.Params.methods }}
+    <div class="filter-group">
+      <strong>Method</strong>
+      <div class="filter-tags">
+        {{ range . }}<a class="work-tag" href="{{ "/works/" | relURL }}?search={{ . }}">{{ . }}</a>{{ end }}
+      </div>
+    </div>
+    {{ end }}
+  </section>
+  {{ end }}
 
 </article>
 

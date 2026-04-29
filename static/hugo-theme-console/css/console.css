@@ -996,6 +996,10 @@ p.social a {
     line-height: 1.6;
 }
 
+.work-authors a {
+    color: inherit;
+}
+
 .work-affiliations {
     font-size: var(--font-xs);
     color: var(--secondary-color);
@@ -1009,9 +1013,43 @@ p.social a {
 }
 
 .work-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
     color: var(--secondary-color);
     font-size: var(--font-sm);
     margin-bottom: var(--space-6);
+}
+
+.work-meta-right {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4em;
+}
+
+.work-cite-count a {
+    color: inherit;
+}
+
+.work-tags-section {
+    margin-bottom: var(--space-6);
+}
+
+.work-tag {
+    display: inline-block;
+    margin-right: var(--space-2);
+    margin-bottom: var(--space-2);
+    padding: 2px 10px;
+    border: 1px solid var(--secondary-color);
+    font-size: var(--font-xs);
+    text-decoration: none;
+    color: var(--font-color);
+    transition: background 0.15s, color 0.15s;
+}
+
+.work-tag:hover {
+    background: var(--secondary-color);
+    color: var(--background-color);
 }
 
 .work-abstract {
@@ -1033,7 +1071,8 @@ p.social a {
     line-height: 1.7;
 }
 
-.work-links h2 {
+.work-links h2,
+.work-tags-section h2 {
     font-size: var(--font-sm);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -1144,20 +1183,23 @@ input.works-search::placeholder {
     opacity: 0.7;
 }
 
-#works-filters .filter-group {
+#works-filters .filter-group,
+.work-tags-section .filter-group {
     display: flex;
     align-items: baseline;
     gap: 6px;
 }
 
-#works-filters .filter-group strong {
-    min-width: 6rem; /* wide enough for "Condition"; keeps all labels the same column width */
+#works-filters .filter-group strong,
+.work-tags-section .filter-group strong {
+    min-width: 6rem;
     flex-shrink: 0;
 }
 
-#works-filters .filter-group .filter-tags {
+#works-filters .filter-group .filter-tags,
+.work-tags-section .filter-group .filter-tags {
     flex: 1;
-    min-width: 0; /* lets flex child shrink below content size so tags wrap internally */
+    min-width: 0;
 }
 
 #works-filters button {

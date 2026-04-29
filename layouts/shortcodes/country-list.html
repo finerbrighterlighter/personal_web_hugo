@@ -3,16 +3,8 @@
   {{- $rm = merge $rm (dict .id .) -}}
 {{- end -}}
 
-{{- $ids := slice -}}
-{{- range where site.RegularPages "Section" "works" -}}
-  {{- range .Params.authors -}}
-    {{- with .id -}}
-      {{- if and (ne . "me-ceb") (not (in $ids .)) -}}
-        {{- $ids = $ids | append . -}}
-      {{- end -}}
-    {{- end -}}
-  {{- end -}}
-{{- end -}}
+{{- $meOrcid := "" -}}
+{{- with index $rm "me-ceb" -}}{{- $meOrcid = .orcid -}}{{- end -}}
 
 {{- $expand := dict
   "UK"  "the United Kingdom"
@@ -25,31 +17,42 @@
 
 {{/* Count unique institutions per country — same institution+country pair counted once */}}
 {{- $countMap := dict -}}
-{{- $seen := slice -}}
-{{- range $ids -}}
-  {{- $person := index $rm . -}}
-  {{- with $person -}}
-    {{- range .affiliations -}}
-      {{- $parts := split . "," -}}
-      {{- $raw := index $parts (sub (len $parts) 1) | strings.TrimSpace -}}
-      {{- $country := $raw -}}
-      {{- with index $expand $raw -}}{{- $country = . -}}{{- end -}}
+{{- $seenPairs := slice -}}
+{{- range where site.RegularPages "Section" "works" -}}
+  {{- range .Params.authors -}}
+    {{- with .id -}}
+      {{- $person := index $rm . -}}
+      {{- with $person -}}
+        {{- $key := .id -}}
+        {{- with .orcid -}}{{- $key = . -}}{{- end -}}
+        {{- $isMe := false -}}
+        {{- if eq .id "me-ceb" -}}{{- $isMe = true -}}{{- end -}}
+        {{- if and (not $isMe) (ne $meOrcid "") (eq $key $meOrcid) -}}{{- $isMe = true -}}{{- end -}}
+        {{- if not $isMe -}}
+          {{- range .affiliations -}}
+            {{- $parts := split . "," -}}
+            {{- $raw := index $parts (sub (len $parts) 1) | strings.TrimSpace -}}
+            {{- $country := $raw -}}
+            {{- with index $expand $raw -}}{{- $country = . -}}{{- end -}}
 
-      {{- $org := "" -}}
-      {{- range $parts -}}
-        {{- $seg := . | strings.TrimSpace -}}
-        {{- if not $org -}}
-          {{- range $keywords -}}
-            {{- if strings.Contains $seg . -}}{{- $org = $seg -}}{{- end -}}
+            {{- $org := "" -}}
+            {{- range $parts -}}
+              {{- $seg := . | strings.TrimSpace -}}
+              {{- if not $org -}}
+                {{- range $keywords -}}
+                  {{- if strings.Contains $seg . -}}{{- $org = $seg -}}{{- end -}}
+                {{- end -}}
+              {{- end -}}
+            {{- end -}}
+
+            {{- $pair := printf "%s|%s" $org $country -}}
+            {{- if and $org $country (not (in $seenPairs $pair)) -}}
+              {{- $seenPairs = $seenPairs | append $pair -}}
+              {{- $cur := index $countMap $country | default 0 -}}
+              {{- $countMap = merge $countMap (dict $country (add $cur 1)) -}}
+            {{- end -}}
           {{- end -}}
         {{- end -}}
-      {{- end -}}
-
-      {{- $key := printf "%s|%s" $org $country -}}
-      {{- if and $org $country (not (in $seen $key)) -}}
-        {{- $seen = $seen | append $key -}}
-        {{- $cur := index $countMap $country | default 0 -}}
-        {{- $countMap = merge $countMap (dict $country (add $cur 1)) -}}
       {{- end -}}
     {{- end -}}
   {{- end -}}

@@ -18,7 +18,12 @@
 
 <!-- ============================= -->
 
-<meta name="description" content="{{ with .Params.description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+{{- $desc := .Site.Params.description -}}
+{{- with .Params.description }}{{- $desc = . -}}{{- end -}}
+{{- if and (eq .Section "works") .IsPage .Plain -}}
+  {{- $desc = .Plain | truncate 160 "..." -}}
+{{- end -}}
+<meta name="description" content="{{ $desc }}">
 <meta name="author" content="{{ .Site.Params.author }}">
 {{ if eq .Params.private true }}
 <meta name="robots" content="noindex, nofollow">
@@ -34,7 +39,7 @@
 <!-- ============================= -->
 
 <meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
-<meta property="og:description" content="{{ with .Params.description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+<meta property="og:description" content="{{ $desc }}">
 <meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
 <meta property="og:url" content="{{ .Permalink }}">
 <meta property="og:image" content="{{ "assets/general/og_image.webp" | absURL }}">
@@ -47,7 +52,7 @@
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
-<meta name="twitter:description" content="{{ with .Params.description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+<meta name="twitter:description" content="{{ $desc }}">
 <meta name="twitter:image" content="{{ "assets/general/og_image.webp" | absURL }}">
 
 <!-- ============================= -->

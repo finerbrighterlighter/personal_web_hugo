@@ -11,6 +11,10 @@ resources/_gen/
 # macOS junk
 .DS_Store
 
+# Python
+__pycache__/
+*.pyc
+
 # LLM / Claude
 CLAUDE.md
 .claude/

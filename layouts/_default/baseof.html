@@ -11,6 +11,9 @@
     {{- partial "favicon.html" . -}}
     {{- partial "header.html" . -}}
     {{- partial "theme-data.html" . -}}
+    {{- if and (eq .Section "works") .IsPage -}}
+      {{- partial "work-seo.html" . -}}
+    {{- end -}}
 </head>
 
 <body class="terminal">
@@ -28,12 +31,18 @@
 
               <a href="{{ "/" | relURL }}" class="no-style {{ with .Site.Params.TitleCutting }}site-name{{ end }}">
                 {{ .Site.Params.promptName }}@{{ $host -}}
-              </a> :~{{- $path := "" -}}
+              </a> :~{{- $parts := slice -}}
               {{- range (split .RelPermalink "/") -}}
-                {{- if ne . "" -}}
-                  {{- $path = printf "%s/%s" $path . -}}
+                {{- if ne . "" -}}{{- $parts = $parts | append . -}}{{- end -}}
+              {{- end -}}
+              {{- $lastIdx := sub (len $parts) 1 -}}
+              {{- $path := "" -}}
+              {{- range $i, $part := $parts -}}
+                {{- $path = printf "%s/%s" $path $part -}}
+                {{- $isWorkSlug := and (eq $i $lastIdx) (eq $.Section "works") (gt (len $parts) 2) -}}
+                {{- if not $isWorkSlug -}}
                   {{- $pg := site.GetPage $path -}}
-                  /{{ if $pg }}<a href="{{ $path | relURL }}">{{ . }}</a>{{ else }}<a href="{{ "/works/" | relURL }}?search={{ . }}">{{ . }}</a>{{ end }}
+                  /{{ if $pg }}<a href="{{ $path | relURL }}">{{ $part }}</a>{{ else }}<a href="{{ "/works/" | relURL }}?search={{ $part }}">{{ $part }}</a>{{ end }}
                 {{- end -}}
               {{- end -}}$ <span id="typed-command" aria-hidden="true"></span>
             </div>
