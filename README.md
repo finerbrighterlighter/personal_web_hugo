@@ -12,9 +12,9 @@ Previous version was built with Jekyll: [finerbrighterlighter.github.io](https:/
 
 - **Generator:** [Hugo](https://gohugo.io) (Go-based static site generator)
 - **Hosting:** [Netlify](https://www.netlify.com) (CI/CD on push to main)
-- **Domain:** [Porkbun](https://porkbun.com) -> htunteza.com
+- **Domain:** [Porkbun](https://porkbun.com) → htunteza.com
 - **Analytics:** [GoatCounter](https://www.goatcounter.com) (stats.htunteza.com)
-- **Theme base:** [hugo-theme-console (terminal aesthetic)](https://github.com/mrmierzejewski/hugo-theme-console/)
+- **Theme base:** [hugo-theme-console](https://github.com/mrmierzejewski/hugo-theme-console/) (terminal aesthetic)
 
 ---
 
@@ -34,10 +34,28 @@ Three-column layout defined in `layouts/_default/baseof.html`:
 |---|---|---|
 | `/` | `layouts/index.html` | Career profile from `data/homepage.yml` |
 | `/works/` | `layouts/_default/works.html` | Academic publications, client-side filter by condition/method/datasource/year |
-| `/works/<type>/<slug>/` | `layouts/_default/work.html` | Individual publication page with affiliations, BibTeX button; only journal/preprint/dissertation/report — conferences suppressed |
+| `/works/<type>/<slug>/` | `layouts/_default/work.html` | Individual publication page (see below) |
 | `/posts/` | `layouts/_default/list.html` | Blog posts grouped by year; supports `private: true` front matter |
 | `/blood/` | `layouts/_default/blood.html` | Personal blood test records; data from `data/blood.yml` |
 | `/about/` | `layouts/about/single.html` | Content from `content/about/index.md`; hidden from nav; reached via `[Me]` footer link |
+
+### Individual Work Pages (`/works/<type>/<slug>/`)
+
+Only journal, preprint, dissertation, and report pages are rendered — conference entries use `render: never` in the cascade (no HTML generated) but are still listed in the works index and `llms.txt` when an external URL exists.
+
+Each rendered work page includes:
+
+- **Title** linked to fulltext/pubmed/mirror if available
+- **Author list** with ORCID hyperlinks (matching text color) and superscript affiliation numbers when multiple affiliations exist
+- **Affiliation block** ordered by first author appearance
+- **Venue · citation count · date** — venue left-aligned, citation count (live from OpenAlex API, cached) and date right-aligned; citation count links to the citing-papers list on OpenAlex
+- **Abstract** from page body content
+- **Find this paper** — PubMed, Google Scholar, Publisher, Author Copy, BibTeX (via doi2bib using the bare DOI)
+- **Tags** — Condition, Data, Method tags linking back to the filtered works index
+
+The Works nav link is suppressed on individual work pages (Home, Posts, Blood remain). Navigation back to the works index is via the breadcrumb: `~/works/journal$`.
+
+The typed command in the nav header switches to `less paper.pdf` (typed once, held) on work single pages instead of rotating through the usual command pool.
 
 ---
 
@@ -68,30 +86,48 @@ HUGO_TMDB_KEY
 HUGO_LASTFM_KEY
 ```
 
-Set in Netlify environment for production. For local dev, export vars or use `.env.example` with dotenv:
-
-```bash
-dotenv run hugo server -w
-```
+Set in Netlify environment for production. For local dev, export vars before running `hugo server`.
 
 ---
 
-## Local Dev
+## SEO
 
-```bash
-hugo server          # dev server (analytics disabled)
-hugo --gc --minify   # production build
-```
+Several layers of structured data are generated at build time.
 
-Output goes to `public/` (not committed).
+**On every page:**
+- Standard `<meta name="description">` — uses abstract (truncated to 160 chars) on work pages, site description elsewhere
+- Open Graph tags: `og:title`, `og:description`, `og:type` (`website` on home, `article` elsewhere), `og:image`, `og:logo` (apple-touch-icon), `og:site_name`
+- Twitter Card tags
+- JSON-LD `BreadcrumbList` — built from the page URL path; non-section segments (e.g. `journal`) fall back to `/works/?search=journal`
+
+**On the home page** (`layouts/partials/home-seo.html`):
+- JSON-LD `Person` schema — name, job title, image, description, `sameAs` links to ORCID and Google Scholar
+
+**On individual work pages** (`layouts/partials/work-seo.html`):
+- `citation_*` meta tags for academic indexers (Google Scholar, Semantic Scholar): title, authors (Family, Given format), date, journal, DOI, abstract URL, fulltext URL
+- JSON-LD `ScholarlyArticle` — title, date, URL, DOI as `sameAs`, venue as `isPartOf`, authors with ORCID `identifier`, abstract as `description`
 
 ---
 
 ## Researchers
 
-Collaborator data lives in `data/researchers.yml` as a flat list — each entry has `id`, `given`, `family`, `orcid`, and `affiliations`. Works files reference collaborators by `id` in their `authors` front matter. The partial `layouts/partials/researcher-map.html` builds a lookup dict used across templates and the CV script.
+Collaborator data lives in `data/researchers.yml` as a flat list, sorted A→Z by `id` with letter-header comments for quick navigation. Each entry has `id`, `given`, `family`, `orcid`, and `affiliations`.
 
-ID convention: `<firstname>-<institution>`. When someone moves institutions, a new entry is added with a new suffix; they share the same ORCID. `me-ceb` is the site owner's current primary id.
+Works files reference collaborators by `id` in their `authors` front matter. The partial `layouts/partials/researcher-map.html` builds a lookup dict used across templates and the CV script.
+
+ID convention: `<firstname>-<institution>`. When someone moves institutions, a new entry is added with a new suffix; they share the same ORCID. ORCID is the primary deduplication key for collaborator counting — both institutional affiliations are counted if a collaborator has moved. `me-ceb` is always the site owner's current primary id.
+
+---
+
+## Shortcodes
+
+| Shortcode | Purpose |
+|---|---|
+| `{{< collab-count >}}` | Unique collaborator count (deduped by ORCID) |
+| `{{< institution-count >}}` | Unique institutions across all collaborator affiliations |
+| `{{< country-list >}}` | Countries sorted by institution count |
+
+Used in `content/about/index.md`. Update automatically as works and researchers grow.
 
 ---
 
@@ -108,7 +144,7 @@ The downloadable CV is auto-generated from site data by `scripts/build_cv.py` us
 - `cv_htunteza.pdf` — current version (linked from sidebar)
 - `cv_htunteza_YYYYMMDD.pdf` — dated archive (3 most recent kept)
 
-Run after any CV data change:
+Run after any CV data change, and always before pushing:
 
 ```bash
 conda run -n hugo python scripts/build_cv.py
@@ -120,17 +156,28 @@ Requires conda env `hugo` (Python 3.11, weasyprint, pyyaml).
 
 ## LLMs.txt
 
-`/llms.txt` is served at the site root to help AI agents navigate content. Generated automatically at build time via Hugo's custom output format — no manual maintenance required.
+`/llms.txt` is served at the site root to help AI agents navigate content. Generated automatically at build time via Hugo's custom output format (`notAlternative = true` prevents a `<link rel="alternate">` from leaking into the HTML head) — no manual maintenance required.
 
-Includes links to all publication DOIs/mirrors, recent posts, and key pages (About, CV, Works). A pointer is included in `robots.txt` under `LLMs:`.
+Includes links to all rendered publications (journal, preprint, dissertation, report always; conferences only when an external URL exists to avoid dead links from suppressed pages), recent posts, and key pages (About, CV, Works).
+
+---
+
+## Local Dev
+
+```bash
+hugo server          # dev server (analytics disabled, buildFuture = true)
+hugo --gc --minify   # production build
+```
+
+Output goes to `public/` (not committed).
 
 ---
 
 ## Other Things
 
-The hostname changes per section: `hteza@notebook` on posts, `hteza@academia` on works.
+The hostname changes per section: `hteza@notebook` on posts, `hteza@academia` on works, `hteza@biography` on about.
 
-The shell prompt in the nav header types out commands continuously — a mix of CLIs from the daily rotation (`btop`, `lazydocker`, `yay`, `conda activate`, HPC `sbatch` jobs, Singularity containers) and blood donation slogans dressed up as terminal commands (`bloodctl say`, `donate-cli message`). 
+The shell prompt in the nav header types out commands continuously — a mix of CLIs from the daily rotation (`btop`, `lazydocker`, `yay`, `conda activate`, HPC `sbatch` jobs, Singularity containers) and blood donation slogans dressed up as terminal commands (`bloodctl say`, `donate-cli message`). On individual work pages it switches to `less paper.pdf`, typed once and held.
 
 It makes typos. It backtracks. It pauses like it is thinking. It will do this every time you visit, indefinitely, because these are things worth noticing and this is one way to make sure you do.
 
@@ -157,8 +204,8 @@ The privacy panel has two cache flush options: now, and in 10 seconds. There is 
 ```
 assets/     config.js (esbuild entry, API keys templated in)
 content/    pages, posts, works, blood records
-data/       YAML data sources
-layouts/    Hugo templates and partials
+data/       YAML data sources (homepage, researchers, cv, themes, blood, playlists)
+layouts/    Hugo templates, partials, shortcodes
 scripts/    build_cv.py
 static/     JS modules, fonts, images, CV PDFs
 ```
