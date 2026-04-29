@@ -11,6 +11,9 @@
     {{- partial "favicon.html" . -}}
     {{- partial "header.html" . -}}
     {{- partial "theme-data.html" . -}}
+    {{- if .IsHome -}}
+      {{- partial "home-seo.html" . -}}
+    {{- end -}}
     {{- if and (eq .Section "works") .IsPage -}}
       {{- partial "work-seo.html" . -}}
     {{- end -}}
