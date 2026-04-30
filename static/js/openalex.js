@@ -164,7 +164,7 @@ function renderChartSVG(timeline) {
   return `
 <svg viewBox="0 0 ${width} ${height}"
      id="oa-svg"
-     style="width:100%; height:auto; font-family:monospace; overflow:visible; background:${codeBg}; border:0.1px dashed ${secondary};">
+     style="width:100%; height:auto; font-family:monospace; overflow:visible; background:${codeBg}; border:0.1px dashed ${secondary}; margin-top:0.5rem;">
 
   <!-- LEFT AXIS: top marker -->
   <circle cx="18" cy="${paddingY}" r="10" fill="${primary}" />
