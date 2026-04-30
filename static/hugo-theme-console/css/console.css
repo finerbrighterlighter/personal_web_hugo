@@ -1492,3 +1492,58 @@ header.terminal-logo {
     }
 
 }
+
+/* ── About page ─────────────────────────────────── */
+
+.about-content h2 {
+    margin-top: 2.5rem;
+    margin-bottom: 0.6rem;
+    color: var(--primary-color);
+    font-size: 1.4em;
+    letter-spacing: 0.03em;
+    text-align: center;
+}
+
+.about-content h2::before { content: "• "; }
+.about-content h2::after  { content: " •"; }
+
+.opening-words {
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.pullquote {
+    position: relative;
+    margin: 2.5rem 1.8rem;
+    padding: 0.5rem 1.2rem; /* Reduced padding to allow the overlap */
+    color: var(--primary-color);
+}
+
+.pullquote::before {
+    content: "\201C";
+    position: absolute;
+    
+    /* Positioning the mark to "cradle" the first few words */
+    top: -1.8rem;
+    left: -0.8rem;
+    
+    font-size: 8.5rem;
+    font-family: "Georgia", serif;
+    line-height: 1;
+    opacity: 0.12; /* Lower opacity is key when overlapping to keep text legible */
+    z-index: -1;    /* Sends the mark behind the paragraph */
+    
+    user-select: none;
+    pointer-events: none;
+}
+
+.pullquote p {
+    font-style: italic;
+    margin: 0;
+    font-size: 1.15rem;
+    line-height: 1.5;
+    /* Ensure the text has a higher stacking context than the mark */
+    position: relative; 
+    z-index: 1;
+}

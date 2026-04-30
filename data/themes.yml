@@ -5,7 +5,6 @@
 # if we want a theme to be the default for both modes, we can set default: [dark, light]
 - id: nord
   label: Nord
-  default: [dark, light]
   dark:
     background: "#2e3440"
     font: "#eceff4"
@@ -150,6 +149,7 @@
     code_bg: "#d5d6db"
 - id: github
   label: GitHub
+  default: [dark, light]
   dark:
     background: "#0d1117"
     font: "#e6edf3"

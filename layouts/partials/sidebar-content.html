@@ -11,7 +11,9 @@
         <span class="scan-line l3"></span>
     </div>
     {{ end }}
-    <h2 id="author-name">{{ $data.name }}</h2>
+    <h2 id="author-name">
+      <a href="{{ "/about" | relURL }}">{{ $data.name }}</a>
+    </h2>
     <small id="job-title">{{ $data.job_title }}</small>
 </div>
 

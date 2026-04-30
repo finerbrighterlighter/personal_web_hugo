@@ -164,7 +164,7 @@ function renderChartSVG(timeline) {
   return `
 <svg viewBox="0 0 ${width} ${height}"
      id="oa-svg"
-     style="width:100%; height:auto; font-family:monospace; overflow:visible; background:${codeBg};">
+     style="width:100%; height:auto; font-family:monospace; overflow:visible; background:${codeBg}; border:0.1px dashed ${secondary};">
 
   <!-- LEFT AXIS: top marker -->
   <circle cx="18" cy="${paddingY}" r="10" fill="${primary}" />
@@ -230,7 +230,7 @@ async function loadOpenAlexMetrics(elementId) {
     element.innerHTML = `
 
 <a href="https://openalex.org/authors/A5065083669" class="panel-terminal">
-$ openalex --metrics
+$ openalex stats
 </a>
 
 <table class="cli-table">
@@ -273,7 +273,7 @@ $ openalex --metrics
 
 <div id="oa-chart-container" style="position:relative;margin-top:10px">
 
-<a href="https://openalex.org/authors/A5065083669" class="panel-terminal">$ openalex --timeline --limit=${graphDisplayYears}y</a>
+<a href="https://openalex.org/authors/A5065083669" class="panel-terminal">$ openalex history --limit=${graphDisplayYears}y</a>
 
 <div id="oa-tooltip"
      style="

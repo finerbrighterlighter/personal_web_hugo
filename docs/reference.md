@@ -161,7 +161,7 @@ Each entry defines one item in the nav bar. Order in the array = display order.
 
 Current links: **Home** (`/`, `homepage`), **Works** (`/works/`, `academia`), **Posts** (`/posts/`, `notebook`), **Blood** (`/blood/`, `rhesus`), **About** (`/about/`, `biography`, hidden).
 
-On work single pages the Works link is additionally suppressed — only Home, Posts, Blood remain.
+On work single pages the Works link is additionally suppressed — only Home, Posts, Blood remain. On the about page, Blood is also suppressed — only Home, Works, Posts remain.
 
 #### `[outputFormats]`
 
@@ -539,8 +539,10 @@ BibTeX link format: `https://doi2bib.org/bib/<bare-doi>` — doi2bib requires th
 | `institution-count` | none | integer | `researchers.yml` + all works | No person dedup — both institutions count if someone moves; keyword extraction: University, Hospital, Academy, Institute, College, Unit |
 | `country-list` | none | prose string | `researchers.yml` + all works | Countries sorted by institution count desc; Oxford comma; expands UK, USA/US, UAE |
 | `gallery` | `match="*.jpg"` | responsive image grid | Page bundle resources | No resize if image width ≤ 2000px |
+| `opening` | inline text | `<span class="opening-words">` | — | Bold uppercase letter-spaced treatment for first few words of a section; used in `about/index.md` |
+| `pullquote` | inline text | `<div class="pullquote">` | — | Decorative closing statement with oversized Georgia quotation mark watermark; used in `about/index.md` |
 
-Usage in Markdown: `{{< collab-count >}}`, `{{< gallery match="*.webp" >}}`
+Usage in Markdown: `{{< collab-count >}}`, `{{< gallery match="*.webp" >}}`, `{{< opening >}}First words{{< /opening >}}`
 
 ### 5.5 Render hooks
 
