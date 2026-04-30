@@ -47,7 +47,8 @@ Comprehensive reference for the Hugo site at `htunteza.com`. Covers structure, c
     - [6.2 `console_type.js`](#62-console_typejs)
     - [6.3 `works_filter.js`](#63-works_filterjs)
     - [6.4 `theme.js`](#64-themejs)
-    - [6.5 `openalex.js`](#65-openalexjs)
+    - [6.5 `footer_roll.js`](#65-footer_rolljs)
+    - [6.6 `openalex.js`](#66-openalexjs)
   - [7. Python Script — `build_cv.py`](#7-python-script--build_cvpy)
     - [Function reference](#function-reference)
     - [Data flow](#data-flow)
@@ -570,7 +571,7 @@ All files in `static/js/`, loaded as `type="module"` in `partials/scripts.html`.
 | `theme.js` | — | `#theme-toggle`, `#theme-palette-select`, `#cvd-shortcut` | localStorage | `theme-mode`, `theme-palette-dark`, `theme-palette-light` | Emits `theme-changed` custom event on switch |
 | `console_type.js` | — | `#typed-command` | `window.CONFIG` | — | Animated terminal typing; static mode on work pages |
 | `collapse_windows.js` | — | `.terminal-window` | sessionStorage | `panel-<title>` | Persists collapse state; auto-collapses sidebar on mobile (except homepage) |
-| `footer_roll.js` | — | `.author-link`, `#avatar`, `#author-name`, `#job-title` | — | — | Click name → whoami animation → navigate to `/about/` |
+| `footer_roll.js` | — | `.author-link`, `#avatar`, `.avatar-wrapper`, `#author-name`, `#job-title`, `main.main-content` | — | — | Click `[Me]` → whoami animation + avatar scan → fetch `/about/` and inject content via `innerHTML` swap + `history.pushState`; back button via `popstate` reload |
 | `works_filter.js` | — | `#works-filters`, `.post`, `#works-count`, `#works-search` | `window.location` | — | URL-synced filter state; hides empty year/category groups |
 | `research.js` | — | `#research-cloud` | `window.__researchTags` | — | Tag cloud; font size scales by frequency; limit from `window.CONFIG.researchTagLimit` |
 | `openalex.js` | — | `#openalex-metrics` | OpenAlex API | `openalex-author-data` | SVG bar chart; re-renders on `theme-changed` event; hardcoded author ID |
@@ -614,6 +615,14 @@ All files in `static/js/`, loaded as `type="module"` in `partials/scripts.html`.
 | `console_type.js` | `dedicationDelay` | `600` | ms initial delay before dedication types |
 | `console_type.js` | `dedicationHold` | `60000` | ms dedication is held before resuming |
 | `console_type.js` | `minTypingWidth` | `120` | px available width below which typing is hidden |
+| `footer_roll.js` | `whoami` typing speed | `60` ms/char | Speed of `whoami` command typing |
+| `footer_roll.js` | name typing speed | `45` ms/char | Speed of real name re-type |
+| `footer_roll.js` | role typing speed | `30` ms/char | Speed of job title re-type |
+| `footer_roll.js` | thinking pause | `450` ms | Pause after `whoami` before scan starts |
+| `footer_roll.js` | scan duration | `3500` ms | Duration `.scan` class is held (matches CSS animation length) |
+| `footer_roll.js` | scroll delay | `600` ms | Initial delay to let scroll begin before typing |
+| `footer_roll.js` | pre-transition pause | `600` ms | Pause after role typed before fetching `/about/` |
+| `footer_roll.js` | fade duration | `350` ms | Opacity fade-out of `<main>` before content swap |
 
 ### 6.2 `console_type.js`
 
@@ -691,7 +700,48 @@ filters = {
 
 **Initialization:** The blocking inline script in `theme-data.html` writes CSS variables to `:root` before `<body>` renders. `theme.js` then wires up the UI controls and syncs the dropdown selection to the current state.
 
-### 6.5 `openalex.js`
+### 6.5 `footer_roll.js`
+
+Handles the `[Me]` footer link. Full sequence on click:
+
+1. Clear `#author-name` and `#job-title` text (preserve layout space with `&nbsp;`)
+2. Expand sidebar panel if collapsed; scroll avatar into view
+3. Type `whoami` into the name slot (60ms/char)
+4. Brief processing pause (450ms)
+5. Trigger avatar scan animation: remove `.scan`, force reflow via `void wrapper.offsetWidth`, add `.scan`
+6. After 3500ms, remove `.scan`; type real name (45ms/char), then real role (30ms/char)
+7. If already on `/about/`, stop. Otherwise: wait 600ms, then call `transitionToAbout()`
+
+**`transitionToAbout()` — smooth page transition:**
+
+```
+fetch('/about/')         →  download full HTML
+DOMParser                →  parse into a queryable document
+querySelector            →  extract <main class="main-content">
+opacity fade (350ms)     →  fade out current <main>
+innerHTML swap           →  replace current <main> content
+history.pushState        →  update URL bar to /about/ (no reload)
+document.title           →  sync tab title
+scrollIntoView + fade in →  reveal new content
+```
+
+Falls back to `window.location.href = '/about/'` on any error.
+
+**Back button:** `popstate` event fires when the user navigates back from `/about/`. Handler calls `window.location.reload()` to restore the original page content.
+
+**Avatar scan animation (CSS, no JS keyframes):**
+
+The `.scan` class on `.avatar-wrapper` activates three CSS layers simultaneously:
+
+| Layer | Selector | Effect |
+| --- | --- | --- |
+| Scan beam | `::before` | 60px gradient strip using `var(--primary-color)`, `mix-blend-mode: screen`; sweeps top→bottom three times over 3.5s |
+| CRT overlay | `::after` | Repeating 4px horizontal stripe pattern; flickers at irregular opacity intervals |
+| Chromatic glitch | `.sidebar-avatar` | Three bursts of hue-rotate + sepia + brightness + lateral `translateX` jitter timed to each beam pass |
+
+The `.avatar-wrapper` is sized explicitly to `10rem × 10rem` with `border-radius: 50%` and `overflow: hidden` so all layers clip to the circular boundary.
+
+### 6.6 `openalex.js`
 
 **Hardcoded constants:**
 
