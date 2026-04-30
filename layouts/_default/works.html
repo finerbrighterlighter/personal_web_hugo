@@ -92,7 +92,7 @@
                    data-datasource="{{ with .Params.datasource }}{{ delimit . "," }}{{ end }}"
                    data-method="{{ with .Params.methods }}{{ delimit . "," }}{{ end }}"
                    data-year="{{ .Date.Format "2006" }}"
-                   data-search="{{ .Title }} {{ .Params.venue }} {{ with .Params.authors }}{{ range . }}{{ .given }} {{ .family }} {{ end }}{{ end }}{{ with .Params.conditions }}{{ delimit . " " }}{{ end }} {{ with .Params.datasource }}{{ delimit . " " }}{{ end }} {{ with .Params.methods }}{{ delimit . " " }}{{ end }} {{ .Date.Format "2006" }} {{ .Params.type }} {{ .Plain }}"
+                   data-search="{{ .Title }} {{ .Params.venue }} {{ with .Params.authors }}{{ range . }}{{ .given }} {{ .family }} {{ end }}{{ end }}{{ with .Params.conditions }}{{ delimit . " " }}{{ end }} {{ with .Params.datasource }}{{ delimit . " " }}{{ end }} {{ with .Params.methods }}{{ delimit . " " }}{{ end }} {{ .Date.Format "2006" }} {{ .Params.type }}"
                    itemscope itemtype="https://schema.org/ScholarlyArticle">
 
                 <meta itemprop="datePublished" content="{{ .Date }}">

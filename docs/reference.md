@@ -520,7 +520,7 @@ BibTeX link format: `https://doi2bib.org/bib/<bare-doi>` — doi2bib requires th
 | `breadcrumb-ld.html` | `baseof.html` | JSON-LD `BreadcrumbList` built from URL path segments |
 | `sidebar-content.html` | `baseof.html` | Avatar, contact links, education list, live clock |
 | `panel-openalex.html` | `baseof.html` | Shell window for OpenAlex metrics panel |
-| `panel-research.html` | `baseof.html` | Shell window for research tag cloud; injects `window.__researchTags` |
+| `panel-research.html` | `baseof.html` | Shell window for research topics; injects `window.__researchTags` (all tag occurrences) and `window.__worksCount` (total works page count) |
 | `panel-lastfm.html` | `baseof.html` | Shell window for Last.fm now-playing + playlists |
 | `panel-anilist.html` | `baseof.html` | Shell window for AniList manga |
 | `panel-trakt.html` | `baseof.html` | Shell window for Trakt watch history |
@@ -528,7 +528,7 @@ BibTeX link format: `https://doi2bib.org/bib/<bare-doi>` — doi2bib requires th
 | `panel-privacy.html` | `baseof.html` | GoatCounter disclosure + cache flush controls |
 | `collab-summary.html` | `index.html` (inside `career_profile` para2) | Computes collab count, institution count, and country list in one pass; outputs bare inline sentence (no `<p>` wrapper) |
 | `researcher-map.html` | `work.html`, `works.html`, `index.html`, shortcodes | Returns `dict` keyed by researcher id; call with `partial "researcher-map.html" .` |
-| `footer.html` | `baseof.html` | Footer with `[Me]` link |
+| `footer.html` | `baseof.html` | Footer with `[Me]` link (`href="/about/"` for correct new-tab behaviour; JS intercepts normal clicks for the animation) |
 | `scripts.html` | `baseof.html` | `<script type="module">` tags for all JS modules |
 | `works-filter-group.html` | `works.html` | Renders one filter group (condition/datasource/method) |
 
@@ -573,7 +573,7 @@ All files in `static/js/`, loaded as `type="module"` in `partials/scripts.html`.
 | `collapse_windows.js` | — | `.terminal-window` | sessionStorage | `panel-<title>` | Persists collapse state; auto-collapses sidebar on mobile (except homepage) |
 | `footer_roll.js` | — | `.author-link`, `#avatar`, `.avatar-wrapper`, `#author-name`, `#job-title`, `main.main-content` | — | — | Click `[Me]` → whoami animation + avatar scan → fetch `/about/` and inject content via `innerHTML` swap + `history.pushState`; back button via `popstate` reload |
 | `works_filter.js` | — | `#works-filters`, `.post`, `#works-count`, `#works-search` | `window.location` | — | URL-synced filter state; hides empty year/category groups |
-| `research.js` | — | `#research-cloud` | `window.__researchTags` | — | Tag cloud; font size scales by frequency; limit from `window.CONFIG.researchTagLimit` |
+| `research.js` | — | `#research-cloud` | `window.__researchTags`, `window.__worksCount` | — | Sorted `cli-table`: tag name (linked), 10-segment block bar (% of all works), count; tooltip shows "X of Y works"; limit from `window.CONFIG.researchTagLimit` |
 | `openalex.js` | — | `#openalex-metrics` | OpenAlex API | `openalex-author-data` | SVG bar chart; re-renders on `theme-changed` event; hardcoded author ID |
 | `work-citation.js` | `cache.js` | `article[data-doi]`, `#work-cite-count` | OpenAlex API | `openalex-work-<doi>` | Work pages only; citation count linked to citing-papers list |
 | `lastFM.js` | `cache.js` | `#lasttrack`, `#topalbums` | Last.fm API | `lastfm-topalbums` | Now-playing (no cache, 30s poll); top albums (cached) |
@@ -623,6 +623,7 @@ All files in `static/js/`, loaded as `type="module"` in `partials/scripts.html`.
 | `footer_roll.js` | scroll delay | `600` ms | Initial delay to let scroll begin before typing |
 | `footer_roll.js` | pre-transition pause | `600` ms | Pause after role typed before fetching `/about/` |
 | `footer_roll.js` | fade duration | `350` ms | Opacity fade-out of `<main>` before content swap |
+| `research.js` | `MAX_BAR` | `10` | Bar width in segments; 1 segment = 10% of all works; fractional remainder sets opacity of last filled segment |
 
 ### 6.2 `console_type.js`
 

@@ -1,88 +1,143 @@
 /**
- * research.js — Research tag cloud renderer
+ * research.js — Research topics renderer
  *
  * Reads tag frequency data injected by panel-research.html and renders
- * a shuffled word cloud where font size and opacity reflect how often
- * each tag appears across works pages.
+ * a sorted list of topics with counts, styled as terminal command output.
  *
  * WHAT TO CONFIGURE WHERE
  * ─────────────────────────────────────────────────────────────────────
  * hugo.toml → window.CONFIG      researchTagLimit   how many top tags to show
- * Constants below (this file)    MIN_PX / MAX_PX    font size range in pixels
- *                                MIN_ALPHA / MAX_ALPHA  opacity range (0–1)
- *                                SEP_OPACITY        opacity of the · separator
- *                                MAX_HEIGHT         cloud container height
+ * Constants below (this file)    MAX_BAR            fixed bar width in segments (scales to top tag)
  * ─────────────────────────────────────────────────────────────────────
  */
 
-/* ── Tunables (edit here) ───────────────────────────────────────────────── */
+/* ── Tunables ───────────────────────────────────────────────────────────── */
 
-const MIN_PX      = 10;   // font size for the least common tag
-const MAX_PX      = 18;   // font size for the most common tag
-const MIN_ALPHA   = 0.6; // opacity for the least common tag
-const MAX_ALPHA   = 1.0;  // opacity for the most common tag
-const SEP_OPACITY = 0.25; // opacity of the · separator between tags
-const MAX_HEIGHT  = '13em'; // clips the cloud to ~5 lines; set to '' to disable
+const MAX_BAR = 10; // 10 segments = each segment is 10%; fractional part shown as partial opacity
 
 /* ── Main ───────────────────────────────────────────────────────────────── */
 
 (() => {
   const container = document.getElementById('research-cloud');
-  const rawTags   = window.__researchTags; // flat string[] injected by Hugo at build time
+  const rawTags   = window.__researchTags;
   if (!container || !rawTags?.length) return;
 
-  // Count tag frequencies
   const tagMap = {};
   for (const tag of rawTags) tagMap[tag] = (tagMap[tag] || 0) + 1;
 
-  // Take top N by frequency; N comes from hugo.toml → researchTagLimit
-  const limit = window.CONFIG?.researchTagLimit ?? 30;
+  const limit = window.CONFIG?.researchTagLimit ?? 10;
   const top   = Object.entries(tagMap)
     .sort((a, b) => b[1] - a[1])
     .slice(0, limit);
   if (!top.length) return;
 
-  // Compute scaling bounds over the selected subset only
-  const counts   = top.map(([, n]) => n);
-  const minCount = Math.min(...counts);
-  const maxCount = Math.max(...counts);
-  const range    = maxCount - minCount || 1;
+  const totalCount = window.__worksCount || 1;
 
-  // Shuffle so high-frequency tags don't always cluster together
-  for (let i = top.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [top[i], top[j]] = [top[j], top[i]];
-  }
+  /* ── Tooltip ─────────────────────────────────────────────────────────── */
+  /* Single floating div shared across all rows; positioned on mousemove.  */
+  const tooltip = document.createElement('div');
+  tooltip.style.cssText = `
+    position:fixed;
+    background:var(--code-bg-color);
+    color:var(--font-color);
+    border:1px solid var(--secondary-color);
+    font-family:monospace;
+    font-size:11px;
+    padding:5px 8px;
+    border-radius:3px;
+    pointer-events:none;
+    opacity:0;
+    transition:opacity 0.1s;
+    z-index:200;
+    white-space:nowrap;
+    line-height:1.6;
+  `;
+  document.body.appendChild(tooltip);
 
-  container.style.cssText =
-    `line-height:2;word-spacing:5px;` +
-    (MAX_HEIGHT ? `max-height:${MAX_HEIGHT};overflow:hidden;` : '');
+  /* ── Table ───────────────────────────────────────────────────────────── */
+  const table = document.createElement('table');
+  table.className = 'cli-table';
+  table.style.tableLayout = 'auto'; // let first column stretch with content
 
-  for (let i = 0; i < top.length; i++) {
-    const [tag, count] = top[i];
+  const tbody = document.createElement('tbody');
 
-    // sqrt scale: compresses large frequency gaps so sizing feels proportional
-    const t     = Math.sqrt((count - minCount) / range);
-    const size  = MIN_PX + t * (MAX_PX  - MIN_PX);
-    const alpha = MIN_ALPHA + t * (MAX_ALPHA - MIN_ALPHA);
+  for (const [tag, count] of top) {
+    const tr = document.createElement('tr');
+    tr.style.cursor = 'default';
 
-    // Each tag is a link → /works/?search=TAG (pre-fills the search box)
+    /* Tag name — links to works search */
+    const tdTag = document.createElement('td');
+    tdTag.style.width = '100%'; // take all available space
     const a = document.createElement('a');
-    a.href  = `/works/?search=${encodeURIComponent(tag)}`;
-    a.title = `${count} work${count !== 1 ? 's' : ''}`;
-    a.style.cssText = `font-size:${size.toFixed(1)}px;opacity:${alpha.toFixed(2)};color:var(--secondary-color);text-decoration:none;`;
+    a.href        = `/works/?search=${encodeURIComponent(tag)}`;
+    a.textContent = tag;
+    a.style.cssText = 'color:var(--font-color);text-decoration:none;white-space:nowrap;';
+    a.addEventListener('mouseover', () => a.style.color = 'var(--primary-color)');
+    a.addEventListener('mouseout',  () => a.style.color = 'var(--font-color)');
+    tdTag.appendChild(a);
+    tr.appendChild(tdTag);
 
-    const span = document.createElement('span');
-    span.textContent = tag;
-    a.appendChild(span);
-    container.appendChild(a);
+    /* Block bar — 10 segments (1 segment = 10%).
+       Whole segments are full opacity; the remainder drives the opacity
+       of one extra partial segment so sub-10% differences are visible. */
+    const totalFilled  = (count / totalCount) * MAX_BAR;
+    const fullSegments = Math.floor(totalFilled);
+    const fraction     = totalFilled - fullSegments;
+    const emptyCount   = MAX_BAR - fullSegments - (fraction > 0 ? 1 : 0);
 
-    // Separator between tags (not after the last one)
-    if (i < top.length - 1) {
-      const sep = document.createElement('span');
-      sep.textContent = ' · ';
-      sep.style.cssText = `opacity:${SEP_OPACITY};font-size:9px;`;
-      container.appendChild(sep);
+    const tdBar = document.createElement('td');
+    tdBar.style.cssText = 'white-space:nowrap;padding:0 0.5em;letter-spacing:1px;';
+
+    if (fullSegments > 0) {
+      const s = document.createElement('span');
+      s.textContent = '█'.repeat(fullSegments);
+      s.style.color = 'var(--primary-color)';
+      tdBar.appendChild(s);
     }
+    if (fraction > 0) {
+      const s = document.createElement('span');
+      s.textContent = '█';
+      s.style.cssText = `color:var(--primary-color);opacity:${fraction.toFixed(2)};`;
+      tdBar.appendChild(s);
+    }
+    if (emptyCount > 0) {
+      const s = document.createElement('span');
+      s.textContent = '░'.repeat(emptyCount);
+      s.style.cssText = 'color:var(--secondary-color);opacity:0.3;';
+      tdBar.appendChild(s);
+    }
+
+    tr.appendChild(tdBar);
+
+    /* Count */
+    const tdCount = document.createElement('td');
+    tdCount.textContent = count;
+    tdCount.style.cssText = 'text-align:right;color:var(--secondary-color);white-space:nowrap;';
+    tr.appendChild(tdCount);
+
+    /* Tooltip events on the whole row */
+    tr.addEventListener('mouseenter', () => {
+      tooltip.innerHTML =
+        `<span style="color:var(--primary-color)">${tag}</span><br>` +
+        `${count} of ${totalCount} works &nbsp;·&nbsp; click to search`;
+      tooltip.style.opacity = '1';
+    });
+    tr.addEventListener('mousemove', (e) => {
+      const offset = 14;
+      const tWidth = tooltip.offsetWidth;
+      const left = e.clientX + offset + tWidth > window.innerWidth
+        ? e.clientX - tWidth - offset
+        : e.clientX + offset;
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top  = `${e.clientY + offset}px`;
+    });
+    tr.addEventListener('mouseleave', () => {
+      tooltip.style.opacity = '0';
+    });
+
+    tbody.appendChild(tr);
   }
+
+  table.appendChild(tbody);
+  container.appendChild(table);
 })();
