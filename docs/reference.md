@@ -342,7 +342,7 @@ Drives the homepage and sidebar. Not read by `build_cv.py`.
 | --- | --- | --- |
 | `universities` | Named anchors for university data (YAML anchors reused in education) | `education` entries |
 | `sidebar` | `name`, `job_title`, `avatar`, `email`, `phone`, `area`, `location`, `website`, `orcid`, `scholar_profile`, `cv`, `vcard` | `sidebar-content.html`, `home-seo.html` |
-| `career_profile` | Markdown description text | `index.html` |
+| `career_profile` | `title` + three markdown paragraphs: `para1`, `para2`, `para3`; `para2` gets the dynamic collab sentence appended inline | `index.html` |
 | `education` | Array of degrees: `year`, `university`, `degree`, `field`, `notes` | `sidebar-content.html` |
 | `experiences` | Array: `role`, `company`, `period`, `bullets` | `index.html` (first 2 shown, rest collapse) |
 | `projects` | Array: `name`, `description`, `link` | `index.html` (first 2 shown, rest collapse) |
@@ -525,6 +525,7 @@ BibTeX link format: `https://doi2bib.org/bib/<bare-doi>` — doi2bib requires th
 | `panel-trakt.html` | `baseof.html` | Shell window for Trakt watch history |
 | `panel-unsplash.html` | `baseof.html` | Shell window for Unsplash photos |
 | `panel-privacy.html` | `baseof.html` | GoatCounter disclosure + cache flush controls |
+| `collab-summary.html` | `index.html` (inside `career_profile` para2) | Computes collab count, institution count, and country list in one pass; outputs bare inline sentence (no `<p>` wrapper) |
 | `researcher-map.html` | `work.html`, `works.html`, `index.html`, shortcodes | Returns `dict` keyed by researcher id; call with `partial "researcher-map.html" .` |
 | `footer.html` | `baseof.html` | Footer with `[Me]` link |
 | `scripts.html` | `baseof.html` | `<script type="module">` tags for all JS modules |
