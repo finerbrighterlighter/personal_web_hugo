@@ -28,6 +28,7 @@ Comprehensive reference for the Hugo site at `htunteza.com`. Covers structure, c
    - [Render hooks](#55-render-hooks)
 6. [JavaScript Modules](#6-javascript-modules)
    - [Module overview](#61-module-overview)
+   - [Tunable constants](#61a-tunable-constants-by-module)
    - [console_type.js](#62-console_typejs)
    - [works_filter.js](#63-works_filterjs)
    - [theme.js](#64-themejs)
@@ -548,6 +549,41 @@ All files in `static/js/`, loaded as `type="module"` in `partials/scripts.html`.
 | `anilist.js` | `cache.js` | `#last-read-manga` | AniList GraphQL | `anilist-manga` | Recently read manga for user "finer" |
 | `trakt.js` | `cache.js` | `#last-watched` | Trakt + TMDB APIs | `trakt-watched` | Recently watched; dedupes consecutive repeats; TMDB poster images |
 | `unsplash.js` | `cache.js` | `#latestimage` | Unsplash API | `unsplash-photos` | Latest 10 photos from account "finerbrighterlighter" |
+
+### 6.1a Tunable constants by module
+
+| File | Constant | Default | Effect |
+|---|---|---|---|
+| `openalex.js` | `authorId` | `"A5065083669"` | OpenAlex author record ID |
+| `openalex.js` | `graphDisplayYears` | `5` | Years shown in the bar chart |
+| `lastFM.js` | `LASTFM_USER` | `"fibrili"` | Last.fm username |
+| `lastFM.js` | `LASTFM_TOP_ALBUMS_LIMIT` | `10` | Albums shown in panel |
+| `lastFM.js` | `LASTFM_POLL_INTERVAL` | `30000` | ms between recent-track polls |
+| `anilist.js` | `ANILIST_USER` | `"finer"` | AniList username |
+| `anilist.js` | `ANILIST_LIMIT` | `10` | Manga covers shown in panel |
+| `trakt.js` | `TRAKT_USER` | `"hteza"` | Trakt username |
+| `trakt.js` | `TRAKT_HISTORY_FETCH` | `100` | Items fetched from API (must be ≥ TRAKT_DISPLAY_LIMIT) |
+| `trakt.js` | `TRAKT_DISPLAY_LIMIT` | `10` | Items shown in panel |
+| `unsplash.js` | `UNSPLASH_USER` | `"finerbrighterlighter"` | Unsplash username |
+| `unsplash.js` | `UNSPLASH_LIMIT` | `10` | Photos shown in panel |
+| `cache-expires.js` | `FLUSH_RELOAD_DELAY` | `400` | ms before reload after cache clear |
+| `console_type.js` | `typingSpeed` | `170` | ms per typed character (~65 WPM) |
+| `console_type.js` | `backspaceSpeed` | `80` | ms per backspace |
+| `console_type.js` | `idleMin` | `500` | ms minimum idle between lines |
+| `console_type.js` | `idleMax` | `2000` | ms maximum idle between lines |
+| `console_type.js` | `idlePerChar` | `5` | ms added per character of current line to idle |
+| `console_type.js` | `errorChance` | `0.25` | Probability a line has a typo |
+| `console_type.js` | `skipWordChance` | `0.5` | Split between skip-word vs. early-quote mistake |
+| `console_type.js` | `eraseChance` | `0.35` | Probability line is backspaced before next |
+| `console_type.js` | `linuxLineChance` | `0.75` | Probability of CLI command vs. slogan |
+| `console_type.js` | `minTypoChar` | `6` | Minimum char index before typo can fire |
+| `console_type.js` | `mistakePause` | `300` | ms pause after early-quote mistake |
+| `console_type.js` | `skipPause` | `400` | ms pause after skip-word mistake |
+| `console_type.js` | `clearPause` | `300` | ms pause after line clear before next line |
+| `console_type.js` | `staticDelay` | `800` | ms initial delay on work single pages |
+| `console_type.js` | `dedicationDelay` | `600` | ms initial delay before dedication types |
+| `console_type.js` | `dedicationHold` | `60000` | ms dedication is held before resuming |
+| `console_type.js` | `minTypingWidth` | `120` | px available width below which typing is hidden |
 
 ### 6.2 `console_type.js`
 

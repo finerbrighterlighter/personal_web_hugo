@@ -5,6 +5,8 @@
  */
 
 const UNSPLASH_URL = "https://api.unsplash.com";
+const UNSPLASH_USER = "finerbrighterlighter";  // Unsplash username
+const UNSPLASH_LIMIT = 10;                     // number of photos shown in the panel
 
 
 /* -------------------------------------------------- */
@@ -129,8 +131,8 @@ async function getUnsplash(username, accessKey, limit, elementID) {
 /* -------------------------------------------------- */
 
 getUnsplash(
-  "finerbrighterlighter",
+  UNSPLASH_USER,
   CONFIG.unsplash,
-  10,
+  UNSPLASH_LIMIT,
   "latestimage"
 );

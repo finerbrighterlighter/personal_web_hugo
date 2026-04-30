@@ -2,6 +2,8 @@ import { getCache, setCache } from "./cache.js";
 
 const LASTFM_USER = "fibrili";
 const LASTFM_API = CONFIG.lastfm;
+const LASTFM_TOP_ALBUMS_LIMIT = 10;   // number of albums shown in the panel
+const LASTFM_POLL_INTERVAL = 30000;   // ms between recent-track polls
 
 async function lastFM_request(method, limit, elementID) {
 
@@ -118,10 +120,10 @@ function renderTopAlbums(data, element, limit) {
 }
 
 lastFM_request("user.getrecenttracks", 1, "lasttrack");
-lastFM_request("user.gettopalbums", 10, "topalbums");
+lastFM_request("user.gettopalbums", LASTFM_TOP_ALBUMS_LIMIT, "topalbums");
 
 function updateRecentTrack() {
   lastFM_request("user.getrecenttracks", 1, "lasttrack");
 }
 
-setInterval(updateRecentTrack, 30000);
+setInterval(updateRecentTrack, LASTFM_POLL_INTERVAL);

@@ -8,6 +8,9 @@ const TRAKT_KEY = CONFIG.trakt;
 const TMDB_KEY = CONFIG.tmdb;
 
 const TRAKT_API = "https://api.trakt.tv/users";
+const TRAKT_USER = "hteza";          // Trakt username
+const TRAKT_HISTORY_FETCH = 100;     // items to request from API (must be >= TRAKT_DISPLAY_LIMIT)
+const TRAKT_DISPLAY_LIMIT = 10;      // items shown in the panel
 
 
 /* -------------------------------------------------- */
@@ -16,7 +19,7 @@ const TRAKT_API = "https://api.trakt.tv/users";
 
 async function fetchHistory(username) {
 
-  const url = `${TRAKT_API}/${username}/history?limit=100`;
+  const url = `${TRAKT_API}/${username}/history?limit=${TRAKT_HISTORY_FETCH}`;
 
   const response = await fetch(url, {
     headers: {
@@ -235,5 +238,5 @@ async function loadWatched(username, limit, elementID) {
 /* -------------------------------------------------- */
 
 document.addEventListener("DOMContentLoaded", () => {
-  loadWatched("hteza", 10, "last-watched");
+  loadWatched(TRAKT_USER, TRAKT_DISPLAY_LIMIT, "last-watched");
 });

@@ -1,6 +1,8 @@
 import { getCache, setCache } from "./cache.js";
 
 const ANILIST_URL = "https://graphql.anilist.co";
+const ANILIST_USER = "finer";    // AniList username
+const ANILIST_LIMIT = 10;        // number of manga covers shown in the panel
 
 async function getLastRead(username, media, limit, elementID) {
 
@@ -137,4 +139,4 @@ function renderAniList(data, element, limit) {
   element.appendChild(frag);
 }
 
-getLastRead("finer", "MANGA", 10, "last-read-manga");
+getLastRead(ANILIST_USER, "MANGA", ANILIST_LIMIT, "last-read-manga");

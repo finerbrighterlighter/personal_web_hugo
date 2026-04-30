@@ -199,7 +199,7 @@ function buildLine(slogan) {
     ========================================================= */
 function randomIdle() {
     const base = idleMin + Math.random() * (idleMax - idleMin);
-    return base + currentLine.length * 5;
+    return base + currentLine.length * idlePerChar;
 }
 
 
@@ -238,7 +238,31 @@ let staticMode = false;
 ========================================================= */
 let token = {};
 
-const minTypingWidth = 120;
+const minTypingWidth = 120;  // px — hide typed command below this available width
+
+/* ms added per character of current line to idle time */
+const idlePerChar = 5;
+
+/* ms to hold the dedication text before resuming normal rotation */
+const dedicationHold = 60000;
+
+/* minimum char index before a typo can fire */
+const minTypoChar = 6;
+
+/* ms pause after an early-quote mistake before backspacing */
+const mistakePause = 300;
+
+/* ms pause after a skip-word mistake before backspacing */
+const skipPause = 400;
+
+/* ms pause between line clear and next line starting */
+const clearPause = 300;
+
+/* ms initial delay before typing starts on work single pages */
+const staticDelay = 800;
+
+/* ms initial delay before typing the dedication */
+const dedicationDelay = 600;
 
 /* screen width limit — space remaining after the prompt prefix */
 function updateWidthLimit() {
@@ -333,12 +357,12 @@ function nextLine(t) {
     if (doErase && target.textContent.length > 0) {
 
         backspace(target.textContent.length, t, () => {
-            setTimeout(continueNext, 300);
+            setTimeout(continueNext, clearPause);
         });
 
     } else {
 
-        setTimeout(continueNext, 300);
+        setTimeout(continueNext, clearPause);
 
     }
 }
@@ -351,13 +375,13 @@ function typeLine(t) {
 
     if (charIndex >= currentLine.length) {
         if (staticMode) return;
-        const pause = isDedication ? 60000 : randomIdle();
+        const pause = isDedication ? dedicationHold : randomIdle();
         setTimeout(() => nextLine(t), pause);
         return;
     }
 
     /* no typos on the dedication or static commands */
-    if (!isDedication && !staticMode && !mistakeMade && Math.random() < errorChance && charIndex > 6) {
+    if (!isDedication && !staticMode && !mistakeMade && Math.random() < errorChance && charIndex > minTypoChar) {
 
         mistakeMade = true;
 
@@ -380,7 +404,7 @@ function typeLine(t) {
                         typeLine(t);
                     });
 
-                }, 400);
+                }, skipPause);
 
                 return;
             }
@@ -393,7 +417,7 @@ function typeLine(t) {
 
             backspace(1, t, () => typeLine(t));
 
-        }, 300);
+        }, mistakePause);
 
         return;
     }
@@ -434,7 +458,7 @@ document.addEventListener('theme-changed', () => {
         const shuffled = [...DEDICATIONS].sort(() => Math.random() - 0.5);
         currentLine = shuffled.find(d => measureText(d) <= widthLimit) ?? "echo 'Hi Sam!'";
 
-        setTimeout(() => typeLine(t), 600);
+        setTimeout(() => typeLine(t), dedicationDelay);
     }
 
     accessibleWasActive = isAccessible;
@@ -445,7 +469,7 @@ document.addEventListener('theme-changed', () => {
 if (document.querySelector('.work-single')) {
     staticMode = true;
     currentLine = "less paper.pdf";
-    setTimeout(() => typeLine(token), 800);
+    setTimeout(() => typeLine(token), staticDelay);
 } else {
     nextLine(token);
 }

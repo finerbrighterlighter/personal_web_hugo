@@ -1,4 +1,5 @@
 const TTL = (window.CONFIG?.cacheTTLMinutes ?? 60) * 60 * 1000;
+const FLUSH_RELOAD_DELAY = 400;  // ms before reloading after localStorage.clear()
 const line = document.getElementById('cache-expire-line');
 
 function soonestExpiry() {
@@ -35,7 +36,7 @@ setInterval(tick, 1000);
 
 function doFlush() {
   localStorage.clear();
-  setTimeout(() => location.reload(), 400);
+  setTimeout(() => location.reload(), FLUSH_RELOAD_DELAY);
 }
 
 const btns = document.getElementById('cache-flush-btns');
