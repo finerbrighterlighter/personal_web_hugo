@@ -17,6 +17,7 @@
 <script type="module" src="{{ "js/cache-expires.js" | relURL }}"></script>
 
 {{ if not hugo.IsServer }}
+  <script>window.goatcounter = { allow_local: false }</script>
   <script data-goatcounter="https://stats.htunteza.com/count"
           async src="//gc.zgo.at/count.js"></script>
 {{ end }}
