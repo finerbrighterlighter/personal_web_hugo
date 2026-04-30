@@ -1449,7 +1449,7 @@ header.terminal-logo {
 @media (min-width: 768px) and (max-width: 1250px) {
 
     .terminal-layout {
-        grid-template-columns: 260px 1fr;
+        grid-template-columns: 330px 1fr;
         grid-template-rows: auto auto;
         align-items: start;
     }
