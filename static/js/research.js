@@ -71,9 +71,9 @@ const MAX_BAR = 10; // 10 segments = each segment is 10%; fractional part shown 
     const a = document.createElement('a');
     a.href        = `/works/?search=${encodeURIComponent(tag)}`;
     a.textContent = tag;
-    a.style.cssText = 'color:var(--font-color);text-decoration:none;white-space:nowrap;';
+    a.style.cssText = 'color:var(--secondary-color);text-decoration:none;white-space:nowrap;';
     a.addEventListener('mouseover', () => a.style.color = 'var(--primary-color)');
-    a.addEventListener('mouseout',  () => a.style.color = 'var(--font-color)');
+    a.addEventListener('mouseout',  () => a.style.color = 'var(--secondary-color)');
     tdTag.appendChild(a);
     tr.appendChild(tdTag);
 
