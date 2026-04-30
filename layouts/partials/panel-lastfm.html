@@ -16,7 +16,20 @@
 
       <div class="album-strip">
 
-      {{ range first 10 (sort $data.items "year" "desc") }}
+      {{/* Current year — generated at build time; no manual update needed */}}
+      {{ $y := now.Year }}
+      <a href="https://www.last.fm/user/fibrili/library/tracks?from={{ $y }}-01-01&to={{ $y }}-12-31" target="_blank" rel="noreferrer noopener">
+        <img
+          src="{{ "images/playlists/replay_this_year.webp" | relURL }}"
+          title="Most Played {{ $y }} (Ongoing)"
+          alt="Most Played {{ $y }} (Ongoing)"
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
+
+      {{/* Past years from playlists.yml — add a new entry here each January */}}
+      {{ range first 9 (sort $data.items "year" "desc") }}
       <a href="{{ .url }}" target="_blank" rel="noreferrer noopener">
         <img
           src="{{ (printf "images/playlists/%s" .image) | relURL }}"
@@ -26,7 +39,7 @@
           decoding="async"
         />
       </a>
-      {{ end }} 
+      {{ end }}
       </div>
 
       <pre class="panel-terminal" style="margin-top:20px"><a href="https://www.last.fm/user/fibrili/library/albums?date_preset=LAST_30_DAYS">$ lastfm top albums --period=30d</a></pre>
