@@ -30,14 +30,14 @@ Three-column layout defined in `layouts/_default/baseof.html`:
 
 ## Content Sections
 
-| URL | Template | Notes |
-|---|---|---|
-| `/` | `layouts/index.html` | Career profile from `data/homepage.yml` |
-| `/works/` | `layouts/_default/works.html` | Academic publications, client-side filter by condition/method/datasource/year |
-| `/works/<type>/<slug>/` | `layouts/_default/work.html` | Individual publication page (see below) |
-| `/posts/` | `layouts/_default/list.html` | Blog posts grouped by year; supports `private: true` front matter |
-| `/blood/` | `layouts/_default/blood.html` | Personal blood test records; data from `data/blood.yml` |
-| `/about/` | `layouts/about/single.html` | Content from `content/about/index.md`; hidden from nav; reached via `[Me]` footer link |
+| URL                       | Template                        | Notes                                                                                      |
+| ------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------ |
+| `/`                     | `layouts/index.html`          | Career profile from `data/homepage.yml`                                                  |
+| `/works/`               | `layouts/_default/works.html` | Academic publications, client-side filter by condition/method/datasource/year              |
+| `/works/<type>/<slug>/` | `layouts/_default/work.html`  | Individual publication page (see below)                                                    |
+| `/posts/`               | `layouts/_default/list.html`  | Blog posts grouped by year; supports `private: true` front matter                        |
+| `/blood/`               | `layouts/_default/blood.html` | Personal blood test records; data from `data/blood.yml`                                  |
+| `/about/`               | `layouts/about/single.html`   | Content from `content/about/index.md`; hidden from nav; reached via `[Me]` footer link |
 
 ### Individual Work Pages (`/works/<type>/<slug>/`)
 
@@ -61,15 +61,15 @@ The typed command in the nav header switches to `less paper.pdf` (typed once, he
 
 ## Right Panels
 
-| Window title | Template | Source |
-|---|---|---|
-| `publications.sh` | `panel-openalex.html` | OpenAlex API — citation count, h-index, i10-index |
-| `topics.sh` | `panel-research.html` | Build-time tag cloud from works front matter; limit via `researchTagLimit` in `hugo.toml` |
-| `music.sh` | `panel-lastfm.html` | Last.fm API + `data/playlists.yml` |
-| `manga.sh` | `panel-anilist.html` | AniList API — recently read manga |
-| `screen.sh` | `panel-trakt.html` | Trakt + TMDB APIs — recently watched |
-| `photos.sh` | `panel-unsplash.html` | Unsplash API — latest uploads |
-| `privacy.sh` | `panel-privacy.html` | GoatCounter disclosure + manual cache flush |
+| Window title        | Template                | Source                                                                                        |
+| ------------------- | ----------------------- | --------------------------------------------------------------------------------------------- |
+| `publications.sh` | `panel-openalex.html` | OpenAlex API — citation count, h-index, i10-index                                            |
+| `topics.sh`       | `panel-research.html` | Build-time tag cloud from works front matter; limit via `researchTagLimit` in `hugo.toml` |
+| `music.sh`        | `panel-lastfm.html`   | Last.fm API +`data/playlists.yml`                                                           |
+| `manga.sh`        | `panel-anilist.html`  | AniList API — recently read manga                                                            |
+| `screen.sh`       | `panel-trakt.html`    | Trakt + TMDB APIs — recently watched                                                         |
+| `photos.sh`       | `panel-unsplash.html` | Unsplash API — latest uploads                                                                |
+| `privacy.sh`      | `panel-privacy.html`  | GoatCounter disclosure + manual cache flush                                                   |
 
 All API panels cache responses in `localStorage`. TTL is configurable via `cacheTTLMinutes` in `hugo.toml` (default: 60 minutes).
 
@@ -95,15 +95,18 @@ Set in Netlify environment for production. For local dev, export vars before run
 Several layers of structured data are generated at build time.
 
 **On every page:**
+
 - Standard `<meta name="description">` — uses abstract (truncated to 160 chars) on work pages, site description elsewhere
 - Open Graph tags: `og:title`, `og:description`, `og:type` (`website` on home, `article` elsewhere), `og:image`, `og:logo` (apple-touch-icon), `og:site_name`
 - Twitter Card tags
 - JSON-LD `BreadcrumbList` — built from the page URL path; non-section segments (e.g. `journal`) fall back to `/works/?search=journal`
 
 **On the home page** (`layouts/partials/home-seo.html`):
+
 - JSON-LD `Person` schema — name, job title, image, description, `sameAs` links to ORCID and Google Scholar
 
 **On individual work pages** (`layouts/partials/work-seo.html`):
+
 - `citation_*` meta tags for academic indexers (Google Scholar, Semantic Scholar): title, authors (Family, Given format), date, journal, DOI, abstract URL, fulltext URL
 - JSON-LD `ScholarlyArticle` — title, date, URL, DOI as `sameAs`, venue as `isPartOf`, authors with ORCID `identifier`, abstract as `description`
 
@@ -121,11 +124,11 @@ ID convention: `<firstname>-<institution>`. When someone moves institutions, a n
 
 ## Shortcodes
 
-| Shortcode | Purpose |
-|---|---|
-| `{{< collab-count >}}` | Unique collaborator count (deduped by ORCID) |
+| Shortcode                     | Purpose                                                  |
+| ----------------------------- | -------------------------------------------------------- |
+| `{{< collab-count >}}`      | Unique collaborator count (deduped by ORCID)             |
 | `{{< institution-count >}}` | Unique institutions across all collaborator affiliations |
-| `{{< country-list >}}` | Countries sorted by institution count |
+| `{{< country-list >}}`      | Countries sorted by institution count                    |
 
 Used in `content/about/index.md`. Update automatically as works and researchers grow.
 
@@ -136,11 +139,13 @@ Used in `content/about/index.md`. Update automatically as works and researchers 
 The downloadable CV is auto-generated from site data by `scripts/build_cv.py` using WeasyPrint. Adding a publication to `content/works/` includes it automatically on the next build.
 
 **Data sources:**
+
 - `data/cv.yml` — personal info, education, experience, awards
 - `data/researchers.yml` — author names resolved by id
 - `content/works/` — publications, picked up automatically
 
 **Output:** `static/general/cv/`
+
 - `cv_htunteza.pdf` — current version (linked from sidebar)
 - `cv_htunteza_YYYYMMDD.pdf` — dated archive (3 most recent kept)
 
@@ -196,6 +201,7 @@ The privacy panel has two cache flush options: now, and in 10 seconds. There is 
 ## Attributions
 
 - [Eye test icons](https://www.flaticon.com/free-icons/eye-test) created by Freepik - Flaticon
+- [Duck Favicon](https://www.magnific.com/icon/duck_530260) created by Magnific - Roundicons
 
 ---
 
