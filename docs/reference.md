@@ -26,7 +26,7 @@ Comprehensive reference for the Hugo site at `htunteza.com`. Covers structure, c
     - [3.1 Sections overview](#31-sections-overview)
     - [3.2 Works front matter](#32-works-front-matter)
     - [3.3 Posts front matter](#33-posts-front-matter)
-    - [3.4 Conference cascade](#34-conference-cascade)
+    - [3.4 Conference and report cascade](#34-conference-and-report-cascade)
   - [4. Data Files](#4-data-files)
     - [`data/homepage.yml`](#datahomepageyml)
     - [`data/researchers.yml`](#dataresearchersyml)
@@ -74,7 +74,7 @@ hugo_console/
 │   ├── about/                 Author bio (index.md with shortcodes)
 │   ├── posts/                 Blog posts (page bundles)
 │   ├── works/
-│   │   ├── _index.md          Cascade rules (conference suppression)
+│   │   ├── _index.md          Cascade rules (conference + report suppression)
 │   │   ├── journal/
 │   │   ├── conference/        render:never — no HTML output
 │   │   ├── preprint/
@@ -245,7 +245,7 @@ Loaded first in `scripts.html` via `js.Build`. All other modules read `window.CO
 | --- | --- | --- |
 | `/` | `layouts/index.html` | Career profile; latest 2 posts; recent works (last 1 year) |
 | `/works/` | `_default/works.html` | Filter panel + publications grouped by category then year |
-| `/works/<type>/<slug>/` | `_default/work.html` | journal/preprint/dissertation/report rendered; conference suppressed |
+| `/works/<type>/<slug>/` | `_default/work.html` | journal/preprint/dissertation rendered; conference and report suppressed |
 | `/posts/` | `_default/list.html` | Posts grouped by year |
 | `/posts/<slug>/` | `layouts/posts/single.html` | Blog post; supports `company` field |
 | `/blood/` | `_default/blood.html` | Blood donation centers + photo gallery |
@@ -312,7 +312,7 @@ company: "Optional — shown as a tag on the post"  # optional
 private: false   # true → hidden from list, sitemap, and search engines
 ```
 
-### 3.4 Conference cascade
+### 3.4 Conference and report cascade
 
 `content/works/_index.md`:
 
@@ -326,10 +326,16 @@ cascade:
       list: always     # Still included in page collections (works filter, llms.txt)
   - _target:
       kind: page
-    layout: work       # All other works pages use _default/work.html
+      path: /works/report/**
+    build:
+      render: never
+      list: always
+  - _target:
+      kind: page
+    layout: work       # journal/preprint/dissertation use _default/work.html
 ```
 
-Conference entries appear in the `/works/` filter page and in `llms.txt` (only when an external URL exists). They have no permalink — linking to `/works/?search=conference` is the fallback.
+Conference and report entries appear in the `/works/` filter page and in `llms.txt` (only when an external URL exists). They have no permalink — linking to `/works/?search=conference` or `/works/?search=report` is the fallback.
 
  ---
 
@@ -860,9 +866,9 @@ Hugo dicts must go through `| jsonify | safeJS`, not just `| jsonify`:
 
 ### BreadcrumbList URL fallback
 
-Path segments that don't resolve to a Hugo page (`site.GetPage` returns nil) fall back to `/works/?search=<segment>`. This handles intermediate segments like `journal` (which has no `_index.md`) without producing dead links.
+The partial is skipped entirely on 404 pages (`.Kind == "404"` check) — Netlify serves the 404 template on non-existent paths, which would otherwise emit a malformed breadcrumb.
 
-On work single pages the last segment (the slug) always uses `.Permalink` — the correct canonical URL with trailing slash.
+Intermediate path segments that don't resolve to a Hugo page (`site.GetPage` returns nil) are silently skipped. Only the final segment (the current page) always appears, using `.Permalink`. This avoids dead-link items for segments like `journal` or `report` which have no `_index.md`.
 
 ### Work page microdata
 
@@ -889,12 +895,12 @@ Both generated at build time via Hugo custom output formats. Only the home page 
 
 | Type | `llms.txt` | `llms-full.txt` |
 | --- | --- | --- |
-| journal, preprint, dissertation, report | Always (rendered pages → use `.Permalink`) | Always, with abstract |
-| conference | Only when external URL exists (fulltext/pubmed/poster) | Same |
+| journal, preprint, dissertation | Always (rendered pages → use `.Permalink`) | Always, with abstract |
+| conference, report | Only when external URL exists (fulltext/pubmed/poster/mirror) | Same |
 | posts | 10 most recent | Not included |
 | blood, gallery | Never | Never |
 
-Conference entries with `render: never` have no permalink. They're only included when a `fulltext`, `pubmed`, or `poster` source URL exists — otherwise they'd produce dead links.
+Conference and report entries with `render: never` have no permalink. They're only included when a `fulltext`, `pubmed`, `poster`, or `mirror` source URL exists — otherwise they'd produce dead links.
 
 `notAlternative = true` in both output format definitions prevents `<link rel="alternate" type="text/plain">` from appearing in the HTML `<head>`.
 *

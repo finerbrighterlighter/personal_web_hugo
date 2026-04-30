@@ -1,3 +1,4 @@
+{{- if ne .Kind "404" -}}
 {{- $items := slice (dict "@type" "ListItem" "position" 1 "name" "Home" "item" .Site.BaseURL) -}}
 {{- $pos   := 2 -}}
 {{- $path  := "" -}}
@@ -10,18 +11,17 @@
   {{- $path = printf "%s/%s" $path $part -}}
   {{- $isLast := eq $i $lastIdx -}}
   {{- $pg   := site.GetPage $path -}}
-  {{- $name := $part | title -}}
-  {{- $url  := "" -}}
   {{- if $pg -}}
-    {{- $name = $pg.Title -}}
-    {{- $url  = cond $isLast $.Permalink (printf "%s/" $path | absURL) -}}
-  {{- else -}}
-    {{- $url = printf "%s?search=%s" ("/works/" | absURL) $part -}}
-    {{- if $isLast -}}{{- $url = $.Permalink -}}{{- $name = $.Title -}}{{- end -}}
+    {{- $name := $pg.Title -}}
+    {{- $url  := cond $isLast $.Permalink (printf "%s/" $path | absURL) -}}
+    {{- $items = $items | append (dict "@type" "ListItem" "position" $pos "name" $name "item" $url) -}}
+    {{- $pos = add $pos 1 -}}
+  {{- else if $isLast -}}
+    {{- $items = $items | append (dict "@type" "ListItem" "position" $pos "name" $.Title "item" $.Permalink) -}}
+    {{- $pos = add $pos 1 -}}
   {{- end -}}
-  {{- $items = $items | append (dict "@type" "ListItem" "position" $pos "name" $name "item" $url) -}}
-  {{- $pos = add $pos 1 -}}
 {{- end -}}
 {{- if gt (len $items) 1 -}}
 <script type="application/ld+json">{{ dict "@context" "https://schema.org" "@type" "BreadcrumbList" "itemListElement" $items | jsonify | safeJS }}</script>
+{{- end -}}
 {{- end -}}

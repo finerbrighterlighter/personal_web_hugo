@@ -9,5 +9,11 @@ cascade:
       list: always
   - _target:
       kind: page
+      path: /works/report/**
+    build:
+      render: never
+      list: always
+  - _target:
+      kind: page
     layout: work
 ---

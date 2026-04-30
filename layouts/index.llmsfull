@@ -11,7 +11,7 @@
 
 ## Publications
 
-{{ $renderedTypes := slice "journal" "preprint" "dissertation" "report" -}}
+{{ $renderedTypes := slice "journal" "preprint" "dissertation" -}}
 {{ $cats := slice "journal" "conference-speaking" "conference-poster" "preprint" "dissertation" "report" -}}
 {{ range $cats -}}
   {{ $cat := . -}}
