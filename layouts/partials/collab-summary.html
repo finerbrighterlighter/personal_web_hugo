@@ -1,0 +1,92 @@
+{{- $rm := dict -}}
+{{- range site.Data.researchers -}}
+  {{- $rm = merge $rm (dict .id .) -}}
+{{- end -}}
+
+{{- $meOrcid := "" -}}
+{{- with index $rm "me-ceb" -}}{{- $meOrcid = .orcid -}}{{- end -}}
+
+{{- $expand := dict "UK" "the United Kingdom" "USA" "the United States" "US" "the United States" "UAE" "the United Arab Emirates" -}}
+{{- $keywords := slice "University" "Hospital" "Academy" "Institute" "College" "Unit" -}}
+
+{{- $seenCollab := slice -}}
+{{- $orgs := slice -}}
+{{- $countMap := dict -}}
+{{- $seenPairs := slice -}}
+
+{{- range where site.RegularPages "Section" "works" -}}
+  {{- range .Params.authors -}}
+    {{- with .id -}}
+      {{- $person := index $rm . -}}
+      {{- with $person -}}
+        {{- $key := .id -}}
+        {{- with .orcid -}}{{- $key = . -}}{{- end -}}
+        {{- $isMe := false -}}
+        {{- if eq .id "me-ceb" -}}{{- $isMe = true -}}{{- end -}}
+        {{- if and (not $isMe) (ne $meOrcid "") (eq $key $meOrcid) -}}{{- $isMe = true -}}{{- end -}}
+        {{- if not $isMe -}}
+          {{/* Collaborator count (ORCID-deduped) */}}
+          {{- if not (in $seenCollab $key) -}}
+            {{- $seenCollab = $seenCollab | append $key -}}
+          {{- end -}}
+          {{/* Institution + country counts */}}
+          {{- range .affiliations -}}
+            {{- $parts := split . "," -}}
+            {{- $raw := index $parts (sub (len $parts) 1) | strings.TrimSpace -}}
+            {{- $country := $raw -}}
+            {{- with index $expand $raw -}}{{- $country = . -}}{{- end -}}
+            {{- $org := "" -}}
+            {{- range $parts -}}
+              {{- $seg := . | strings.TrimSpace -}}
+              {{- if not $org -}}
+                {{- range $keywords -}}
+                  {{- if strings.Contains $seg . -}}{{- $org = $seg -}}{{- end -}}
+                {{- end -}}
+              {{- end -}}
+            {{- end -}}
+            {{- if and $org (not (in $orgs $org)) -}}
+              {{- $orgs = $orgs | append $org -}}
+            {{- end -}}
+            {{- $pair := printf "%s|%s" $org $country -}}
+            {{- if and $org $country (not (in $seenPairs $pair)) -}}
+              {{- $seenPairs = $seenPairs | append $pair -}}
+              {{- $cur := index $countMap $country | default 0 -}}
+              {{- $countMap = merge $countMap (dict $country (add $cur 1)) -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $collabN := len $seenCollab -}}
+{{- $instN := len $orgs -}}
+
+{{- $entries := slice -}}
+{{- range $country, $count := $countMap -}}
+  {{- $entries = $entries | append (dict "name" $country "count" $count) -}}
+{{- end -}}
+{{- $sorted := sort $entries "count" "desc" -}}
+{{- $names := slice -}}
+{{- range $sorted -}}{{- $names = $names | append .name -}}{{- end -}}
+
+{{- $n := len $names -}}
+{{- $countryStr := "" -}}
+{{- if eq $n 1 -}}
+  {{- $countryStr = index $names 0 -}}
+{{- else if eq $n 2 -}}
+  {{- $countryStr = printf "%s and %s" (index $names 0) (index $names 1) -}}
+{{- else -}}
+  {{- range $i, $c := $names -}}
+    {{- if eq $i (sub $n 1) -}}
+      {{- $countryStr = printf "%sand %s" $countryStr $c -}}
+    {{- else -}}
+      {{- $countryStr = printf "%s%s, " $countryStr $c -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if and $collabN $instN $countryStr -}}
+<p>This work has involved collaboration with <strong>{{ $collabN }} researchers</strong> across <strong>{{ $instN }} institutions</strong> in {{ $countryStr }}.</p>
+{{- end -}}

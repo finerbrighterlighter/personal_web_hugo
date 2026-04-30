@@ -23,6 +23,7 @@
 <h2 class="category-header">{{ .title }}</h2>
 <div class="profile-details">
 {{ .description | markdownify }}
+{{ partial "collab-summary.html" $ }}
 </div>
 {{- end -}}
 
