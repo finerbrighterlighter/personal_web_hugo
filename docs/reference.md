@@ -2,46 +2,69 @@
 
 Comprehensive reference for the Hugo site at `htunteza.com`. Covers structure, configuration parameters, data schemas, templates, JavaScript modules, and the Python CV builder. Use Ctrl+F to navigate.
 
-> **Other docs:**
-> `README.md` — public-facing overview · `CLAUDE.md` — Claude Code instructions (gitignored)
+> **Other docs:**  
+> `README.md` — public-facing overview  
+> `CLAUDE.md` — Claude Code instructions (gitignored)
 
 ---
 
 ## Table of Contents
 
-1. [Project Layout](#1-project-layout)
-2. [Configuration](#2-configuration)
-   - [hugo.toml](#21-hugotoml)
-   - [netlify.toml](#22-netlifytom)
-   - [window.CONFIG (assets/js/config.js)](#23-windowconfig)
-3. [Content](#3-content)
-   - [Sections overview](#31-sections-overview)
-   - [Works front matter](#32-works-front-matter)
-   - [Posts front matter](#33-posts-front-matter)
-   - [Conference cascade](#34-conference-cascade)
-4. [Data Files](#4-data-files)
-5. [Templates](#5-templates)
-   - [Layout hierarchy](#51-layout-hierarchy)
-   - [Key templates](#52-key-templates)
-   - [Partials](#53-partials)
-   - [Shortcodes](#54-shortcodes)
-   - [Render hooks](#55-render-hooks)
-6. [JavaScript Modules](#6-javascript-modules)
-   - [Module overview](#61-module-overview)
-   - [Tunable constants](#61a-tunable-constants-by-module)
-   - [console_type.js](#62-console_typejs)
-   - [works_filter.js](#63-works_filterjs)
-   - [theme.js](#64-themejs)
-   - [openalex.js](#65-openalexjs)
-7. [Python Script — build_cv.py](#7-python-script--build_cvpy)
-8. [SEO and Structured Data](#8-seo-and-structured-data)
-9. [LLMs.txt Outputs](#9-llmstxt-outputs)
+- [htunteza.com — Technical Reference](#htuntezacom--technical-reference)
+  - [Table of Contents](#table-of-contents)
+  - [1. Project Layout](#1-project-layout)
+  - [2. Configuration](#2-configuration)
+    - [2.1 `hugo.toml`](#21-hugotoml)
+      - [Site-level](#site-level)
+      - [`[params]`](#params)
+      - [`[[params.navlinks]]`](#paramsnavlinks)
+      - [`[outputFormats]`](#outputformats)
+      - [`[outputs]`](#outputs)
+    - [2.2 `netlify.toml`](#22-netlifytoml)
+    - [2.3 `window.CONFIG`](#23-windowconfig)
+  - [3. Content](#3-content)
+    - [3.1 Sections overview](#31-sections-overview)
+    - [3.2 Works front matter](#32-works-front-matter)
+    - [3.3 Posts front matter](#33-posts-front-matter)
+    - [3.4 Conference cascade](#34-conference-cascade)
+  - [4. Data Files](#4-data-files)
+    - [`data/homepage.yml`](#datahomepageyml)
+    - [`data/researchers.yml`](#dataresearchersyml)
+    - [`data/cv.yml`](#datacvyml)
+    - [`data/themes.yml`](#datathemesyml)
+    - [`data/work_filters.yml`](#datawork_filtersyml)
+    - [`data/playlists.yml`](#dataplaylistsyml)
+    - [`data/blood.yml`](#databloodyml)
+  - [5. Templates](#5-templates)
+    - [5.1 Layout hierarchy](#51-layout-hierarchy)
+    - [5.2 Key templates](#52-key-templates)
+    - [5.3 Partials](#53-partials)
+    - [5.4 Shortcodes](#54-shortcodes)
+    - [5.5 Render hooks](#55-render-hooks)
+  - [6. JavaScript Modules](#6-javascript-modules)
+    - [6.1 Module overview](#61-module-overview)
+    - [6.1a Tunable constants by module](#61a-tunable-constants-by-module)
+    - [6.2 `console_type.js`](#62-console_typejs)
+    - [6.3 `works_filter.js`](#63-works_filterjs)
+    - [6.4 `theme.js`](#64-themejs)
+    - [6.5 `openalex.js`](#65-openalexjs)
+  - [7. Python Script — `build_cv.py`](#7-python-script--build_cvpy)
+    - [Function reference](#function-reference)
+    - [Data flow](#data-flow)
+    - [Output](#output)
+    - [Environment setup (first time)](#environment-setup-first-time)
+  - [8. SEO and Structured Data](#8-seo-and-structured-data)
+    - [Partials](#partials)
+    - [JSON-LD encoding](#json-ld-encoding)
+    - [BreadcrumbList URL fallback](#breadcrumblist-url-fallback)
+    - [Work page microdata](#work-page-microdata)
+  - [9. LLMs.txt Outputs](#9-llmstxt-outputs)
 
----
+ ---
 
 ## 1. Project Layout
 
-```
+```text
 hugo_console/
 ├── assets/
 │   └── js/
@@ -93,10 +116,11 @@ hugo_console/
 ```
 
 **Generated at build time (not committed):**
+
 - `public/` — full site output
 - `resources/` — Hugo image/asset cache
 
----
+ ---
 
 ## 2. Configuration
 
@@ -105,7 +129,7 @@ hugo_console/
 #### Site-level
 
 | Key | Value | Effect |
-|---|---|---|
+| --- | --- | --- |
 | `baseURL` | `"https://htunteza.com"` | Canonical base for all `absURL` calls |
 | `languageCode` | `"en-us"` | HTML `lang` attribute |
 | `title` | `"Htun Teza"` | `{{ .Site.Title }}` — used in `<title>`, og:site_name |
@@ -113,7 +137,7 @@ hugo_console/
 #### `[params]`
 
 | Param | Type | Value | Effect |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `author` | string | `"Htun Teza"` | `<meta name="author">` |
 | `description` | string | Site tagline | Default `<meta description>`, og:description, home JSON-LD |
 | `animateStyle` | string | `"animate-fade-up"` | CSS class on `.terminal-layout` container |
@@ -129,7 +153,7 @@ hugo_console/
 Each entry defines one item in the nav bar. Order in the array = display order.
 
 | Field | Type | Effect |
-|---|---|---|
+| --- | --- | --- |
 | `name` | string | Link label |
 | `url` | string | Path (e.g. `"/works/"`) |
 | `host` | string | Shell hostname shown in header when current URL starts with this |
@@ -142,7 +166,7 @@ On work single pages the Works link is additionally suppressed — only Home, Po
 #### `[outputFormats]`
 
 | Format | baseName | mediaType | notAlternative | Used for |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `llmstxt` | `llms` | `text/plain` | `true` | `/llms.txt` |
 | `llmsfull` | `llms-full` | `text/plain` | `true` | `/llms-full.txt` |
 
@@ -156,7 +180,7 @@ home = ["HTML", "llmstxt", "llmsfull"]
 
 Only the home page has extra output formats. All other pages default to `["HTML"]`.
 
----
+ ---
 
 ### 2.2 `netlify.toml`
 
@@ -174,7 +198,7 @@ Hugo version is pinned here. To upgrade: change `HUGO_VERSION` and test locally 
 **Environment variables** (set in Netlify dashboard, not in this file):
 
 | Variable | Used by | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `HUGO_UNSPLASH_KEY` | `unsplash.js` | Unsplash API access key |
 | `HUGO_TRAKT_KEY` | `trakt.js` | Trakt API client ID |
 | `HUGO_TMDB_KEY` | `trakt.js` | TMDB API key (for poster images) |
@@ -182,7 +206,7 @@ Hugo version is pinned here. To upgrade: change `HUGO_VERSION` and test locally 
 
 For local dev, export these before running `hugo server`.
 
----
+ ---
 
 ### 2.3 `window.CONFIG`
 
@@ -202,7 +226,7 @@ window.CONFIG = {
 Loaded first in `scripts.html` via `js.Build`. All other modules read `window.CONFIG` at runtime.
 
 | Key | Consumed by |
-|---|---|
+| --- | --- |
 | `unsplash` | `unsplash.js` |
 | `trakt` | `trakt.js` |
 | `tmdb` | `trakt.js` |
@@ -210,14 +234,14 @@ Loaded first in `scripts.html` via `js.Build`. All other modules read `window.CO
 | `cacheTTLMinutes` | `cache.js`, `openalex.js`, `trakt.js`, `unsplash.js` |
 | `researchTagLimit` | `research.js` |
 
----
+ ---
 
 ## 3. Content
 
 ### 3.1 Sections overview
 
 | URL pattern | Layout template | Notes |
-|---|---|---|
+| --- | --- | --- |
 | `/` | `layouts/index.html` | Career profile; latest 2 posts; recent works (last 1 year) |
 | `/works/` | `_default/works.html` | Filter panel + publications grouped by category then year |
 | `/works/<type>/<slug>/` | `_default/work.html` | journal/preprint/dissertation/report rendered; conference suppressed |
@@ -269,7 +293,7 @@ methods: [machine learning, survival analysis, multi-state model]
 **`sources.text` values and their effects:**
 
 | text | Button label | Also used as |
-|---|---|---|
+| --- | --- | --- |
 | `fulltext` | Publisher | Title link, citation_fulltext_html_url meta tag |
 | `pubmed` | PubMed | Title link (fallback), citation_abstract_html_url implied |
 | `mirror` | Author Copy | Title link (fallback) |
@@ -306,7 +330,7 @@ cascade:
 
 Conference entries appear in the `/works/` filter page and in `llms.txt` (only when an external URL exists). They have no permalink — linking to `/works/?search=conference` is the fallback.
 
----
+ ---
 
 ## 4. Data Files
 
@@ -315,7 +339,7 @@ Conference entries appear in the `/works/` filter page and in `llms.txt` (only w
 Drives the homepage and sidebar. Not read by `build_cv.py`.
 
 | Top-level key | Contents | Consumed by |
-|---|---|---|
+| --- | --- | --- |
 | `universities` | Named anchors for university data (YAML anchors reused in education) | `education` entries |
 | `sidebar` | `name`, `job_title`, `avatar`, `email`, `phone`, `area`, `location`, `website`, `orcid`, `scholar_profile`, `cv`, `vcard` | `sidebar-content.html`, `home-seo.html` |
 | `career_profile` | Markdown description text | `index.html` |
@@ -324,6 +348,7 @@ Drives the homepage and sidebar. Not read by `build_cv.py`.
 | `projects` | Array: `name`, `description`, `link` | `index.html` (first 2 shown, rest collapse) |
 
 Key sidebar fields used in SEO:
+
 - `sidebar.orcid` → `sameAs` in home JSON-LD Person schema
 - `sidebar.scholar_profile` → Google Scholar `sameAs` + works page Scholar button URL
 
@@ -343,6 +368,7 @@ Flat array, sorted **A→Z by `id`**, with letter-header comments (`# ── ID=
 **ID convention:** `<firstname>-<institution>`. When a researcher moves, add a new entry with a new suffix — they share the same ORCID. Same-person entries sit adjacent in the file.
 
 **Deduplication:**
+
 - `collab-count` shortcode: dedupes by ORCID → one person at two institutions = 1 collaborator
 - `institution-count` / `country-list`: iterates all ids directly → both institutions counted if a person moves
 
@@ -353,7 +379,7 @@ Flat array, sorted **A→Z by `id`**, with letter-header comments (`# ── ID=
 Read exclusively by `build_cv.py`. Not used by any Hugo template.
 
 | Key | Contents |
-|---|---|
+| --- | --- |
 | `header` | `name`, `address` |
 | `contact` | `phone`, `email`, `website` |
 | `research_interests` | Array of strings (semicolon-joined in PDF) |
@@ -428,13 +454,13 @@ bld_cen:
 
 Consumed by `_default/blood.html`.
 
----
+ ---
 
 ## 5. Templates
 
 ### 5.1 Layout hierarchy
 
-```
+```text
 baseof.html                    Wraps every page
 ├── <head>
 │   ├── favicon.html
@@ -462,6 +488,7 @@ Scripts loaded at bottom of `<body>` via `partials/scripts.html`.
 ### 5.2 Key templates
 
 **`_default/work.html`** — Individual publication page. Implements `ScholarlyArticle` microdata. Structure:
+
 1. Title (linked to fulltext → pubmed → mirror, in priority order)
 2. Author list with ORCID hyperlinks; superscript affiliation numbers when >1 unique affiliation
 3. Affiliation block (numbered, ordered by first appearance)
@@ -483,7 +510,7 @@ BibTeX link format: `https://doi2bib.org/bib/<bare-doi>` — doi2bib requires th
 ### 5.3 Partials
 
 | Partial | Called from | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `header.html` | `baseof.html` | `<title>`, description, OG tags, Twitter Card, canonical, robots, RSS link |
 | `favicon.html` | `baseof.html` | `<link>` tags for all favicon sizes + webmanifest |
 | `theme-data.html` | `baseof.html` | Embeds `themes.yml` as JSON; blocking inline script writes CSS vars before render |
@@ -506,7 +533,7 @@ BibTeX link format: `https://doi2bib.org/bib/<bare-doi>` — doi2bib requires th
 ### 5.4 Shortcodes
 
 | Shortcode | Args | Returns | Data source | Notes |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `collab-count` | none | integer | `researchers.yml` + all works | Dedupes by ORCID; skips `me-ceb` and any entry sharing its ORCID |
 | `institution-count` | none | integer | `researchers.yml` + all works | No person dedup — both institutions count if someone moves; keyword extraction: University, Hospital, Academy, Institute, College, Unit |
 | `country-list` | none | prose string | `researchers.yml` + all works | Countries sorted by institution count desc; Oxford comma; expands UK, USA/US, UAE |
@@ -519,12 +546,12 @@ Usage in Markdown: `{{< collab-count >}}`, `{{< gallery match="*.webp" >}}`
 Located in `layouts/_default/_markup/`:
 
 | Hook | File | Behavior |
-|---|---|---|
+| --- | --- | --- |
 | Link | `render-link.html` | External links (`http*`) automatically get `target="_blank" rel="noopener"` |
 | Image | `render-image.html` | Adds `class="img-responsive"` to all `<img>` tags |
 | Heading | `render-heading.html` | Standard heading with `id` anchor for deep linking |
 
----
+ ---
 
 ## 6. JavaScript Modules
 
@@ -533,7 +560,7 @@ All files in `static/js/`, loaded as `type="module"` in `partials/scripts.html`.
 ### 6.1 Module overview
 
 | File | Imports | DOM target | External API | Cache key | Notes |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `cache.js` | — | — | localStorage | — | Exports `getCache(key)` / `setCache(key, data)`; TTL from `window.CONFIG.cacheTTLMinutes` |
 | `cache-expires.js` | — | `#cache-expire-line`, `#cache-flush-btns` | localStorage | — | Shows soonest expiry; "clear now" and "slow" (5-step delay) flush buttons |
 | `currenttime.js` | — | `#timezone` | Intl API | — | Live clock, updates every 1000ms |
@@ -553,7 +580,7 @@ All files in `static/js/`, loaded as `type="module"` in `partials/scripts.html`.
 ### 6.1a Tunable constants by module
 
 | File | Constant | Default | Effect |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `openalex.js` | `authorId` | `"A5065083669"` | OpenAlex author record ID |
 | `openalex.js` | `graphDisplayYears` | `5` | Years shown in the bar chart |
 | `lastFM.js` | `LASTFM_USER` | `"fibrili"` | Last.fm username |
@@ -590,6 +617,7 @@ All files in `static/js/`, loaded as `type="module"` in `partials/scripts.html`.
 Animated terminal typing in the nav header `<span id="typed-command">`.
 
 **Content pools:**
+
 - Shell commands: `whoami`, `date`, `uptime`, `pwd`, `ls`, `history`, `clear`
 - HPC: `sbatch`, `squeue`, `scancel`, `sacct`, `sinfo` commands
 - Container: `singularity exec` invocations
@@ -597,14 +625,16 @@ Animated terminal typing in the nav header `<span id="typed-command">`.
 - Blood donation slogans: 20 messages in English and Burmese (disguised as terminal commands: `bloodctl say`, `donate-cli message`)
 
 **Timing:**
+
 | Event | Delay |
-|---|---|
+| --- | --- |
 | Typing a character | ~170ms (±random) |
 | Backspace | ~80ms |
 | Idle between lines | 500–2000ms + line-length padding |
 | Typo recovery pause | Additional ~200ms |
 
 **Typo system:** 25% chance per line. Two typo types chosen 50/50:
+
 - *Quote mistake:* adds an early quote character mid-word, then erases and continues
 - *Skip-word mistake:* skips a word, finishes the line, then erases back to insert it
 
@@ -621,6 +651,7 @@ Animated terminal typing in the nav header `<span id="typed-command">`.
 Client-side filter for the `/works/` page.
 
 **Filter state:**
+
 ```javascript
 filters = {
   condition: "all",
@@ -631,6 +662,7 @@ filters = {
 ```
 
 **URL sync:**
+
 - `readFromURL()` — called on load; restores filter state + search from `?condition=X&method=Y&search=Z`
 - `writeToURL()` — called on any change; uses `history.replaceState` (no back-button entry)
 
@@ -645,7 +677,7 @@ filters = {
 **localStorage keys:**
 
 | Key | Values | Effect |
-|---|---|---|
+| --- | --- | --- |
 | `theme-mode` | `"dark"` \| `"light"` | Current mode |
 | `theme-palette-dark` | palette id (e.g. `"nord"`) | Dark mode palette |
 | `theme-palette-light` | palette id (e.g. `"nord"`) | Light mode palette |
@@ -659,12 +691,14 @@ filters = {
 ### 6.5 `openalex.js`
 
 **Hardcoded constants:**
+
 ```javascript
 const authorId         = "A5065083669";  // OpenAlex author ID — update if record changes
 const graphDisplayYears = 5;             // Years shown in the bar chart
 ```
 
 **API calls (parallel):**
+
 1. `GET https://api.openalex.org/authors/A5065083669` — author summary (h-index, i10, cited_by_count, counts_by_year)
 2. `GET https://api.openalex.org/works?filter=author.id:A5065083669&per_page=200` — full works list
 
@@ -673,7 +707,7 @@ const graphDisplayYears = 5;             // Years shown in the bar chart
 **Metrics computed:**
 
 | Metric | Career | Since `cutoffYear` |
-|---|---|---|
+| --- | --- | --- |
 | Works | Articles + preprints | Filtered by year |
 | Citations | `author.cited_by_count` | Sum of `counts_by_year` entries |
 | h-index | `summary_stats.h_index` | Recalculated from filtered works |
@@ -694,7 +728,7 @@ const graphDisplayYears = 5;             // Years shown in the bar chart
 ### Function reference
 
 | Function | Args | Returns | Purpose |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `load_yaml(path)` | `Path` | `dict` | Parses a YAML file |
 | `load_works(section)` | `str` | `list[dict]` | Reads all `.md` front matter from `content/works/<section>/`; sorted newest-first |
 | `load_researcher_map()` | — | `dict` | Builds `{id: person}` from `researchers.yml` |
@@ -708,7 +742,7 @@ const graphDisplayYears = 5;             // Years shown in the bar chart
 
 ### Data flow
 
-```
+```text
 data/cv.yml               → build_html()  → Header, Research Interests,
                                              Education, Work Experience,
                                              Awards, Additional Experiences
@@ -724,7 +758,7 @@ data/researchers.yml      → get_researcher_map()
 
 ### Output
 
-```
+```text
 static/general/cv/
 ├── cv_htunteza.pdf             Always-current; sidebar links here
 └── cv_htunteza_YYYYMMDD.pdf    Dated archive
@@ -746,14 +780,14 @@ sudo apt-get install libcairo2 libpango-1.0-0 libpangocairo-1.0-0 \
                      libgdk-pixbuf2.0-0 libffi-dev shared-mime-info
 ```
 
----
+ ---
 
 ## 8. SEO and Structured Data
 
 ### Partials
 
 | Partial | Condition | Output |
-|---|---|---|
+| --- | --- | --- |
 | `header.html` | Every page | `<meta name="description">` (abstract on works, site description elsewhere); `og:title`, `og:description`, `og:type` (`website` home / `article` others), `og:image`, `og:logo` (apple-touch-icon.png), `og:site_name`; Twitter Card tags; `<link rel="canonical">` |
 | `home-seo.html` | `.IsHome` | JSON-LD `Person` — name, jobTitle, image (apple-touch-icon.png, 180×180), description, sameAs (ORCID + Google Scholar) |
 | `work-seo.html` | `works` section + `.IsPage` | `citation_title`, `citation_author` (Family, Given — one tag per author), `citation_publication_date`, `citation_journal_title`, `citation_doi`, `citation_abstract_html_url`, `citation_fulltext_html_url`; JSON-LD `ScholarlyArticle` with author ORCID as `identifier` |
@@ -763,7 +797,7 @@ sudo apt-get install libcairo2 libpango-1.0-0 libpangocairo-1.0-0 \
 
 Hugo dicts must go through `| jsonify | safeJS`, not just `| jsonify`:
 
-```
+```text
 {{ $ld | jsonify | safeJS }}   ✓  outputs valid JSON object
 {{ $ld | jsonify }}            ✗  Go template re-encodes the string in <script> context → double-encoded
 ```
@@ -786,21 +820,21 @@ On work single pages the last segment (the slug) always uses `.Permalink` — th
 
 `data-doi` is the bare DOI (prefix stripped) — consumed by `work-citation.js` for the OpenAlex API call.
 
----
+ ---
 
 ## 9. LLMs.txt Outputs
 
 Both generated at build time via Hugo custom output formats. Only the home page (`[outputs] home = [...]`) produces these files.
 
 | File | URL | Template | Content |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `llms.txt` | `/llms.txt` | `layouts/index.llmstxt` | Structured links only — title, venue, year, permalink |
 | `llms-full.txt` | `/llms-full.txt` | `layouts/index.llmsfull` | Same structure + full abstract as blockquote under each entry |
 
 **What's included:**
 
 | Type | `llms.txt` | `llms-full.txt` |
-|---|---|---|
+| --- | --- | --- |
 | journal, preprint, dissertation, report | Always (rendered pages → use `.Permalink`) | Always, with abstract |
 | conference | Only when external URL exists (fulltext/pubmed/poster) | Same |
 | posts | 10 most recent | Not included |
@@ -809,3 +843,4 @@ Both generated at build time via Hugo custom output formats. Only the home page 
 Conference entries with `render: never` have no permalink. They're only included when a `fulltext`, `pubmed`, or `poster` source URL exists — otherwise they'd produce dead links.
 
 `notAlternative = true` in both output format definitions prevents `<link rel="alternate" type="text/plain">` from appearing in the HTML `<head>`.
+*

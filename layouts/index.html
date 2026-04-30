@@ -22,8 +22,9 @@
 <!-- <h1>{{ .title }}</h1> -->
 <h2 class="category-header">{{ .title }}</h2>
 <div class="profile-details">
-{{ .description | markdownify }}
-{{ partial "collab-summary.html" $ }}
+<p>{{ .para1 | markdownify | replaceRE `(^<p>|</p>\s*$)` "" | safeHTML }}</p>
+<p>{{ .para2 | markdownify | replaceRE `(^<p>|</p>\s*$)` "" | safeHTML }} {{ partial "collab-summary.html" $ }}</p>
+<p>{{ .para3 | markdownify | replaceRE `(^<p>|</p>\s*$)` "" | safeHTML }}</p>
 </div>
 {{- end -}}
 
