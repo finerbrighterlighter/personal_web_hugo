@@ -20,14 +20,21 @@
   let duckTimer, quackTimer;
 
   wrapper.addEventListener('click', () => {
-    /* Duck: fade in quickly, hold, then 1.5s fade back — no flicker on spam */
+    /* Duck: glitch avatar first, then fade duck in, then 1.5s fade back */
     clearTimeout(duckTimer);
-    duck.style.transition = 'opacity 0.3s';
-    duck.style.opacity = '1';
+    wrapper.classList.remove('duck-reveal');
+    void wrapper.offsetWidth;           // restart animation on rapid clicks
+    wrapper.classList.add('duck-reveal');
+    duck.style.transition = 'none';
+    duck.style.opacity = '0';
     duckTimer = setTimeout(() => {
-      duck.style.transition = 'opacity 1.5s';
-      duck.style.opacity = '0';
-    }, 800);
+      duck.style.transition = 'opacity 0.35s';
+      duck.style.opacity = '1';
+      duckTimer = setTimeout(() => {
+        duck.style.transition = 'opacity 1.5s';
+        duck.style.opacity = '0';
+      }, 800);
+    }, 150);
 
     /* Quack text: flicker on each click */
     clearTimeout(quackTimer);
