@@ -6,27 +6,27 @@
 - id: duck
   label: Duck
   dark:
-    background: "#2e2620"  # Warm amber-dark — Monokai-equivalent lightness (~17%), amber not purple
+    background: "#272422"  # Near-neutral dark, barely warm — lightness ~14%, saturation ~3%
     font: "#e8d5b0"        # Warm parchment
-    invert_font: "#2e2620"
+    invert_font: "#272422"
     primary: "#c49820"     # Muted golden amber
     secondary: "#9a7040"   # Warm mid-brown
-    tertiary: "#3e3428"    # Stepped up with background for panels/containers
+    tertiary: "#353130"    # Neutral-dark container, minimal warmth
     error: "#b92e00"       # Dropped Brick
-    progress_bar_background: "#3e3428"
+    progress_bar_background: "#353130"
     progress_bar_fill: "#c49820"
-    code_bg: "#221c14"     # Slightly darker than background for code blocks
+    code_bg: "#1e1b1a"     # Slightly darker than background
   light:
-    background: "#fdf8ee"  # Warm cream — duck highlight face
-    font: "#1c1814"        # Warm dark — matches dark mode background
-    invert_font: "#fdf8ee"
-    primary: "#9c5010"     # Warm amber-orange — readable (≈6:1), duck-toned
-    secondary: "#7a6040"   # Muted warm brown — secondary text and borders
-    tertiary: "#ece4d0"    # Warm light grey for structural lines
+    background: "#f8f5f0"  # Near-neutral cream — warmth as whisper, not canvas
+    font: "#1c1814"        # Warm dark font
+    invert_font: "#f8f5f0"
+    primary: "#9c5010"     # Warm amber-orange — readable (≈6:1)
+    secondary: "#7a6040"   # Muted warm brown
+    tertiary: "#e4dfd8"    # Warm light grey for structural lines
     error: "#b92e00"       # Dropped Brick
-    progress_bar_background: "#ece4d0"
+    progress_bar_background: "#e4dfd8"
     progress_bar_fill: "#9c5010"
-    code_bg: "#f5edd8"     # Slightly warmer than background for code blocks
+    code_bg: "#f0ece4"     # Slightly warmer than background for code blocks
 - id: monokai
   label: Monokai Pro
   dark:
