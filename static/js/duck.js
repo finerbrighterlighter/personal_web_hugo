@@ -20,21 +20,17 @@
   let duckTimer, quackTimer;
 
   wrapper.addEventListener('click', () => {
-    /* Duck: glitch avatar first, then fade duck in, then 1.5s fade back */
+    /* Duck: glitch and slow fade-in start together; hold, then 1.5s fade out */
     clearTimeout(duckTimer);
     wrapper.classList.remove('duck-reveal');
-    void wrapper.offsetWidth;           // restart animation on rapid clicks
+    void wrapper.offsetWidth;           // restart glitch animation on rapid clicks
     wrapper.classList.add('duck-reveal');
-    duck.style.transition = 'none';
-    duck.style.opacity = '0';
+    duck.style.transition = 'opacity 1s';
+    duck.style.opacity = '1';
     duckTimer = setTimeout(() => {
-      duck.style.transition = 'opacity 0.35s';
-      duck.style.opacity = '1';
-      duckTimer = setTimeout(() => {
-        duck.style.transition = 'opacity 1.5s';
-        duck.style.opacity = '0';
-      }, 800);
-    }, 150);
+      duck.style.transition = 'opacity 1.5s';
+      duck.style.opacity = '0';
+    }, 1800);
 
     /* Quack text: flicker on each click */
     clearTimeout(quackTimer);
