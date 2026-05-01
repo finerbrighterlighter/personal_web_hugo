@@ -15,7 +15,7 @@ title = "About"
 
 {{< opening >}}My thesis introduced me{{< /opening >}} to secondary data research through a prospective cardiovascular cohort. The aim was to predict the risk of severe periodontitis from existing clinical records, rather than conducting new and resource-intensive examinations. What stayed with me was not the specific models but the broader realisation: routinely collected clinical data, handled carefully, can answer questions that would otherwise require enormous resources to study from scratch. That idea has shaped my work ever since. The years following graduation have been spent building and maintaining large longitudinal cohorts from electronic medical records, engineering raw extracts into analysis-ready datasets, and thinking carefully about what it actually takes for real-world data to be trustworthy enough to draw conclusions from.
 
-{{< pullquote >}}I swim, but not as well as fish. I fly, but not as well as birds. I walk, but not as well as other land animals. That is not a limitation. That is a position.{{< /pullquote >}}
+{{< pullquote >}}A fish is bound to the water; a bird is bound to the sky. The duck belongs to both, and the land between them. In the intersection of clinical logic and data science, being 'between' isn't a compromise—it’s the only way to see the whole landscape.{{< /pullquote >}}
 
 ## The Intersection
 
