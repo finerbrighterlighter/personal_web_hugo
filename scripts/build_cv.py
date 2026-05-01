@@ -37,19 +37,30 @@ DATA SOURCES
   data/cv.yml          — all stable personal data (read by this script)
   content/works/       — Hugo front matter parsed for publications/conferences
   data/homepage.yml    — drives the website only; NOT read by this script
+
+BIBTEX CACHE
+------------
+  scripts/.bibtex_cache.json — local cache of doi.org BibTeX responses.
+  Delete this file to force a full re-fetch of all BibTeX data.
 """
 
+import json
+import re
 import shutil
+import time
+import urllib.error
+import urllib.request
 import yaml
 from datetime import datetime
 from pathlib import Path
 from weasyprint import HTML
 
 # Resolve paths relative to the repo root (one level above scripts/)
-ROOT   = Path(__file__).parent.parent
-DATA   = ROOT / "data"
-WORKS  = ROOT / "content" / "works"
-CV_DIR = ROOT / "static" / "general" / "cv"
+ROOT         = Path(__file__).parent.parent
+DATA         = ROOT / "data"
+WORKS        = ROOT / "content" / "works"
+CV_DIR       = ROOT / "static" / "general" / "cv"
+BIBTEX_CACHE = Path(__file__).parent / ".bibtex_cache.json"
 
 
 def load_yaml(path):
@@ -67,7 +78,6 @@ def load_works(section):
     for md in (WORKS / section).glob("*.md"):
         text = md.read_text()
         if text.startswith("---"):
-            # Split on the closing '---' to extract just the front matter block
             raw = text.split("---", 2)[1]
             fm = yaml.safe_load(raw)
             if fm:
@@ -95,11 +105,190 @@ def get_researcher_map():
     return _RESEARCHER_MAP
 
 
-def fmt_authors(authors):
-    """Format an authors list into 'Family I, Family I, ...' with bolded highlights.
+# ── BibTeX fetch + cache ───────────────────────────────────────────────────────
 
-    Each author entry may have either an 'id' (looked up from researchers.yml)
-    or inline 'family'/'given' fields. highlight: true bolds the name.
+_BIBTEX_CACHE = None
+
+
+def _load_bibtex_cache():
+    if BIBTEX_CACHE.exists():
+        with open(BIBTEX_CACHE) as f:
+            return json.load(f)
+    return {}
+
+
+def _save_bibtex_cache():
+    with open(BIBTEX_CACHE, "w") as f:
+        json.dump(_BIBTEX_CACHE, f, indent=2)
+
+
+def get_bibtex(doi):
+    """Return BibTeX string for a DOI, fetching from doi.org if not cached.
+
+    Caches results in scripts/.bibtex_cache.json so repeat builds are instant.
+    Returns None if the fetch fails.
+    """
+    global _BIBTEX_CACHE
+    if _BIBTEX_CACHE is None:
+        _BIBTEX_CACHE = _load_bibtex_cache()
+
+    if doi in _BIBTEX_CACHE:
+        return _BIBTEX_CACHE[doi]
+
+    url = f"https://doi.org/{doi}"
+    req = urllib.request.Request(url, headers={
+        "Accept":     "application/x-bibtex",
+        "User-Agent": "build_cv.py/1.0 (mailto:kohtunteza@gmail.com)",
+    })
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            bibtex = resp.read().decode("utf-8")
+        print(f"  Fetched BibTeX: {doi}")
+        _BIBTEX_CACHE[doi] = bibtex
+        _save_bibtex_cache()
+        time.sleep(0.5)   # polite pause between doi.org requests
+        return bibtex
+    except Exception as exc:
+        print(f"  Warning: BibTeX fetch failed for {doi}: {exc}")
+        return None
+
+
+# ── BibTeX parsing ─────────────────────────────────────────────────────────────
+
+def _bib_field(bibtex, field):
+    """Extract a single field value from a BibTeX string. Returns str or None."""
+    # Handles: field = {value}, field = "value", field = bare_word
+    p1 = rf'\b{field}\s*=\s*\{{((?:[^{{}}]|\{{[^{{}}]*\}})*)\}}'
+    m = re.search(p1, bibtex, re.IGNORECASE | re.DOTALL)
+    if m:
+        return m.group(1).strip()
+    p2 = rf'\b{field}\s*=\s*"([^"]*)"'
+    m = re.search(p2, bibtex, re.IGNORECASE)
+    if m:
+        return m.group(1).strip()
+    p3 = rf'\b{field}\s*=\s*(\w+)'
+    m = re.search(p3, bibtex, re.IGNORECASE)
+    if m:
+        return m.group(1).strip()
+    return None
+
+
+def _bib_authors(bibtex):
+    """Return list of raw author strings from a BibTeX entry."""
+    m = re.search(
+        r'\bauthor\s*=\s*\{((?:[^{}]|\{[^{}]*\})*)\}',
+        bibtex, re.IGNORECASE | re.DOTALL
+    )
+    if not m:
+        m = re.search(r'\bauthor\s*=\s*"([^"]*)"', bibtex, re.IGNORECASE)
+    if not m:
+        return []
+    return [a.strip() for a in re.split(r'\s+and\s+', m.group(1), flags=re.IGNORECASE)]
+
+
+def _clean_bib(s):
+    """Strip LaTeX brace groups: {COVID-19} → COVID-19."""
+    return re.sub(r'\{([^{}]*)\}', r'\1', s).strip()
+
+
+def _fmt_author_nlm(raw):
+    """Format one BibTeX author string as 'Last FM' (NLM style)."""
+    raw = _clean_bib(raw)
+    if ',' in raw:
+        last, rest = raw.split(',', 1)
+        firsts = [w for w in rest.split() if w]
+        initials = ''.join(f[0].upper() for f in firsts)
+        return f"{last.strip()} {initials}".strip()
+    parts = raw.split()
+    if not parts:
+        return raw
+    last     = parts[-1]
+    initials = ''.join(p[0].upper() for p in parts[:-1] if p)
+    return f"{last} {initials}".strip()
+
+
+# ── Citation formatters ────────────────────────────────────────────────────────
+
+def get_doi(sources):
+    """Return bare DOI string (no resolver prefix) from a sources list, or None."""
+    for s in sources or []:
+        url = s.get("url", "")
+        if "doi.org" in url:
+            return url.replace("https://doi.org/", "").replace("http://doi.org/", "")
+    return None
+
+
+def doi_link(sources):
+    """Return an HTML <a> tag for the first DOI found in a sources list, or ''."""
+    for s in sources or []:
+        url = s.get("url", "")
+        if "doi.org" in url:
+            short = url.replace("https://doi.org/", "").replace("http://doi.org/", "")
+            return f'<a href="{url}">{short}</a>'
+    return ""
+
+
+def fmt_nlm_citation(p, bibtex):
+    """Build a full NLM-style citation using BibTeX data + front matter.
+
+    Authors come from BibTeX (NLM format, max 6 then et al.).
+    Journal name comes from front matter `venue` (user-controlled abbreviation).
+    Volume/issue/pages come from BibTeX.
+    The author matching highlight:true in front matter is bolded by position.
+    """
+    # Find which position should be highlighted (0-indexed)
+    highlight_idx = next(
+        (i for i, a in enumerate(p.get("authors", [])) if a.get("highlight")),
+        None,
+    )
+
+    # Format authors: NLM Last FM, up to 6 then et al.
+    raw_authors = _bib_authors(bibtex)
+    formatted   = [_fmt_author_nlm(a) for a in raw_authors]
+    if len(formatted) > 6:
+        shown  = formatted[:6]
+        suffix = ", et al."
+    else:
+        shown  = list(formatted)
+        suffix = ""
+
+    if highlight_idx is not None and highlight_idx < len(shown):
+        shown[highlight_idx] = f"<b>{shown[highlight_idx]}</b>"
+
+    author_str = ", ".join(shown) + suffix
+
+    # Core fields
+    title = p.get("title", "")
+    venue = p.get("venue", "")          # front matter controls journal abbreviation
+    year  = str(p.get("date", ""))[:4]
+
+    # Volume / issue / pages from BibTeX
+    vol   = _bib_field(bibtex, "volume")
+    num   = _bib_field(bibtex, "number")
+    pages = _bib_field(bibtex, "pages")
+    if pages:
+        pages = re.sub(r'--?', '-', pages)
+
+    # Assemble
+    cite = f"{author_str} {title}. <i>{venue}</i>. {year}"
+    if vol:
+        cite += f";{vol}"
+    if num:
+        cite += f"({num})"
+    if pages:
+        cite += f":{pages}"
+    cite += "."
+    doi_html = doi_link(p.get("sources"))
+    if doi_html:
+        cite += f" doi: {doi_html}"
+    return cite
+
+
+def fmt_authors_fallback(authors):
+    """Fallback author formatter (front matter only, no BibTeX).
+
+    Used when doi.org fetch fails. Produces 'Family I, Family I, ...'
+    with bolded highlights — same as the original fmt_authors logic.
     """
     rm = get_researcher_map()
     parts = []
@@ -116,15 +305,21 @@ def fmt_authors(authors):
     return ", ".join(parts)
 
 
-def doi_link(sources):
-    """Return an HTML <a> tag for the first DOI found in a sources list, or ''."""
-    for s in sources or []:
-        url = s.get("url", "")
-        if "doi.org" in url:
-            # Show only the DOI identifier, not the full resolver URL
-            short = url.replace("https://doi.org/", "").replace("http://doi.org/", "")
-            return f'<a href="{url}">{short}</a>'
-    return ""
+def _pub_cite(p):
+    """Return HTML citation string for a publication page (journal or preprint)."""
+    doi_val = get_doi(p.get("sources"))
+    bibtex  = get_bibtex(doi_val) if doi_val else None
+
+    if bibtex:
+        return fmt_nlm_citation(p, bibtex)
+
+    # Fallback: no BibTeX available
+    authors  = fmt_authors_fallback(p.get("authors", []))
+    doi_html = doi_link(p.get("sources"))
+    cite     = f'{authors} {p["title"]}. <i>{p.get("venue", "")}</i>.'
+    if doi_html:
+        cite += f" doi: {doi_html}"
+    return cite
 
 
 def _render_bullet(b):
@@ -176,7 +371,6 @@ def build_html(cv):
     </header>"""
 
     # ── Research Interests ───────────────────────────────────────────────────
-    # Single row: left column empty, right column is a semicolon-separated list
     interests = section("Research Interests",
         row("", "; ".join(cv["research_interests"])))
 
@@ -204,7 +398,6 @@ def build_html(cv):
         left  = f'<span class="date">{e["time"]}</span>'
         left += f'<br><span class="inst">{e["institution"]}</span>'
 
-        # Bullets can be plain strings or dicts with sub-links; _render_bullet handles both
         bullets = "".join(_render_bullet(b) for b in e.get("bullets", []))
         right   = f'<span class="role">{e["role"]}</span>'
         right  += f'<ul class="bullets">{bullets}</ul>'
@@ -223,7 +416,6 @@ def build_html(cv):
     # ── Additional Relevant Experiences ───────────────────────────────────────
     extra_rows = ""
     for e in cv["additional_experiences"]:
-        # No date column here; institution name goes in the left column
         left    = f'<span class="inst">{e["institution"]}</span>'
         bullets = "".join(f"<li>{b}</li>" for b in e.get("bullets", []))
         right   = f'<span class="role">{e["title"]}</span><ul class="bullets">{bullets}</ul>'
@@ -231,38 +423,26 @@ def build_html(cv):
     additional = section("Additional Relevant Experiences", extra_rows)
 
     # ── Publications ──────────────────────────────────────────────────────────
-    # Pulled from content/works/journal/ and content/works/preprint/
-    # To add a publication: create a works page — it appears here automatically on next run.
+    # NLM style: fetches BibTeX from doi.org for volume/issue/pages.
+    # Results cached in scripts/.bibtex_cache.json — delete to force re-fetch.
     journals  = load_works("journal")
     preprints = load_works("preprint")
 
+    print("Building publications (fetching BibTeX where needed)…")
     pub_rows = ""
     for p in journals:
-        year    = str(p.get("date", ""))[:4]  # date field is YYYY-MM-DD; take year only
-        authors = fmt_authors(p.get("authors", []))
-        doi     = doi_link(p.get("sources"))
-        cite    = (f'{authors} {p["title"]}. '
-                   f'<i>{p.get("venue", "")}</i>.')
-        if doi:
-            cite += f' doi: {doi}'
-        pub_rows += row(f'<span class="date">{year}</span>', cite)
+        year = str(p.get("date", ""))[:4]
+        pub_rows += row(f'<span class="date">{year}</span>', _pub_cite(p))
 
     if preprints:
-        pub_rows += f'<div class="sub-header">Preprints and Under Review</div>'
+        pub_rows += '<div class="sub-header">Preprints and Under Review</div>'
         for p in preprints:
-            year    = str(p.get("date", ""))[:4]
-            authors = fmt_authors(p.get("authors", []))
-            doi     = doi_link(p.get("sources"))
-            cite    = f'{authors} {p["title"]}. <i>{p.get("venue", "")}</i>.'
-            if doi:
-                cite += f' doi: {doi}'
-            pub_rows += row(f'<span class="date">{year}</span>', cite)
+            year = str(p.get("date", ""))[:4]
+            pub_rows += row(f'<span class="date">{year}</span>', _pub_cite(p))
 
     publications = section("Publications", pub_rows)
 
     # ── Conferences ───────────────────────────────────────────────────────────
-    # Pulled from content/works/conference/
-    # The 'type' front matter field maps to a short label shown in the left column.
     conferences = load_works("conference")
     conf_rows   = ""
     type_label  = {
@@ -295,9 +475,6 @@ def build_html(cv):
 
 
 # ── Stylesheet ────────────────────────────────────────────────────────────────
-# Lato fetched from Google Fonts at build time (requires internet access).
-# Layout: A4, two-column rows (30% left / 70% right) throughout.
-# To adjust column widths, change the width/min-width on .col-l.
 CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400&display=swap');
 
@@ -348,7 +525,6 @@ h2 {
   margin-bottom: 7pt;
 }
 
-/* Italic sub-label inside publications, e.g. "Preprints and Under Review" */
 .sub-header {
   font-size: 8.5pt;
   font-style: italic;
@@ -405,7 +581,6 @@ h2 {
 }
 .bullets li::before { content: "· "; color: #888; }
 
-/* Sub-links rendered below a bullet (e.g. project URLs) */
 .bullet-links {
   display: block;
   text-indent: 0;
@@ -430,11 +605,9 @@ if __name__ == "__main__":
     dated   = CV_DIR / f"cv_htunteza_{today}.pdf"
     current = CV_DIR / "cv_htunteza.pdf"
 
-    # Write the dated archive first, then copy to the stable filename
     HTML(string=html, base_url=str(ROOT)).write_pdf(dated)
     shutil.copy2(dated, current)
 
-    # Prune: keep only the 3 most recent dated files
     dated_files = sorted(CV_DIR.glob("cv_htunteza_2*.pdf"), reverse=True)
     for old in dated_files[3:]:
         old.unlink()

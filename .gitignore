@@ -14,6 +14,7 @@ resources/_gen/
 # Python
 __pycache__/
 *.pyc
+scripts/.bibtex_cache.json
 
 # LLM / Claude
 CLAUDE.md
