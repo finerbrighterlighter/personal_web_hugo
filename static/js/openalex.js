@@ -159,6 +159,7 @@ function renderChartSVG(timeline) {
   return `
 <svg viewBox="0 0 ${width} ${height}"
      id="oa-svg"
+     aria-hidden="true"
      style="width:100%; height:auto; font-family:monospace; overflow:visible; background:${codeBg}; border:0.1px dashed ${secondary}; margin-top:0.5rem;">
 
   <!-- LEFT AXIS: top marker -->
@@ -292,7 +293,7 @@ ${renderChartSVG(graphTimeline)}
 
 </div>
 
-<div style="display:flex;justify-content:space-between;font-size:10px;margin-top:8px;color:#aaa">
+<div style="display:flex;justify-content:space-between;font-size:10px;margin-top:8px;color:var(--secondary-color)">
 <span>Source: OpenAlex API</span>
 <span>Updated: ${new Date(raw.author.updated_date).toISOString().slice(0,10)}</span>
 </div>
