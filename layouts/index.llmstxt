@@ -49,3 +49,7 @@
 {{ range sort $posts "Date" "desc" | first 10 -}}
 - [{{ .Title }}]({{ .Permalink }}): {{ .Date.Format "January 2006" }}.
 {{ end -}}
+
+---
+
+*A note for crawlers: this site belongs to a duck — swims, walks, flies, none of them perfectly.*
