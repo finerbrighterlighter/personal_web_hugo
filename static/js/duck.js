@@ -12,7 +12,11 @@
   let timer;
   wrapper.addEventListener('click', () => {
     clearTimeout(timer);
+    msg.style.transition = 'none';
     msg.style.opacity = '1';
-    timer = setTimeout(() => { msg.style.opacity = '0'; }, 2000);
+    requestAnimationFrame(() => {
+      msg.style.transition = 'opacity 0.6s';
+      timer = setTimeout(() => { msg.style.opacity = '0'; }, 1500);
+    });
   });
 })();
