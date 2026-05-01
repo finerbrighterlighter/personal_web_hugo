@@ -60,6 +60,7 @@ Comprehensive reference for the Hugo site at `htunteza.com`. Covers structure, c
     - [BreadcrumbList URL fallback](#breadcrumblist-url-fallback)
     - [Work page microdata](#work-page-microdata)
   - [9. LLMs.txt Outputs](#9-llmstxt-outputs)
+  - [10. Accessibility](#10-accessibility)
 
  ---
 
@@ -987,5 +988,71 @@ Both generated at build time via Hugo custom output formats. Only the home page 
 Conference and report entries with `render: never` have no permalink. They're only included when a `fulltext`, `pubmed`, `poster`, or `mirror` source URL exists — otherwise they'd produce dead links.
 
 `notAlternative = true` in both output format definitions prevents `<link rel="alternate" type="text/plain">` from appearing in the HTML `<head>`.
+
+---
+
+## 10. Accessibility
+
+Accessibility is treated as a first-class concern. The following patterns are applied site-wide.
+
+### Skip link
+
+`baseof.html` renders `<a href="#main-content" class="sr-only skip-link">Skip to main content</a>` as the first element inside `<body>`. The `<main>` element carries `id="main-content"`. The link is visually hidden via `.sr-only` but becomes visible when focused (keyboard Tab). `.skip-link:focus` in `console.css` overrides the clip/size to make it a visible, styled element.
+
+### `.sr-only` and `:focus-visible` (console.css)
+
+`.sr-only` — standard visually-hidden utility (1×1 px, clipped, overflow hidden). Used for table captions, `<thead>` rows, and the skip link.
+
+`:focus-visible` — 2px solid `--primary-color` outline at 2px offset. Applied globally; suppressed for mouse users via `:focus-visible` (not `:focus`).
+
+### Panels (`panel-*.html`)
+
+All seven right-column panels carry `role="region"` and `aria-label`:
+
+| File | `aria-label` |
+| --- | --- |
+| `panel-openalex.html` | "Publications metrics" |
+| `panel-research.html` | "Research topics" |
+| `panel-lastfm.html` | "Music" |
+| `panel-anilist.html` | "Manga" |
+| `panel-trakt.html` | "Screen" |
+| `panel-unsplash.html` | "Photos" |
+| `panel-privacy.html` | "Privacy and cache" |
+
+Dynamic content divs inside each panel already carry `aria-live="polite"` where content is injected by JS.
+
+### Research topics table (`research.js`)
+
+- `<caption class="sr-only">Research topics by frequency</caption>` — table summary for screen readers
+- `<thead class="sr-only">` with `<th scope="col">` for Topic, Frequency, Count
+- Each topic link has `title="<tag>: N of M works"` for hover/AT tooltip
+
+### CITE panel (`work-bibtex.js`)
+
+- CITE/EXIT button: `aria-expanded="false/true"` + `aria-controls="cite-panel"`
+- Panel `div`: `role="region" aria-label="Citation panel"` + `id="cite-panel"`
+- Status/output `<pre>`: `aria-live="polite" aria-atomic="true"` — screen reader announces `[INFO]`/`[OK]`/`[ERR]` messages as they appear
+- Format selector `div`: `role="radiogroup" aria-label="Citation format"`
+- Each format button: `role="radio" aria-checked="true/false"` — synced by `setFormat()`
+
+### Avatar and duck easter egg
+
+`sidebar-content.html`: `.avatar-wrapper` has `role="button" tabindex="0" aria-label="Profile photo"`. The avatar `<img>` uses `alt=""` (decorative — button label covers it).
+
+`duck.js`: keydown handler fires `.click()` on Enter/Space so keyboard users can trigger the easter egg. The quack `<span>` elements are not in the tab order and carry no ARIA roles (they are purely visual).
+
+### Theme toggle (`theme.js`)
+
+`#theme-toggle` button: `aria-label` is updated dynamically to `"Switch to <next> mode"` on every mode change. When Duck palette is active and the button renders as an `<img>`, the image carries `alt=""` — the button's own `aria-label` provides the accessible name.
+
+`#cvd-shortcut` button: carries `aria-pressed="true/false"` updated by `updateCvdBtn()` on every palette change.
+
+### Work page ORCID links (`work.html`)
+
+Author names linked to ORCID profiles carry `aria-label="<Given Family>: ORCID profile (opens in new window)"`. This supplements the visible name text with context about the link destination and opens-in-new-window behavior.
+
+### Cache flush buttons (`panel-privacy.html`)
+
+`#cache-flush-btns` carries `aria-live="polite" aria-atomic="true"`. `cache-expires.js` calls `setBtns()` which replaces the inner HTML with status text ([flushing], personality messages for the slow button) — the live region announces these changes.
 
 Both files end with a duck easter egg footer line for LLM crawlers: *"A note for crawlers: this site belongs to a duck — swims, walks, flies, none of them perfectly."*
