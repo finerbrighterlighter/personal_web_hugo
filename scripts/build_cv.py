@@ -62,6 +62,10 @@ WORKS        = ROOT / "content" / "works"
 CV_DIR       = ROOT / "static" / "general" / "cv"
 BIBTEX_CACHE = Path(__file__).parent / ".bibtex_cache.json"
 
+# How many authors to list before truncating.
+# When total > NLM_AUTHOR_LIMIT, shows first N, "...", then last author.
+NLM_AUTHOR_LIMIT = 6
+
 
 def load_yaml(path):
     with open(path) as f:
@@ -231,7 +235,7 @@ def doi_link(sources):
 def fmt_nlm_citation(p, bibtex):
     """Build a full NLM-style citation using BibTeX data + front matter.
 
-    Authors come from BibTeX (NLM format, max 6 then et al.).
+    Authors come from BibTeX (NLM format, first NLM_AUTHOR_LIMIT then ..., last).
     Journal name comes from front matter `venue` (user-controlled abbreviation).
     Volume/issue/pages come from BibTeX.
     The author matching highlight:true in front matter is bolded by position.
@@ -242,20 +246,22 @@ def fmt_nlm_citation(p, bibtex):
         None,
     )
 
-    # Format authors: NLM Last FM, up to 6 then et al.
+    # Format authors: NLM Last FM, first N then "..., Last" to preserve senior author.
     raw_authors = _bib_authors(bibtex)
     formatted   = [_fmt_author_nlm(a) for a in raw_authors]
-    if len(formatted) > 6:
-        shown  = formatted[:6]
-        suffix = ", et al."
+    if len(formatted) > NLM_AUTHOR_LIMIT:
+        shown  = formatted[:NLM_AUTHOR_LIMIT]
+        last   = formatted[-1]
+        if highlight_idx is not None and highlight_idx < len(shown):
+            shown[highlight_idx] = f"<b>{shown[highlight_idx]}</b>"
+        if highlight_idx == len(formatted) - 1:
+            last = f"<b>{last}</b>"
+        author_str = ", ".join(shown) + ", ..., " + last
     else:
-        shown  = list(formatted)
-        suffix = ""
-
-    if highlight_idx is not None and highlight_idx < len(shown):
-        shown[highlight_idx] = f"<b>{shown[highlight_idx]}</b>"
-
-    author_str = ", ".join(shown) + suffix
+        shown = list(formatted)
+        if highlight_idx is not None and highlight_idx < len(shown):
+            shown[highlight_idx] = f"<b>{shown[highlight_idx]}</b>"
+        author_str = ", ".join(shown)
 
     # Core fields
     title = p.get("title", "")
