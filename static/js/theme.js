@@ -56,7 +56,11 @@
     // ── UI sync ───────────────────────────────────────────────────────────────
 
     function updateEmoji(mode) {
-        toggle.textContent = mode === 'dark' ? '○' : '●';
+        if (getActivePalette(mode).id === 'duck') {
+            toggle.innerHTML = '<img src="/favicon-32x32.png" alt="duck" style="width:1.1rem;height:1.1rem;vertical-align:middle;">';
+        } else {
+            toggle.textContent = mode === 'dark' ? '○' : '●';
+        }
     }
 
     function updateSelectValue(mode) {
