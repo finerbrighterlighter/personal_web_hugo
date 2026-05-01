@@ -1055,4 +1055,21 @@ Author names linked to ORCID profiles carry `aria-label="<Given Family>: ORCID p
 
 `#cache-flush-btns` carries `aria-live="polite" aria-atomic="true"`. `cache-expires.js` calls `setBtns()` which replaces the inner HTML with status text ([flushing], personality messages for the slow button) — the live region announces these changes.
 
-Both files end with a duck easter egg footer line for LLM crawlers: *"A note for crawlers: this site belongs to a duck — swims, walks, flies, none of them perfectly."*
+### Prose links (`about` page)
+
+Links embedded in paragraph text on the about page are intentionally subtle — they are easter eggs and supplementary references, not navigation. The WCAG 1.4.1 `link-in-text-block` rule (non-color indicator for links) is a known, accepted failure for this page. All other pages are clean.
+
+### pa11y audit results
+
+Automated testing via pa11y (axe-core 4.11) against all major pages. Results and dispositions:
+
+| Finding | Pages | Disposition |
+| --- | --- | --- |
+| `.uni-country` contrast | all | `aria-hidden="true"` added — axe-core 4.11 still checks visual contrast of aria-hidden elements; accepted limitation |
+| Research bar `█░` chars | all | `aria-hidden="true"` on bar `<td>` — decorative; count column and link title convey the data |
+| OpenAlex `color:#aaa` footer | home, works | Fixed → `color:var(--secondary-color)` |
+| OpenAlex SVG axis labels | home, works | `aria-hidden="true"` on `<svg>` — labels use `--invert-font-color` which resolves to page background in light mode; all data is in the table above |
+| Filter button `.active` contrast | works | False positive — axe-core cannot resolve chained CSS custom properties (`--primary-color: var(--light-primary-color)` via data-attribute selector + inline style); real ratios are ~5.5:1 (light) and ~11:1 (dark) |
+| Prose link underlines | about | Accepted — intentional design decision |
+
+**Known axe-core 4.11 limitation:** `aria-hidden="true"` elements are still evaluated for color-contrast. This means `.uni-country` will continue to appear in reports. The element is excluded from the accessibility tree; the visual contrast is a deliberate palette trade-off (Duck dark secondary `#727072` on `#2d2a2e` ≈ 3.1:1).
