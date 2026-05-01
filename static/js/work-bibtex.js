@@ -53,37 +53,40 @@ import { getCache, setCache } from './cache.js';
   function fmtCiteNLM(f) {
     const authors = authorList(f.author, fmtNLM, Infinity).join(', ');
     const pages   = (f.pages || '').replace(/--?/, '-');
-    let s = (authors ? authors + '. ' : '') + clean(f.title) + '. ';
-    s += clean(f.journal) + '. ';
-    s += (f.year || '');
-    if (f.volume) s += ';' + f.volume;
-    if (f.number) s += '(' + f.number + ')';
-    if (pages)    s += ':' + pages;
-    s += '.';
-    if (f.doi)    s += ' doi: ' + f.doi;
+    let s = '';
+    if (authors) s += DIM(esc(authors) + '. ');
+    s += esc(clean(f.title)) + '. ';
+    s += K(esc(clean(f.journal))) + '. ';
+    s += DIM(esc(f.year || ''));
+    if (f.volume) s += DIM(';' + esc(f.volume));
+    if (f.number) s += DIM('(' + esc(f.number) + ')');
+    if (pages)    s += DIM(':' + esc(pages));
+    s += DIM('.');
+    if (f.doi)    s += ' ' + DIM('doi: ' + esc(f.doi));
     return s;
   }
 
   function fmtCiteAMA(f) {
-    const raw = (f.author || '').split(/\s+and\s+/i).map(a => parseAuthor(a));
+    const raw   = (f.author || '').split(/\s+and\s+/i).map(a => parseAuthor(a));
     const names = raw.length > 6
       ? raw.slice(0, 3).map(fmtNLM).join(', ') + ', et al.'
       : raw.map(fmtNLM).join(', ');
-    const authors = names;
-    const pages   = (f.pages || '').replace(/--?/, '-');
-    let s = (authors ? authors + '. ' : '') + clean(f.title) + '. ';
-    s += clean(f.journal) + '. ';
-    s += (f.year || '');
-    if (f.volume) s += ';' + f.volume;
-    if (f.number) s += '(' + f.number + ')';
-    if (pages)    s += ':' + pages;
-    s += '.';
-    if (f.doi)    s += ' doi:' + f.doi;
+    const pages = (f.pages || '').replace(/--?/, '-');
+    let s = '';
+    if (names) s += DIM(esc(names) + '. ');
+    s += esc(clean(f.title)) + '. ';
+    s += K(esc(clean(f.journal))) + '. ';
+    s += DIM(esc(f.year || ''));
+    if (f.volume) s += DIM(';' + esc(f.volume));
+    if (f.number) s += DIM('(' + esc(f.number) + ')');
+    if (pages)    s += DIM(':' + esc(pages));
+    s += DIM('.');
+    if (f.doi)    s += ' ' + DIM('doi:' + esc(f.doi));
     return s;
   }
 
   function fmtCiteAPA(f) {
-    const raw    = (f.author || '').split(/\s+and\s+/i).map(a => parseAuthor(a));
+    const raw = (f.author || '').split(/\s+and\s+/i).map(a => parseAuthor(a));
     let authorStr;
     if (raw.length > 20) {
       authorStr = raw.slice(0, 19).map(fmtAPA).join(', ') + ', … ' + fmtAPA(raw.at(-1));
@@ -93,14 +96,16 @@ import { getCache, setCache } from './cache.js';
       authorStr = raw.map(fmtAPA).join('');
     }
     const pages = (f.pages || '').replace(/--?/, '–');
-    let s = (authorStr ? authorStr + ' ' : '') + '(' + (f.year || '') + '). ';
-    s += clean(f.title) + '. ';
-    s += clean(f.journal);
-    if (f.volume) s += ', ' + f.volume;
-    if (f.number) s += '(' + f.number + ')';
-    if (pages)    s += ', ' + pages;
-    s += '.';
-    if (f.doi)    s += ' https://doi.org/' + f.doi;
+    let s = '';
+    if (authorStr) s += DIM(esc(authorStr) + ' ');
+    s += DIM('(' + esc(f.year || '') + '). ');
+    s += esc(clean(f.title)) + '. ';
+    s += K(esc(clean(f.journal)));
+    if (f.volume) s += DIM(', ' + esc(f.volume));
+    if (f.number) s += DIM('(' + esc(f.number) + ')');
+    if (pages)    s += DIM(', ' + esc(pages));
+    s += DIM('.');
+    if (f.doi)    s += ' ' + DIM('https://doi.org/' + esc(f.doi));
     return s;
   }
 
@@ -342,10 +347,10 @@ import { getCache, setCache } from './cache.js';
     if (!parsedFields) return;
     const f = parsedFields;
     switch (fmt) {
-      case 'bibtex': pre.innerHTML   = prettifyBibTeX(rawBibTeX).html; break;
-      case 'nlm':    pre.textContent = fmtCiteNLM(f);     break;
-      case 'ama':    pre.textContent = fmtCiteAMA(f);     break;
-      case 'apa':    pre.textContent = fmtCiteAPA(f);     break;
+      case 'bibtex': pre.innerHTML = prettifyBibTeX(rawBibTeX).html; break;
+      case 'nlm':    pre.innerHTML = fmtCiteNLM(f);       break;
+      case 'ama':    pre.innerHTML = fmtCiteAMA(f);       break;
+      case 'apa':    pre.innerHTML = fmtCiteAPA(f);       break;
     }
   }
 
