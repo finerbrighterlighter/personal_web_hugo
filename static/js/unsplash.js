@@ -1,8 +1,9 @@
 /**
  * Unsplash Latest Photos Panel
- * Fetches recent photos and caches them in sessionStorage
- * so navigation between pages does not trigger another API call.
+ * Fetches recent photos and caches them in localStorage via cache.js.
  */
+
+import { getCache, setCache } from './cache.js';
 
 const UNSPLASH_URL = "https://api.unsplash.com";
 const UNSPLASH_USER = "finerbrighterlighter";  // Unsplash username
@@ -60,15 +61,8 @@ async function getUnsplash(username, accessKey, limit, elementID) {
      Check session cache first
   ----------------------------------------- */
 
-  const TTL = (window.CONFIG?.cacheTTLMinutes ?? 60) * 60 * 1000;
-  const raw = localStorage.getItem(cacheKey);
-  if (raw) {
-    try {
-      const { data, ts } = JSON.parse(raw);
-      if (Date.now() - ts <= TTL) { renderUnsplash(data, elementID); return; }
-    } catch {}
-    localStorage.removeItem(cacheKey);
-  }
+  const cached = getCache(cacheKey);
+  if (cached !== null) { renderUnsplash(cached, elementID); return; }
 
   try {
 
@@ -100,11 +94,7 @@ async function getUnsplash(username, accessKey, limit, elementID) {
     }));
 
 
-    /* -----------------------------------------
-       Save to session cache
-    ----------------------------------------- */
-
-    localStorage.setItem(cacheKey, JSON.stringify({ data: photos, ts: Date.now() }));
+    setCache(cacheKey, photos);
 
 
     /* -----------------------------------------

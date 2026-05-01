@@ -1,8 +1,10 @@
 /**
  * Trakt Recently Watched Panel
- * Fetches watch history from Trakt and images from TMDB
- * Uses sessionStorage to cache results for the lifetime of the tab
+ * Fetches watch history from Trakt and images from TMDB.
+ * Caches via cache.js (TTL from window.CONFIG.cacheTTLMinutes).
  */
+
+import { getCache, setCache } from './cache.js';
 
 const TRAKT_KEY = CONFIG.trakt;
 const TMDB_KEY = CONFIG.tmdb;
@@ -125,15 +127,8 @@ async function loadWatched(username, limit, elementID) {
      If cached, render immediately
   ----------------------------------------- */
 
-  const TTL = (window.CONFIG?.cacheTTLMinutes ?? 60) * 60 * 1000;
-  const raw = localStorage.getItem(cacheKey);
-  if (raw) {
-    try {
-      const { data, ts } = JSON.parse(raw);
-      if (Date.now() - ts <= TTL) { renderWatched(data, elementID); return; }
-    } catch {}
-    localStorage.removeItem(cacheKey);
-  }
+  const cached = getCache(cacheKey);
+  if (cached !== null) { renderWatched(cached, elementID); return; }
 
   try {
 
@@ -207,11 +202,7 @@ async function loadWatched(username, limit, elementID) {
     }));
 
 
-    /* -----------------------------------------
-       Save to session cache
-    ----------------------------------------- */
-
-    localStorage.setItem(cacheKey, JSON.stringify({ data: result, ts: Date.now() }));
+    setCache(cacheKey, result);
 
 
     /* -----------------------------------------

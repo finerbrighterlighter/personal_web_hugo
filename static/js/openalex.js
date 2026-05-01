@@ -3,6 +3,8 @@
  * Adapted for Hugo Console Theme
  */
 
+import { getCache, setCache } from './cache.js';
+
 const authorId = "A5065083669";
 const graphDisplayYears = 5;
 
@@ -14,15 +16,8 @@ async function fetchOpenAlexData() {
 
   const cacheKey = "openalex-author-data";
 
-  const TTL = (window.CONFIG?.cacheTTLMinutes ?? 60) * 60 * 1000;
-  const raw = localStorage.getItem(cacheKey);
-  if (raw) {
-    try {
-      const { data, ts } = JSON.parse(raw);
-      if (Date.now() - ts <= TTL) return data;
-    } catch {}
-    localStorage.removeItem(cacheKey);
-  }
+  const cached = getCache(cacheKey);
+  if (cached !== null) return cached;
 
   /* Fetch author summary and full works list in parallel */
 
@@ -39,7 +34,7 @@ async function fetchOpenAlexData() {
     works: (await worksRes.json()).results
   };
 
-  localStorage.setItem(cacheKey, JSON.stringify({ data, ts: Date.now() }));
+  setCache(cacheKey, data);
 
   return data;
 }
