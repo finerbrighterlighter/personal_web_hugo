@@ -138,6 +138,30 @@ import { getCache, setCache } from './cache.js';
     return { type, key, fields };
   }
 
+  /* ── BibTeX prettifier (display only — copy/download use raw) ───── */
+
+  const BIBTEX_FIELD_ORDER = [
+    'title', 'author', 'journal', 'booktitle', 'year', 'month',
+    'volume', 'number', 'pages', 'doi', 'url', 'publisher', 'issn',
+    'abstract', 'keywords', 'editor', 'note',
+  ];
+
+  function prettifyBibTeX(src) {
+    const p = parseBibTeX(src);
+    if (!p) return src;
+    const { type, key, fields: f } = p;
+    const known   = BIBTEX_FIELD_ORDER.filter(k => f[k] !== undefined);
+    const rest    = Object.keys(f).filter(k => !BIBTEX_FIELD_ORDER.includes(k));
+    const ordered = [...known, ...rest];
+    const pad     = Math.max(...ordered.map(k => k.length));
+    const lines   = [`@${type}{${key},`];
+    ordered.forEach(k => {
+      lines.push(`  ${k.padEnd(pad)} = {${f[k]}},`);
+    });
+    lines.push('}');
+    return lines.join('\n');
+  }
+
   /* ── BibTeX → RIS (for download) ───────────────────────────────── */
 
   function bibtexToRIS(src) {
@@ -217,7 +241,7 @@ import { getCache, setCache } from './cache.js';
   const actionRow = document.createElement('div');
   actionRow.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-top:0.75rem;flex-wrap:wrap;gap:0.5rem;';
 
-  /* Left: Copy + RIS */
+  /* Left: Copy + BIB + RIS */
   const leftBtns = document.createElement('div');
 
   const copyBtn = document.createElement('button');
@@ -225,12 +249,18 @@ import { getCache, setCache } from './cache.js';
   copyBtn.className = 'work-link-btn';
   copyBtn.disabled = true;
 
+  const bibBtn = document.createElement('button');
+  bibBtn.textContent = 'BIB';
+  bibBtn.className = 'work-link-btn';
+  bibBtn.disabled = true;
+
   const risBtn = document.createElement('button');
   risBtn.textContent = 'RIS';
   risBtn.className = 'work-link-btn';
   risBtn.disabled = true;
 
   leftBtns.appendChild(copyBtn);
+  leftBtns.appendChild(bibBtn);
   leftBtns.appendChild(risBtn);
 
   /* Right: format selector */
@@ -299,7 +329,7 @@ import { getCache, setCache } from './cache.js';
     if (!parsedFields) return;
     const f = parsedFields;
     switch (fmt) {
-      case 'bibtex': pre.textContent = rawBibTeX;         break;
+      case 'bibtex': pre.textContent = prettifyBibTeX(rawBibTeX); break;
       case 'nlm':    pre.textContent = fmtCiteNLM(f);     break;
       case 'ama':    pre.textContent = fmtCiteAMA(f);     break;
       case 'apa':    pre.textContent = fmtCiteAPA(f);     break;
@@ -313,10 +343,23 @@ import { getCache, setCache } from './cache.js';
   /* ── Copy ───────────────────────────────────────────────────────── */
 
   copyBtn.addEventListener('click', () => {
-    navigator.clipboard.writeText(pre.textContent).then(() => {
+    const text = currentFmt === 'bibtex' ? rawBibTeX : pre.textContent;
+    navigator.clipboard.writeText(text).then(() => {
       copyBtn.textContent = 'Copied!';
       setTimeout(() => { copyBtn.textContent = 'Copy'; }, 2000);
     });
+  });
+
+  /* ── BIB download ───────────────────────────────────────────────── */
+
+  bibBtn.addEventListener('click', () => {
+    const parsed = parseBibTeX(rawBibTeX);
+    if (!parsed) return;
+    const blob = new Blob([rawBibTeX], { type: 'application/x-bibtex' });
+    const url  = URL.createObjectURL(blob);
+    const a    = Object.assign(document.createElement('a'), { href: url, download: `${parsed.key}.bib` });
+    a.click();
+    URL.revokeObjectURL(url);
   });
 
   /* ── RIS download ───────────────────────────────────────────────── */
@@ -373,6 +416,7 @@ import { getCache, setCache } from './cache.js';
         parsedFields = parseBibTeX(rawBibTeX)?.fields ?? null;
         fetched      = true;
         copyBtn.disabled = false;
+        bibBtn.disabled  = false;
         risBtn.disabled  = false;
         setFormat(currentFmt);
       } catch {
