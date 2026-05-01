@@ -13,10 +13,13 @@
   wrapper.addEventListener('click', () => {
     clearTimeout(timer);
     msg.style.transition = 'none';
+    msg.style.opacity = '0';
+    void msg.offsetHeight;            // force reflow — commits the instant reset
+    msg.style.transition = 'opacity 0.12s';
     msg.style.opacity = '1';
-    requestAnimationFrame(() => {
-      msg.style.transition = 'opacity 0.6s';
-      timer = setTimeout(() => { msg.style.opacity = '0'; }, 1500);
-    });
+    timer = setTimeout(() => {
+      msg.style.transition = 'opacity 0.8s';
+      msg.style.opacity = '0';
+    }, 600);
   });
 })();
