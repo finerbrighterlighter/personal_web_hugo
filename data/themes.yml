@@ -6,27 +6,51 @@
 - id: duck
   label: Duck
   dark:
-    background: "#1c1b19"  # Softened Dark Moon
-    font: "#d3c6aa"        # Muted Parchment (Low-glare)
-    invert_font: "#1c1b19"
-    primary: "#d79921"     # Desaturated Sunflower Island (Gold)
-    secondary: "#af3a03"   # Muted Dropped Brick
-    tertiary: "#3c3836"    # Gruvbox-style charcoal for containers
-    error: "#b92e00"       # Dropped Brick
-    progress_bar_background: "#32302f"
-    progress_bar_fill: "#d79921"
-    code_bg: "#282828"     # Standard Dark Charcoal depth
+    background: "#1c1814"  # Warm dark — Dark Moon with amber undertone
+    font: "#e8d5b0"        # Warm parchment — Gruvbox-level warmth, duck-tinted
+    invert_font: "#1c1814"
+    primary: "#c49820"     # Muted golden amber — Sunflower at ~55% saturation
+    secondary: "#9a7040"   # Warm mid-brown — duck warmth without the shout
+    tertiary: "#333232"    # Dark Charcoal — borders and containers
+    error: "#b92e00"       # Dropped Brick — unchanged, already calm
+    progress_bar_background: "#333232"
+    progress_bar_fill: "#c49820"
+    code_bg: "#141210"     # Slightly darker warm dark for code blocks
   light:
-    background: "#fdf6e3"  # Soft Cream (Everforest/Solarized style)
-    font: "#333232"        # Dark Charcoal
-    invert_font: "#fdf6e3"
-    primary: "#af3a03"     # Desaturated Dropped Brick for legibility
-    secondary: "#d79921"   # Muted Gold accent
-    tertiary: "#e6e1d3"    # Warm grey for structural lines
+    background: "#fdf8ee"  # Warm cream — duck highlight face
+    font: "#1c1814"        # Warm dark — matches dark mode background
+    invert_font: "#fdf8ee"
+    primary: "#9c5010"     # Warm amber-orange — readable (≈6:1), duck-toned
+    secondary: "#7a6040"   # Muted warm brown — secondary text and borders
+    tertiary: "#ece4d0"    # Warm light grey for structural lines
     error: "#b92e00"       # Dropped Brick
-    progress_bar_background: "#e6e1d3"
-    progress_bar_fill: "#af3a03"
-    code_bg: "#f2eee4"     # Softened block background
+    progress_bar_background: "#ece4d0"
+    progress_bar_fill: "#9c5010"
+    code_bg: "#f5edd8"     # Slightly warmer than background for code blocks
+- id: monokai
+  label: Monokai Pro
+  dark:
+    background: "#2d2a2e"  # Monokai's signature dark purple-grey
+    font: "#fcfcfa"        # Near-white foreground
+    invert_font: "#2d2a2e"
+    primary: "#ffd866"     # Monokai yellow — 100% sat, 70% lightness: airy not harsh
+    secondary: "#727072"   # Comment grey — muted mid-tone for secondary text
+    tertiary: "#3d3b3f"    # Slightly lighter than bg for panels/containers
+    error: "#ff6188"       # Monokai red/pink
+    progress_bar_background: "#3d3b3f"
+    progress_bar_fill: "#ffd866"
+    code_bg: "#221f22"     # Slightly darker than bg for code blocks
+  light:
+    background: "#f9f8f5"  # Near-white, faintly warm
+    font: "#2d2a2e"        # Dark bg becomes the font color
+    invert_font: "#f9f8f5"
+    primary: "#c05a10"     # Darkened Monokai orange — readable (≈5.8:1)
+    secondary: "#888085"   # Muted comment grey
+    tertiary: "#e8e6e3"    # Warm light grey for structural lines
+    error: "#c03050"       # Darkened Monokai red/pink
+    progress_bar_background: "#e8e6e3"
+    progress_bar_fill: "#c05a10"
+    code_bg: "#f0eeeb"     # Slightly off-white for code blocks
 - id: nord
   label: Nord
   dark:
