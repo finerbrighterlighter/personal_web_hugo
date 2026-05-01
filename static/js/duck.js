@@ -9,21 +9,43 @@
   duck.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.3s;z-index:2;pointer-events:none;';
   wrapper.appendChild(duck);
 
-  /* Quack message */
-  const msg = document.createElement('div');
-  msg.textContent = '> quack';
-  msg.style.cssText = 'font-family:monospace;font-size:var(--font-xs);color:var(--primary-color);text-align:center;opacity:0;pointer-events:none;';
-  wrapper.parentNode.insertBefore(msg, wrapper.nextSibling);
+  /* Three quacks: mid(1) → right(2) → left(0) → repeat */
+  const CYCLE = [1, 2, 0];
+  const DIM   = '0.25';
 
+  const quackRow = document.createElement('div');
+  quackRow.style.cssText = 'display:flex;justify-content:center;gap:0.4em;font-family:monospace;font-size:var(--font-xs);color:var(--primary-color);pointer-events:none;';
+
+  const quacks = [0, 1, 2].map(() => {
+    const span = document.createElement('span');
+    span.textContent = 'quack';
+    span.style.cssText = 'opacity:0;transition:opacity 0.3s;';
+    quackRow.appendChild(span);
+    return span;
+  });
+
+  wrapper.parentNode.insertBefore(quackRow, wrapper.nextSibling);
   wrapper.style.cursor = 'pointer';
 
-  let duckTimer, quackTimer;
+  let duckTimer;
+  const quackTimers = [null, null, null];
+  let clickCount = 0;
+  let idleTimer = null;
+
+  function hideAllQuacks() {
+    quacks.forEach((span, i) => {
+      clearTimeout(quackTimers[i]);
+      span.style.transition = 'opacity 0.8s';
+      span.style.opacity = '0';
+    });
+    clickCount = 0;
+  }
 
   wrapper.addEventListener('click', () => {
     /* Duck: glitch and slow fade-in start together; hold, then 1.5s fade out */
     clearTimeout(duckTimer);
     wrapper.classList.remove('duck-reveal');
-    void wrapper.offsetWidth;           // restart glitch animation on rapid clicks
+    void wrapper.offsetWidth;
     wrapper.classList.add('duck-reveal');
     duck.style.transition = 'opacity 1s';
     duck.style.opacity = '1';
@@ -32,16 +54,24 @@
       duck.style.opacity = '0';
     }, 1800);
 
-    /* Quack text: flicker on each click */
-    clearTimeout(quackTimer);
-    msg.style.transition = 'none';
-    msg.style.opacity = '0';
-    void msg.offsetHeight;
-    msg.style.transition = 'opacity 0.12s';
-    msg.style.opacity = '1';
-    quackTimer = setTimeout(() => {
-      msg.style.transition = 'opacity 0.8s';
-      msg.style.opacity = '0';
+    /* Quack: cycle mid → right → left, flicker the active one */
+    const idx = CYCLE[clickCount % 3];
+    clickCount++;
+
+    const span = quacks[idx];
+    clearTimeout(quackTimers[idx]);
+    span.style.transition = 'none';
+    span.style.opacity = '0';
+    void span.offsetHeight;
+    span.style.transition = 'opacity 0.12s';
+    span.style.opacity = '1';
+    quackTimers[idx] = setTimeout(() => {
+      span.style.transition = 'opacity 0.8s';
+      span.style.opacity = DIM;
     }, 600);
+
+    /* Hide all quacks after idle */
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(hideAllQuacks, 1500);
   });
 })();
