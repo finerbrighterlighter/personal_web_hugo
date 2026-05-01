@@ -5,30 +5,7 @@
 # if we want a theme to be the default for both modes, we can set default: [dark, light]
 - id: duck
   label: Duck
-  dark:
-    background: "#272422"  # Near-neutral dark, barely warm — lightness ~14%, saturation ~3%
-    font: "#e8d5b0"        # Warm parchment
-    invert_font: "#272422"
-    primary: "#c49820"     # Muted golden amber
-    secondary: "#9a7040"   # Warm mid-brown
-    tertiary: "#353130"    # Neutral-dark container, minimal warmth
-    error: "#b92e00"       # Dropped Brick
-    progress_bar_background: "#353130"
-    progress_bar_fill: "#c49820"
-    code_bg: "#1e1b1a"     # Slightly darker than background
-  light:
-    background: "#f8f5f0"  # Near-neutral cream — warmth as whisper, not canvas
-    font: "#1c1814"        # Warm dark font
-    invert_font: "#f8f5f0"
-    primary: "#9c5010"     # Warm amber-orange — readable (≈6:1)
-    secondary: "#7a6040"   # Muted warm brown
-    tertiary: "#e4dfd8"    # Warm light grey for structural lines
-    error: "#b92e00"       # Dropped Brick
-    progress_bar_background: "#e4dfd8"
-    progress_bar_fill: "#9c5010"
-    code_bg: "#f0ece4"     # Slightly warmer than background for code blocks
-- id: monokai
-  label: Monokai Pro
+  default: [dark, light]
   dark:
     background: "#2d2a2e"  # Monokai's signature dark purple-grey
     font: "#fcfcfa"        # Near-white foreground
@@ -41,16 +18,16 @@
     progress_bar_fill: "#ffd866"
     code_bg: "#221f22"     # Slightly darker than bg for code blocks
   light:
-    background: "#f9f8f5"  # Near-white, faintly warm
-    font: "#2d2a2e"        # Dark bg becomes the font color
-    invert_font: "#f9f8f5"
-    primary: "#c05a10"     # Darkened Monokai orange — readable (≈5.8:1)
-    secondary: "#888085"   # Muted comment grey
-    tertiary: "#e8e6e3"    # Warm light grey for structural lines
-    error: "#c03050"       # Darkened Monokai red/pink
-    progress_bar_background: "#e8e6e3"
-    progress_bar_fill: "#c05a10"
-    code_bg: "#f0eeeb"     # Slightly off-white for code blocks
+    background: "#f8f5f0"  # Near-neutral cream — warmth as whisper, not canvas
+    font: "#1c1814"        # Warm dark font
+    invert_font: "#f8f5f0"
+    primary: "#9c5010"     # Warm amber-orange — readable (≈6:1)
+    secondary: "#7a6040"   # Muted warm brown
+    tertiary: "#e4dfd8"    # Warm light grey for structural lines
+    error: "#b92e00"       # Dropped Brick
+    progress_bar_background: "#e4dfd8"
+    progress_bar_fill: "#9c5010"
+    code_bg: "#f0ece4"     # Slightly warmer than background for code blocks
 - id: nord
   label: Nord
   dark:
@@ -197,7 +174,6 @@
     code_bg: "#d5d6db"
 - id: github
   label: GitHub
-  default: [dark, light]
   dark:
     background: "#0d1117"
     font: "#e6edf3"
