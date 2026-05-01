@@ -10,6 +10,8 @@ import { getCache, setCache } from './cache.js';
   const btn = document.getElementById('bibtex-btn');
   if (!btn) return;
 
+  const FETCH_DONE_DELAY = 1200; // ms to show [OK] line before replacing with content
+
   /* ── Helpers ────────────────────────────────────────────────────── */
 
   /* Remove LaTeX brace groups: {COVID-19} → COVID-19 */
@@ -242,7 +244,7 @@ import { getCache, setCache } from './cache.js';
 
   const prompt = document.createElement('pre');
   prompt.className = 'panel-terminal';
-  prompt.textContent = `$ doi.org/${doi} --format=bibtex`;
+  prompt.textContent = '$ pub-get --ref --format=bibtex';
 
   const pre = document.createElement('pre');
   pre.style.cssText = 'white-space:pre-wrap;word-break:break-all;margin:0.5rem 0;line-height:1.5;color:var(--font-color);font-family:"Courier New",Courier,monospace;font-size:var(--font-sm);';
@@ -330,7 +332,7 @@ import { getCache, setCache } from './cache.js';
 
   function setFormat(fmt) {
     currentFmt = fmt;
-    prompt.textContent = `$ doi.org/${doi} --format=${fmt}`;
+    prompt.textContent = `$ pub-get --ref --format=${fmt}`;
 
     /* Highlight active format */
     FORMATS.forEach(f => {
@@ -389,18 +391,7 @@ import { getCache, setCache } from './cache.js';
 
   let fetched = false;
 
-  async function fetchBibTeX() {
-    const cacheKey = `bibtex-${doi}`;
-    const cached = getCache(cacheKey);
-    if (cached !== null) return cached;
-    const res = await fetch(`https://doi.org/${doi}`, { headers: { Accept: 'application/x-bibtex' } });
-    if (!res.ok) throw new Error(res.status);
-    const text = await res.text();
-    setCache(cacheKey, text);
-    return text;
-  }
-
-  /* ── CITE / EXIT toggle ─────────────────────────────────────────── */
+/* ── CITE / EXIT toggle ─────────────────────────────────────────── */
 
   let isOpen = false;
 
@@ -421,17 +412,32 @@ import { getCache, setCache } from './cache.js';
     isOpen = true;
 
     if (!fetched) {
-      pre.textContent = 'Fetching…';
+      const INFO = `<span style="color:var(--secondary-color)">[INFO]</span>`;
+      const OK   = `<span style="color:var(--primary-color)">[OK]</span>  `;
+      const ERR  = `<span style="color:var(--error-color)">[ERR]</span>  `;
+      pre.innerHTML = `${INFO} Searching local cache...`;
       try {
-        rawBibTeX    = await fetchBibTeX();
-        parsedFields = parseBibTeX(rawBibTeX)?.fields ?? null;
+        const cached = getCache(`bibtex-${doi}`);
+        if (cached !== null) {
+          rawBibTeX = cached;
+        } else {
+          pre.innerHTML += `\n${INFO} Not found. Requesting metadata from doi.org...`;
+          const res = await fetch(`https://doi.org/${doi}`, { headers: { Accept: 'application/x-bibtex' } });
+          if (!res.ok) throw new Error(res.status);
+          rawBibTeX = await res.text();
+          setCache(`bibtex-${doi}`, rawBibTeX);
+        }
+        const parsed = parseBibTeX(rawBibTeX);
+        parsedFields = parsed?.fields ?? null;
         fetched      = true;
+        pre.innerHTML += `\n${OK} Key identified: ${esc(parsed?.key ?? '?')}`;
         copyBtn.disabled = false;
         bibBtn.disabled  = false;
         risBtn.disabled  = false;
+        await new Promise(r => setTimeout(r, FETCH_DONE_DELAY));
         setFormat(currentFmt);
       } catch {
-        pre.textContent = '! doi.org did not return BibTeX for this entry.';
+        pre.innerHTML += `\n${ERR} doi.org did not return BibTeX for this entry.`;
       }
     }
   });
