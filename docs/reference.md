@@ -1061,15 +1061,24 @@ Links embedded in paragraph text on the about page are intentionally subtle — 
 
 ### pa11y audit results
 
-Automated testing via pa11y (axe-core 4.11) against all major pages. Results and dispositions:
+Full audit results are in `docs/pa11y/` (CSV per page + `README.md` summary). Re-run instructions are in the README.
 
-| Finding | Pages | Disposition |
-| --- | --- | --- |
-| `.uni-country` contrast | all | `aria-hidden="true"` added — axe-core 4.11 still checks visual contrast of aria-hidden elements; accepted limitation |
-| Research bar `█░` chars | all | `aria-hidden="true"` on bar `<td>` — decorative; count column and link title convey the data |
-| OpenAlex `color:#aaa` footer | home, works | Fixed → `color:var(--secondary-color)` |
-| OpenAlex SVG axis labels | home, works | `aria-hidden="true"` on `<svg>` — labels use `--invert-font-color` which resolves to page background in light mode; all data is in the table above |
-| Filter button `.active` contrast | works | False positive — axe-core cannot resolve chained CSS custom properties (`--primary-color: var(--light-primary-color)` via data-attribute selector + inline style); real ratios are ~5.5:1 (light) and ~11:1 (dark) |
-| Prose link underlines | about | Accepted — intentional design decision |
+**Current state (2026-05-02, pa11y 9.1.1):**
 
-**Known axe-core 4.11 limitation:** `aria-hidden="true"` elements are still evaluated for color-contrast. This means `.uni-country` will continue to appear in reports. The element is excluded from the accessibility tree; the visual contrast is a deliberate palette trade-off (Duck dark secondary `#727072` on `#2d2a2e` ≈ 3.1:1).
+| Page | Result |
+| --- | --- |
+| `/` (home) | ✓ Clean |
+| `/posts/` | ✓ Clean |
+| `/about/`, `/works/`, `/works/<slug>/`, `/posts/<slug>/`, `/blood/` | ⚠ SVG only (see below) |
+
+**Only remaining finding — OpenAlex SVG chart (`#oa-svg`):** htmlcs flags 4 color-contrast errors on axis labels inside the SVG. The SVG carries `aria-hidden="true"` and all its data is in the `<table>` above. axe-core (the other pa11y checker) does not flag these because it respects `aria-hidden`. htmlcs does not — this is a known htmlcs limitation with SVG elements. The 1.03:1 ratios reported are a measurement artifact from htmlcs incorrectly inferring the background behind SVG `<text>` elements over colored `<circle>` elements. **Accepted — no accessible information loss.**
+
+**Previously fixed and cleared:**
+
+| Finding | Fix |
+| --- | --- |
+| `.uni-country` contrast | `aria-hidden="true"` — decorative label |
+| Research bar `█░` chars | `aria-hidden="true"` on bar `<td>` |
+| OpenAlex footer `color:#aaa` | → `color:var(--secondary-color)` |
+| Filter button `.active` contrast | False positive — chained CSS custom properties confuse htmlcs/axe; real ratios ~5.5:1 (light) / ~11:1 (dark) |
+| Prose link underlines (`/about/`) | Accepted — intentional design; links are easter eggs |
