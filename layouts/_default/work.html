@@ -60,7 +60,7 @@
         {{- end -}}
       {{- end -}}
       {{ if $a.highlight }}<strong>{{ end -}}
-        {{- if $orcid -}}<a href="https://orcid.org/{{ $orcid }}" target="_blank" rel="noopener">{{- end -}}
+        {{- if $orcid -}}<a href="https://orcid.org/{{ $orcid }}" target="_blank" rel="noopener" aria-label="{{ $given }} {{ $family }}: ORCID profile (opens in new window)">{{- end -}}
         {{- $given }} {{ $family -}}
         {{- if $orcid -}}</a>{{- end -}}
       {{- if $a.highlight }}</strong>{{ end -}}

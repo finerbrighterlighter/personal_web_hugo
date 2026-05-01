@@ -220,6 +220,8 @@ import { getCache, setCache } from './cache.js';
 
   const panel = document.createElement('div');
   panel.className = 'terminal-window';
+  panel.setAttribute('role', 'region');
+  panel.setAttribute('aria-label', 'Citation panel');
   panel.style.display = 'none';
   panel.style.marginTop = 'var(--space-6)';
 
@@ -252,6 +254,8 @@ import { getCache, setCache } from './cache.js';
   prompt.textContent = '$ pub-get --ref --format=bibtex';
 
   const pre = document.createElement('pre');
+  pre.setAttribute('aria-live', 'polite');
+  pre.setAttribute('aria-atomic', 'true');
   pre.style.cssText = 'white-space:pre-wrap;word-break:break-all;margin:0.5rem 0;line-height:1.5;color:var(--font-color);font-family:"Courier New",Courier,monospace;font-size:var(--font-sm);';
 
   /* ── Action row: [Copy] [RIS]  ·  • bibtex • nlm • apa • ama • ── */
@@ -283,6 +287,8 @@ import { getCache, setCache } from './cache.js';
 
   /* Right: format selector */
   const fmtSelector = document.createElement('div');
+  fmtSelector.setAttribute('role', 'radiogroup');
+  fmtSelector.setAttribute('aria-label', 'Citation format');
   fmtSelector.style.cssText = 'font-family:monospace;font-size:var(--font-xs);color:var(--secondary-color);';
 
   const FORMATS = ['bibtex', 'nlm', 'apa', 'ama'];
@@ -316,6 +322,8 @@ import { getCache, setCache } from './cache.js';
     b.textContent = fmt;
     b.title       = FMT_LABELS[fmt];
     b.dataset.fmt = fmt;
+    b.setAttribute('role', 'radio');
+    b.setAttribute('aria-checked', fmt === 'bibtex' ? 'true' : 'false');
     b.style.cssText = 'background:none;border:none;padding:0;cursor:pointer;font-family:monospace;font-size:var(--font-xs);transition:color 0.15s;';
     fmtBtns[fmt] = b;
     fmtSelector.appendChild(b);
@@ -342,6 +350,7 @@ import { getCache, setCache } from './cache.js';
     /* Highlight active format */
     FORMATS.forEach(f => {
       fmtBtns[f].style.color = f === fmt ? 'var(--primary-color)' : 'var(--secondary-color)';
+      fmtBtns[f].setAttribute('aria-checked', f === fmt ? 'true' : 'false');
     });
 
     if (!parsedFields) return;
@@ -403,10 +412,15 @@ import { getCache, setCache } from './cache.js';
   /* Init format selector to bibtex active */
   setFormat('bibtex');
 
+  btn.setAttribute('aria-expanded', 'false');
+  btn.setAttribute('aria-controls', 'cite-panel');
+  panel.id = 'cite-panel';
+
   btn.addEventListener('click', async () => {
     if (isOpen) {
       panel.style.display = 'none';
       btn.textContent = 'CITE';
+      btn.setAttribute('aria-expanded', 'false');
       isOpen = false;
       return;
     }
@@ -414,6 +428,7 @@ import { getCache, setCache } from './cache.js';
     panel.style.display = '';
     panel.classList.remove('collapsed');
     btn.textContent = 'EXIT';
+    btn.setAttribute('aria-expanded', 'true');
     isOpen = true;
 
     if (!fetched) {

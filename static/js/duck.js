@@ -27,6 +27,10 @@
   wrapper.parentNode.insertBefore(quackRow, wrapper.nextSibling);
   wrapper.style.cursor = 'pointer';
 
+  wrapper.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); wrapper.click(); }
+  });
+
   let duckTimer;
   const quackTimers = [null, null, null];
   let clickCount = 0;

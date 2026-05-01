@@ -56,9 +56,11 @@
     // ── UI sync ───────────────────────────────────────────────────────────────
 
     function updateEmoji(mode) {
+        const next = mode === 'dark' ? 'light' : 'dark';
+        toggle.setAttribute('aria-label', `Switch to ${next} mode`);
         if (getActivePalette(mode).id === 'duck') {
             const filter = mode === 'light' ? 'grayscale(100%)' : 'none';
-            toggle.innerHTML = `<img src="/favicon-32x32.png" alt="duck" style="width:1.1rem;height:1.1rem;vertical-align:middle;filter:${filter};">`;
+            toggle.innerHTML = `<img src="/favicon-32x32.png" alt="" style="width:1.1rem;height:1.1rem;vertical-align:middle;filter:${filter};">`;
         } else {
             toggle.textContent = mode === 'dark' ? '○' : '●';
         }

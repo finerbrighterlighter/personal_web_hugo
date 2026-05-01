@@ -59,6 +59,23 @@ const MAX_BAR = 10; // 10 segments = each segment is 10%; fractional part shown 
   table.className = 'cli-table';
   table.style.tableLayout = 'auto'; // let first column stretch with content
 
+  const caption = document.createElement('caption');
+  caption.className = 'sr-only';
+  caption.textContent = 'Research topics by frequency';
+  table.appendChild(caption);
+
+  const thead = document.createElement('thead');
+  thead.className = 'sr-only';
+  const headerRow = document.createElement('tr');
+  ['Topic', 'Frequency', 'Count'].forEach(text => {
+    const th = document.createElement('th');
+    th.scope = 'col';
+    th.textContent = text;
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
   const tbody = document.createElement('tbody');
 
   for (const [tag, count] of top) {
@@ -71,6 +88,7 @@ const MAX_BAR = 10; // 10 segments = each segment is 10%; fractional part shown 
     const a = document.createElement('a');
     a.href        = `/works/?search=${encodeURIComponent(tag)}`;
     a.textContent = tag;
+    a.title       = `${tag}: ${count} of ${totalCount} works`;
     a.style.cssText = 'color:var(--secondary-color);text-decoration:none;white-space:nowrap;';
     a.addEventListener('mouseover', () => a.style.color = 'var(--primary-color)');
     a.addEventListener('mouseout',  () => a.style.color = 'var(--secondary-color)');

@@ -5,7 +5,7 @@
   {{ with .Params.datasource }}{{ $allTags = $allTags | append . }}{{ end }}
 {{ end }}
 
-<div class="terminal-window panel">
+<div class="terminal-window panel" role="region" aria-label="Research topics">
   <div class="window-header">
     <div class="window-controls" aria-hidden="true">
       <span class="control close"></span>
