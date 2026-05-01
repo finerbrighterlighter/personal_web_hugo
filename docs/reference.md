@@ -276,13 +276,15 @@ authors:
 
 # Sources — drives "Find this paper" buttons and DOI extraction
 sources:
-  - text: fulltext      # Publisher full text; also used for title hyperlink
+  - text: fulltext      # any key; button label = text | upper (FULLTEXT, PUBMED, …)
     url: https://doi.org/10.xxxx/xxxxx
   - text: pubmed
     url: https://pubmed.ncbi.nlm.nih.gov/XXXXXXXX/
-  - text: mirror        # Author copy; internal paths get relURL, external get target="_blank"
+  - text: mirror        # internal paths get relURL + no target="_blank"
     url: /general/papers/filename.pdf
-  - text: poster        # Conference poster PDF (used in llms.txt for conference URLs)
+  - text: poster        # used in llms.txt for conference/report external URL
+    url: https://...
+  - text: any-new-key   # appears automatically as ANY-NEW-KEY button
     url: https://...
 
 # Tags — drive filter buttons and tag section on work pages
@@ -291,14 +293,18 @@ datasource: [EHR, registry]
 methods: [machine learning, survival analysis, multi-state model]
 ```
 
-**`sources.text` values and their effects:**
+**`sources.text` behaviour:**
 
-| text | Button label | Also used as |
-| --- | --- | --- |
-| `fulltext` | Publisher | Title link, citation_fulltext_html_url meta tag |
-| `pubmed` | PubMed | Title link (fallback), citation_abstract_html_url implied |
-| `mirror` | Author Copy | Title link (fallback) |
-| `poster` | — | External URL for conference entries in llms.txt |
+All entries are rendered as buttons in front matter order with the label `text | upper`. No fixed label mapping — any key works. Special roles some keys carry:
+
+| text | Special role |
+| --- | --- |
+| `fulltext` | First choice for title hyperlink; `citation_fulltext_html_url` SEO tag |
+| `pubmed` | Title link fallback #1 |
+| `mirror` | Title link fallback #2; internal paths get `relURL`, no `target="_blank"` |
+| `poster` | External URL for conference/report entries in llms.txt |
+
+Google Scholar (from `scholar` front matter key) and BibTeX (from DOI) are appended after all source buttons.
 
 DOI is extracted from any source URL containing `doi.org/` — the prefix is stripped to a bare `10.xxx/...` for use in `data-doi`, doi2bib link, and SEO tags.
 
@@ -501,7 +507,7 @@ Scripts loaded at bottom of `<body>` via `partials/scripts.html`.
 3. Affiliation block (numbered, ordered by first appearance)
 4. Meta row: venue (left) · citation count + date (right)
 5. Abstract (`{{ .Content }}` — page body)
-6. "Find this paper": PubMed · Google Scholar · Publisher · Author Copy · BibTeX
+6. "Find this paper": all `sources` entries as `TEXT | upper` buttons (front matter order) + Google Scholar + BibTeX
 7. Tags: Condition / Data / Method groups (only rendered when at least one tag present)
 
 BibTeX link format: `https://doi2bib.org/bib/<bare-doi>` — doi2bib requires the bare `10.xxx/...` identifier, not the full `https://doi.org/` URL.

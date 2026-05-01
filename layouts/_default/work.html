@@ -109,9 +109,14 @@
     <h2>Find this paper</h2>
     <p>
 
-      {{ with $pm }}
-        <a class="work-link-btn" href="{{ .url }}" target="_blank" rel="noopener" itemprop="url">
-          PubMed
+      {{ range $src }}
+        {{ $url := .url }}
+        {{ $isExternal := hasPrefix $url "http" }}
+        {{ if not $isExternal }}{{ $url = $url | relURL }}{{ end }}
+        <a class="work-link-btn" href="{{ $url }}"
+           {{ if $isExternal }}target="_blank" rel="noopener"{{ end }}
+           itemprop="url">
+          {{ .text | upper }}
         </a>
       {{ end }}
 
@@ -120,22 +125,6 @@
            href="https://scholar.google.com/citations?view_op=view_citation&citation_for_view={{ $.Site.Data.homepage.sidebar.scholar_profile }}:{{ . }}"
            target="_blank" rel="noopener" itemprop="sameAs">
           Google Scholar
-        </a>
-      {{ end }}
-
-      {{ with $ft }}
-        <a class="work-link-btn" href="{{ .url }}" target="_blank" rel="noopener" itemprop="url">
-          Publisher
-        </a>
-      {{ end }}
-
-      {{ with $mirror }}
-        {{ $url := .url }}
-        {{ if not (hasPrefix $url "http") }}{{ $url = $url | relURL }}{{ end }}
-        <a class="work-link-btn" href="{{ $url }}"
-           {{ if hasPrefix $url "http" }}target="_blank" rel="noopener"{{ end }}
-           itemprop="url">
-          Author Copy
         </a>
       {{ end }}
 
