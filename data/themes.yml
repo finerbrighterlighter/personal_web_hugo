@@ -6,16 +6,16 @@
 - id: duck
   label: Duck
   dark:
-    background: "#1c1814"  # Warm dark — Dark Moon with amber undertone
-    font: "#e8d5b0"        # Warm parchment — Gruvbox-level warmth, duck-tinted
-    invert_font: "#1c1814"
-    primary: "#c49820"     # Muted golden amber — Sunflower at ~55% saturation
-    secondary: "#9a7040"   # Warm mid-brown — duck warmth without the shout
-    tertiary: "#333232"    # Dark Charcoal — borders and containers
-    error: "#b92e00"       # Dropped Brick — unchanged, already calm
-    progress_bar_background: "#333232"
+    background: "#2e2620"  # Warm amber-dark — Monokai-equivalent lightness (~17%), amber not purple
+    font: "#e8d5b0"        # Warm parchment
+    invert_font: "#2e2620"
+    primary: "#c49820"     # Muted golden amber
+    secondary: "#9a7040"   # Warm mid-brown
+    tertiary: "#3e3428"    # Stepped up with background for panels/containers
+    error: "#b92e00"       # Dropped Brick
+    progress_bar_background: "#3e3428"
     progress_bar_fill: "#c49820"
-    code_bg: "#141210"     # Slightly darker warm dark for code blocks
+    code_bg: "#221c14"     # Slightly darker than background for code blocks
   light:
     background: "#fdf8ee"  # Warm cream — duck highlight face
     font: "#1c1814"        # Warm dark — matches dark mode background
