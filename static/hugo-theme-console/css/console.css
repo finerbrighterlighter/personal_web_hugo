@@ -197,6 +197,11 @@
     outline-offset: 2px;
 }
 
+/* Links inside prose paragraphs must be distinguishable without color (WCAG 1.4.1) */
+.main-content p a {
+    text-decoration: underline;
+}
+
 /* ============================= */
 /* BASE TYPOGRAPHY */
 /* ============================= */

@@ -104,6 +104,7 @@ const MAX_BAR = 10; // 10 segments = each segment is 10%; fractional part shown 
     const emptyCount   = MAX_BAR - fullSegments - (fraction > 0 ? 1 : 0);
 
     const tdBar = document.createElement('td');
+    tdBar.setAttribute('aria-hidden', 'true');
     tdBar.style.cssText = 'white-space:nowrap;padding:0 0.5em;letter-spacing:1px;';
 
     if (fullSegments > 0) {
