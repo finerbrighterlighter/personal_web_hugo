@@ -49,7 +49,7 @@ import { getCache, setCache } from './cache.js';
   function fmtBibTeX(raw) { return raw; }
 
   function fmtCiteNLM(f) {
-    const authors = authorList(f.author, fmtNLM, 6).join(', ');
+    const authors = authorList(f.author, fmtNLM, Infinity).join(', ');
     const pages   = (f.pages || '').replace(/--?/, '-');
     let s = (authors ? authors + '. ' : '') + clean(f.title) + '. ';
     s += clean(f.journal) + '. ';
@@ -63,7 +63,11 @@ import { getCache, setCache } from './cache.js';
   }
 
   function fmtCiteAMA(f) {
-    const authors = authorList(f.author, fmtNLM, 6).join(', ');
+    const raw = (f.author || '').split(/\s+and\s+/i).map(a => parseAuthor(a));
+    const names = raw.length > 6
+      ? raw.slice(0, 3).map(fmtNLM).join(', ') + ', et al.'
+      : raw.map(fmtNLM).join(', ');
+    const authors = names;
     const pages   = (f.pages || '').replace(/--?/, '-');
     let s = (authors ? authors + '. ' : '') + clean(f.title) + '. ';
     s += clean(f.journal) + '. ';
@@ -146,20 +150,27 @@ import { getCache, setCache } from './cache.js';
     'abstract', 'keywords', 'editor', 'note',
   ];
 
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  const K  = s => `<span style="color:var(--primary-color)">${s}</span>`;
+  const DIM = s => `<span style="color:var(--secondary-color)">${s}</span>`;
+
   function prettifyBibTeX(src) {
     const p = parseBibTeX(src);
-    if (!p) return src;
+    if (!p) return { html: esc(src) };
     const { type, key, fields: f } = p;
     const known   = BIBTEX_FIELD_ORDER.filter(k => f[k] !== undefined);
     const rest    = Object.keys(f).filter(k => !BIBTEX_FIELD_ORDER.includes(k));
     const ordered = [...known, ...rest];
     const pad     = Math.max(...ordered.map(k => k.length));
-    const lines   = [`@${type}{${key},`];
+    const lines   = [`${DIM('@')}${K(type)}${DIM('{' + key + ',')}`];
     ordered.forEach(k => {
-      lines.push(`  ${k.padEnd(pad)} = {${f[k]}},`);
+      lines.push(`  ${K(k.padEnd(pad))} ${DIM('=')} ${DIM('{')}${esc(f[k])}${DIM('},')}`);
     });
-    lines.push('}');
-    return lines.join('\n');
+    lines.push(DIM('}'));
+    return { html: lines.join('\n') };
   }
 
   /* ── BibTeX → RIS (for download) ───────────────────────────────── */
@@ -234,7 +245,7 @@ import { getCache, setCache } from './cache.js';
   prompt.textContent = `$ doi.org/${doi} --format=bibtex`;
 
   const pre = document.createElement('pre');
-  pre.style.cssText = 'white-space:pre-wrap;word-break:break-all;margin:0.5rem 0;line-height:1.5;color:var(--font-color);';
+  pre.style.cssText = 'white-space:pre-wrap;word-break:break-all;margin:0.5rem 0;line-height:1.5;color:var(--font-color);font-family:"Courier New",Courier,monospace;font-size:var(--font-sm);';
 
   /* ── Action row: [Copy] [RIS]  ·  • bibtex • nlm • apa • ama • ── */
 
@@ -329,7 +340,7 @@ import { getCache, setCache } from './cache.js';
     if (!parsedFields) return;
     const f = parsedFields;
     switch (fmt) {
-      case 'bibtex': pre.textContent = prettifyBibTeX(rawBibTeX); break;
+      case 'bibtex': pre.innerHTML   = prettifyBibTeX(rawBibTeX).html; break;
       case 'nlm':    pre.textContent = fmtCiteNLM(f);     break;
       case 'ama':    pre.textContent = fmtCiteAMA(f);     break;
       case 'apa':    pre.textContent = fmtCiteAPA(f);     break;
