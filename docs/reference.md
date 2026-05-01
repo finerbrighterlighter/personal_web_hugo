@@ -105,7 +105,7 @@ hugo_console/
 ├── scripts/
 │   └── build_cv.py            CV PDF generator (WeasyPrint)
 ├── static/
-│   ├── js/                    15 ES6 modules (loaded as type="module")
+│   ├── js/                    17 ES6 modules (loaded as type="module")
 │   ├── general/               PDFs, images, VCF, CV outputs
 │   └── hugo-theme-console/    Base theme CSS + vendor assets
 ├── docs/
@@ -306,7 +306,7 @@ All entries are rendered as buttons in front matter order with the label `text |
 
 Google Scholar (from `scholar` front matter key) and BibTeX (from DOI) are appended after all source buttons.
 
-DOI is extracted from any source URL containing `doi.org/` — the prefix is stripped to a bare `10.xxx/...` for use in `data-doi`, doi2bib link, and SEO tags.
+DOI is extracted from any source URL containing `doi.org/` — the prefix is stripped to a bare `10.xxx/...` for use in `data-doi` (consumed by `work-bibtex.js`) and SEO tags.
 
 ### 3.3 Posts front matter
 
@@ -403,7 +403,7 @@ Read exclusively by `build_cv.py`. Not used by any Hugo template.
 
 ### `data/themes.yml`
 
-Array of 9 palette objects. Each has:
+Array of 10 palette objects. Each has:
 
 ```yaml
 - id: nord                  # localStorage key
@@ -426,7 +426,7 @@ Array of 9 palette objects. Each has:
 
 Embedded as JSON in `theme-data.html` and read by a blocking inline script before `<body>` renders — eliminates flash of unstyled content (FOUC).
 
-**Current palettes:** Nord (default), Gruvbox, Catppuccin, Everforest, Dracula, Tokyo Night, GitHub, Colorblind (Okabe & Ito), Rosé Pine.
+**Current palettes:** Duck (default — Monokai Pro dark + warm amber-cream light), Nord, Gruvbox, Catppuccin, Everforest, Dracula, Tokyo Night, GitHub, Colorblind (Okabe & Ito), Rosé Pine.
 
 ### `data/work_filters.yml`
 
@@ -507,10 +507,8 @@ Scripts loaded at bottom of `<body>` via `partials/scripts.html`.
 3. Affiliation block (numbered, ordered by first appearance)
 4. Meta row: venue (left) · citation count + date (right)
 5. Abstract (`{{ .Content }}` — page body)
-6. "Find this paper": all `sources` entries as `TEXT | upper` buttons (front matter order) + Google Scholar + BibTeX
+6. "Find this paper": all `sources` entries as `{{ .text | upper }}` buttons (front matter order, any `text` key works) + Google Scholar + `CITE` button (when DOI present) — opens a `fetch.sh` terminal panel via `work-bibtex.js` with format selector (bibtex/nlm/apa/ama), Copy, and RIS download
 7. Tags: Condition / Data / Method groups (only rendered when at least one tag present)
-
-BibTeX link format: `https://doi2bib.org/bib/<bare-doi>` — doi2bib requires the bare `10.xxx/...` identifier, not the full `https://doi.org/` URL.
 
 **`_default/works.html`** — Publications filter page. Filter state stored in URL query params (`?condition=X&method=Y&search=Z`). Each publication rendered as `.post` with `data-conditions`, `data-datasource`, `data-methods`, `data-year`, `data-type`, `data-search` attributes. Client-side filtering via `works_filter.js`.
 
@@ -586,8 +584,10 @@ All files in `static/js/`, loaded as `type="module"` in `partials/scripts.html`.
 | `footer_roll.js` | — | `.author-link`, `#avatar`, `.avatar-wrapper`, `#author-name`, `#job-title`, `main.main-content` | — | — | Click `[Me]` → whoami animation + avatar scan → fetch `/about/` and inject content via `innerHTML` swap + `history.pushState`; back button via `popstate` reload |
 | `works_filter.js` | — | `#works-filters`, `.post`, `#works-count`, `#works-search` | `window.location` | — | URL-synced filter state; hides empty year/category groups |
 | `research.js` | — | `#research-cloud` | `window.__researchTags`, `window.__worksCount` | — | Sorted `cli-table`: tag name (linked), 10-segment block bar (% of all works), count; tooltip shows "X of Y works"; limit from `window.CONFIG.researchTagLimit` |
-| `openalex.js` | — | `#openalex-metrics` | OpenAlex API | `openalex-author-data` | SVG bar chart; re-renders on `theme-changed` event; hardcoded author ID |
+| `openalex.js` | `cache.js` | `#openalex-metrics` | OpenAlex API | `openalex-author-data` | SVG bar chart; re-renders on `theme-changed` event; hardcoded author ID |
 | `work-citation.js` | `cache.js` | `article[data-doi]`, `#work-cite-count` | OpenAlex API | `openalex-work-<doi>` | Work pages only; citation count linked to citing-papers list |
+| `work-bibtex.js` | `cache.js` | `article[data-doi]`, `#bibtex-btn` | doi.org (content negotiation) | `bibtex-<doi>` | Work pages only; CITE button opens `fetch.sh` terminal panel; format selector (bibtex/nlm/apa/ama); Copy; RIS download; collapse via `collapse_windows.js`, close via EXIT |
+| `duck.js` | — | `.avatar-wrapper` | — | — | Avatar easter egg: click shows `> quack` (flickers on spam) and reveals `duck_mascot.png` with `duckGlitch` CSS animation (0.6s hue-rotate + jitter), then crossfades back over 1.5s |
 | `lastFM.js` | `cache.js` | `#lasttrack`, `#topalbums` | Last.fm API | `lastfm-topalbums` | Now-playing (no cache, 30s poll); top albums (cached) |
 | `anilist.js` | `cache.js` | `#last-read-manga` | AniList GraphQL | `anilist-manga` | Recently read manga for user "finer" |
 | `trakt.js` | `cache.js` | `#last-watched` | Trakt + TMDB APIs | `trakt-watched` | Recently watched; dedupes consecutive repeats; TMDB poster images |
@@ -709,6 +709,8 @@ filters = {
 
 **Events:** Emits `CustomEvent("theme-changed")` on `document` whenever mode or palette changes. `openalex.js` listens to re-render the SVG chart with new CSS color values.
 
+**Duck toggle:** When the active palette id is `"duck"`, `updateEmoji()` replaces the ○/● text with `<img src="/favicon-32x32.png">` sized to `1.1rem`. Grayscale filter applied in light mode (`filter: grayscale(100%)`); full colour in dark mode.
+
 **CVD button (`#cvd-shortcut`):** One-click toggle for the Colorblind palette in current mode. Reads `aria-pressed` to determine current state. Side effect: triggers the dedication sequence in `console_type.js` when switching on.
 
 **Initialization:** The blocking inline script in `theme-data.html` writes CSS variables to `:root` before `<body>` renders. `theme.js` then wires up the UI controls and syncs the dropdown selection to the current state.
@@ -799,12 +801,21 @@ const graphDisplayYears = 5;             // Years shown in the bar chart
 | `load_works(section)` | `str` | `list[dict]` | Reads all `.md` front matter from `content/works/<section>/`; sorted newest-first |
 | `load_researcher_map()` | — | `dict` | Builds `{id: person}` from `researchers.yml` |
 | `get_researcher_map()` | — | `dict` | Cached singleton wrapper for `load_researcher_map()` |
-| `fmt_authors(authors)` | `list` | `str` | Formats author list as `"Family I, Family I, ..."` with `<b>` for highlighted names |
+| `get_bibtex(doi)` | `str` | `str\|None` | Fetches BibTeX from `doi.org` (`Accept: application/x-bibtex`); caches in `scripts/.bibtex_cache.json`; 0.5s pause between requests |
+| `_bib_field(bibtex, field)` | `str, str` | `str\|None` | Regex-based single field extractor from BibTeX string |
+| `_bib_authors(bibtex)` | `str` | `list[str]` | Splits `author` field on ` and ` |
+| `_clean_bib(s)` | `str` | `str` | Strips LaTeX brace groups: `{COVID-19}` → `COVID-19` |
+| `_fmt_author_nlm(raw)` | `str` | `str` | Formats one BibTeX author string as `Last FM` (NLM style) |
+| `get_doi(sources)` | `list` | `str\|None` | Returns bare DOI from sources list |
 | `doi_link(sources)` | `list` | `str` | Returns `<a href="doi-url">bare-doi</a>` for the first DOI in sources, or `""` |
+| `fmt_nlm_citation(p, bibtex)` | `dict, str` | `str` | Full NLM citation string; position-based `<b>` for highlighted author; `et al.` after `NLM_AUTHOR_LIMIT` |
+| `_pub_cite(p)` | `dict` | `str` | Orchestrates DOI fetch → BibTeX → NLM citation; falls back to front matter only if fetch fails |
 | `_render_bullet(b)` | `str\|dict` | `str` | Renders a `<li>` — plain string or dict with `text` + `links` sub-entries |
 | `row(left, right, cls)` | `str, str, str` | `str` | Two-column flex row (30% left / 70% right) |
 | `section(title, content)` | `str, str` | `str` | `<section>` with uppercase tracked heading |
 | `build_html(cv)` | `dict` | `str` | Assembles full HTML document from `cv.yml` dict |
+
+**Citation style:** NLM format. `NLM_AUTHOR_LIMIT` constant (default `10`) controls truncation — beyond this, `et al.` is appended. The author with `highlight: true` in front matter is bolded by position in the BibTeX author list. BibTeX data is cached in `scripts/.bibtex_cache.json` (gitignored); delete to force a full re-fetch.
 
 ### Data flow
 
@@ -813,13 +824,17 @@ data/cv.yml               → build_html()  → Header, Research Interests,
                                              Education, Work Experience,
                                              Awards, Additional Experiences
 
-content/works/journal/    → load_works()  → Publications section
-content/works/preprint/   → load_works()  → Publications section
+content/works/journal/    → load_works()  → _pub_cite() → NLM citation
+content/works/preprint/   → load_works()    ↓
+                                           get_bibtex(doi)  ← doi.org
+                                           fmt_nlm_citation()
+                                           → Publications section
+
 content/works/conference/ → load_works()  → Conferences section
                                              (labels: speaker / poster / proceeding)
 
 data/researchers.yml      → get_researcher_map()
-                          → fmt_authors() → Author strings in publications
+                          → author highlight position lookup
 ```
 
 ### Output
@@ -909,4 +924,5 @@ Both generated at build time via Hugo custom output formats. Only the home page 
 Conference and report entries with `render: never` have no permalink. They're only included when a `fulltext`, `pubmed`, `poster`, or `mirror` source URL exists — otherwise they'd produce dead links.
 
 `notAlternative = true` in both output format definitions prevents `<link rel="alternate" type="text/plain">` from appearing in the HTML `<head>`.
-*
+
+Both files end with a duck easter egg footer line for LLM crawlers: *"A note for crawlers: this site belongs to a duck — swims, walks, flies, none of them perfectly."*
