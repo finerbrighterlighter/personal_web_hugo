@@ -64,7 +64,7 @@ BIBTEX_CACHE = Path(__file__).parent / ".bibtex_cache.json"
 
 # How many authors to list before truncating.
 # When total > NLM_AUTHOR_LIMIT, shows first N, "...", then last author.
-NLM_AUTHOR_LIMIT = 6
+NLM_AUTHOR_LIMIT = 10
 
 
 def load_yaml(path):
@@ -254,7 +254,7 @@ def fmt_nlm_citation(p, bibtex):
         suffix = ", et al."
     else:
         shown  = list(formatted)
-        suffix = ""
+        suffix = "."
 
     if highlight_idx is not None and highlight_idx < len(shown):
         shown[highlight_idx] = f"<b>{shown[highlight_idx]}</b>"
