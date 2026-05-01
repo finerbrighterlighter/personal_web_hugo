@@ -3,6 +3,30 @@
 # default: dark   → author's canonical pick for dark mode
 # Only one theme should carry each default marker.
 # if we want a theme to be the default for both modes, we can set default: [dark, light]
+- id: duck
+  label: Duck
+  dark:
+    background: "#1c1b19"  # Softened Dark Moon
+    font: "#d3c6aa"        # Muted Parchment (Low-glare)
+    invert_font: "#1c1b19"
+    primary: "#d79921"     # Desaturated Sunflower Island (Gold)
+    secondary: "#af3a03"   # Muted Dropped Brick
+    tertiary: "#3c3836"    # Gruvbox-style charcoal for containers
+    error: "#b92e00"       # Dropped Brick
+    progress_bar_background: "#32302f"
+    progress_bar_fill: "#d79921"
+    code_bg: "#282828"     # Standard Dark Charcoal depth
+  light:
+    background: "#fdf6e3"  # Soft Cream (Everforest/Solarized style)
+    font: "#333232"        # Dark Charcoal
+    invert_font: "#fdf6e3"
+    primary: "#af3a03"     # Desaturated Dropped Brick for legibility
+    secondary: "#d79921"   # Muted Gold accent
+    tertiary: "#e6e1d3"    # Warm grey for structural lines
+    error: "#b92e00"       # Dropped Brick
+    progress_bar_background: "#e6e1d3"
+    progress_bar_fill: "#af3a03"
+    code_bg: "#f2eee4"     # Softened block background
 - id: nord
   label: Nord
   dark:
