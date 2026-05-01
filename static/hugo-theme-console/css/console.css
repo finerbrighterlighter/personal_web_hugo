@@ -1005,17 +1005,13 @@ p.social a {
 /* ============================= */
 
 .work-single h1 {
+    --display-h1-decoration: none;
+    font-size: 1.1rem;
+    font-weight: bold;
+    line-height: 1.5;
     margin-bottom: var(--space-2);
 }
 
-.work-title-external {
-    color: inherit;
-    text-decoration: none;
-}
-
-.work-title-external:hover {
-    text-decoration: underline;
-}
 
 .work-authors {
     font-size: var(--font-sm);
@@ -1148,14 +1144,6 @@ p.social a {
 }
 
 /* works list: clickable title */
-.work-title-link {
-    color: inherit;
-    text-decoration: none;
-}
-
-.work-title-link:hover {
-    text-decoration: underline;
-}
 
 /* ============================= */
 

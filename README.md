@@ -45,12 +45,12 @@ Only journal, preprint, dissertation, and report pages are rendered — conferen
 
 Each rendered work page includes:
 
-- **Title** linked to fulltext/pubmed/mirror if available
-- **Author list** with ORCID hyperlinks (matching text color) and superscript affiliation numbers when multiple affiliations exist
+- **Title** — plain text; bold, larger than body text
+- **Author list** with ORCID hyperlinks and superscript affiliation numbers when multiple affiliations exist
 - **Affiliation block** ordered by first author appearance
 - **Venue · citation count · date** — venue left-aligned, citation count (live from OpenAlex API, cached) and date right-aligned; citation count links to the citing-papers list on OpenAlex
 - **Abstract** from page body content
-- **Find this paper** — PubMed, Google Scholar, Publisher, Author Copy, BibTeX (via doi2bib using the bare DOI)
+- **Find this paper** — source buttons (PubMed, fulltext, mirror, etc.), Google Scholar, and a `CITE` button that opens a terminal panel fetching BibTeX from doi.org; panel supports bibtex / NLM / APA / AMA formats with copy, BIB download, and RIS download
 - **Tags** — Condition, Data, Method tags linking back to the filtered works index
 
 The Works nav link is suppressed on individual work pages (Home, Posts, Blood remain). Navigation back to the works index is via the breadcrumb: `~/works/journal$`.

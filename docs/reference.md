@@ -502,13 +502,13 @@ Scripts loaded at bottom of `<body>` via `partials/scripts.html`.
 
 **`_default/work.html`** — Individual publication page. Implements `ScholarlyArticle` microdata. Structure:
 
-1. Title (linked to fulltext → pubmed → mirror, in priority order)
-2. Author list with ORCID hyperlinks; superscript affiliation numbers when >1 unique affiliation
-3. Affiliation block (numbered, ordered by first appearance)
-4. Meta row: venue (left) · citation count + date (right)
-5. Abstract (`{{ .Content }}` — page body)
-6. "Find this paper": all `sources` entries as `{{ .text | upper }}` buttons (front matter order, any `text` key works) + Google Scholar + `CITE` button (when DOI present) — opens a `fetch.sh` terminal panel via `work-bibtex.js` with format selector (bibtex/nlm/apa/ama), Copy, and RIS download
-7. Tags: Condition / Data / Method groups (only rendered when at least one tag present)
+1. **Title** — plain text `<h1>` (no link); styled bold 1.1rem, 1.5 line-height, `--display-h1-decoration: none` suppresses the base theme's `====` bar
+2. **Author list** — ORCID hyperlinks; superscript affiliation numbers when >1 unique affiliation
+3. **Affiliation block** — numbered, ordered by first appearance
+4. **Meta row** — venue (left) · citation count + date (right)
+5. **Abstract** — `{{ .Content }}` (page body)
+6. **Find this paper** — all `sources` entries as `{{ .text | upper }}` buttons (front matter order, any `text` key works) + Google Scholar + `CITE` button (when DOI present); see `work-bibtex.js` below for full CITE panel behaviour
+7. **Tags** — Condition / Data / Method groups (only rendered when at least one tag present)
 
 **`_default/works.html`** — Publications filter page. Filter state stored in URL query params (`?condition=X&method=Y&search=Z`). Each publication rendered as `.post` with `data-conditions`, `data-datasource`, `data-methods`, `data-year`, `data-type`, `data-search` attributes. Client-side filtering via `works_filter.js`.
 
@@ -636,8 +636,71 @@ All files in `static/js/`, loaded as `type="module"` in `partials/scripts.html`.
 | `footer_roll.js` | pre-transition pause | `600` ms | Pause after role typed before fetching `/about/` |
 | `footer_roll.js` | fade duration | `350` ms | Opacity fade-out of `<main>` before content swap |
 | `research.js` | `MAX_BAR` | `10` | Bar width in segments; 1 segment = 10% of all works; fractional remainder sets opacity of last filled segment |
+| `work-bibtex.js` | `FETCH_DONE_DELAY` | `1200` | ms the `[OK]` status line is held before being replaced by formatted citation content |
 
-### 6.2 `console_type.js`
+### 6.2 `work-bibtex.js` — CITE panel
+
+Activated on any work single page that has a `data-doi` attribute on the `<article>` element. The bare DOI (e.g. `10.1016/j.jclinepi.2024.111234`) is extracted by the Hugo template from the first source URL containing `doi.org/`.
+
+**Panel trigger:** The `CITE` button (id `#bibtex-btn`) in the "Find this paper" section. Clicking opens a `.terminal-window` panel titled `fetch.sh`. Clicking again (or EXIT) closes it. The window header collapse is handled by `collapse_windows.js`.
+
+**Prompt line:** `$ pub-get --ref --format=<fmt>` — updates to the active format name as the user switches formats.
+
+**Fetch sequence (on first open only — subsequent opens use cached data):**
+
+```
+[INFO] Searching local cache...
+```
+If found in `localStorage` (cache key `bibtex-<doi>`, TTL from `cache.js`), proceeds directly to `[OK]`.
+
+If not found:
+```
+[INFO] Searching local cache...
+[INFO] Not found. Requesting metadata from doi.org...
+```
+Fetches from `https://doi.org/<doi>` with `Accept: application/x-bibtex` header. On success, stores result in `localStorage`.
+
+Either way, on success:
+```
+[OK]   Key identified: Teza_2023
+```
+After `FETCH_DONE_DELAY` ms, the status lines are replaced by the formatted citation.
+
+On network/HTTP failure:
+```
+[ERR]  doi.org did not return BibTeX for this entry.
+```
+
+**Color coding of status lines:** `[INFO]` in secondary color, `[OK]` in primary color, `[ERR]` in error color.
+
+**Format selector:** `• bibtex • nlm • apa • ama •` — clicking any switches the display and updates the prompt line. Active format shown in primary color.
+
+**Citation display:**
+
+All four formats use syntax highlighting:
+- Authors and structural metadata (year, volume, pages, DOI/URL) → secondary color
+- Title → default font color (most visually prominent)
+- Journal name → primary color
+- Field keys (BibTeX only) → primary color; punctuation (`{`, `}`, `=`, `,`) → secondary color
+
+BibTeX is prettified for display: one field per line, keys padded to align values, preferred field order (title → author → journal/booktitle → year → month → volume → number → pages → doi → url → publisher → issn → abstract → keywords → editor → note → any remaining). The raw doi.org response is used for Copy and BIB download — LaTeX generators receive unmodified input.
+
+Font: Courier New at `--font-sm` (0.75rem) — distinct from the site's Roboto Mono.
+
+**Author rules by format:**
+- **BibTeX** — raw as returned by doi.org
+- **NLM** — all authors listed (`Last FM` style), no truncation
+- **APA** — up to 20 authors (`Last, F. M.` style), then `… LastAuthor`; `&` before final author
+- **AMA** — ≤6 authors listed in full; >6 → first 3 + `, et al.`
+
+**Action buttons:**
+- **Copy** — copies raw doi.org BibTeX when in bibtex format; `pre.textContent` (tag-stripped) for other formats
+- **BIB** — downloads `<citekey>.bib` with raw BibTeX (cite key from doi.org response)
+- **RIS** — downloads `<citekey>.ris`, converted from parsed BibTeX fields; type map: article→JOUR, inproceedings/conference→CONF, book→BOOK, incollection→CHAP, phdthesis/mastersthesis→THES, techreport→RPRT, misc→GEN, unpublished/preprint→UNPB
+
+All three buttons are disabled until the fetch (or cache hit) completes.
+
+### 6.3 `console_type.js`
 
 Animated terminal typing in the nav header `<span id="typed-command">`.
 

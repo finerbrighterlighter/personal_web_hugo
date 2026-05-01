@@ -14,20 +14,7 @@
 
 <article class="work-single" data-doi="{{ $doi }}" itemscope itemtype="https://schema.org/ScholarlyArticle">
 
-  {{- $titleURL := "" -}}
-  {{- with $ft     }}{{- $titleURL = .url -}}{{- else -}}
-    {{- with $pm     }}{{- $titleURL = .url -}}{{- else -}}
-      {{- with $mirror }}{{- $titleURL = .url -}}{{- end -}}
-    {{- end -}}
-  {{- end -}}
-
-  <h1 itemprop="name">
-    {{ if $titleURL -}}
-      <a href="{{ $titleURL }}" target="_blank" rel="noopener" class="work-title-external">{{ .Title }}</a>
-    {{- else -}}
-      {{ .Title }}
-    {{- end }}
-  </h1>
+  <h1 itemprop="name">{{ .Title }}</h1>
 
   {{ $rm := partial "researcher-map.html" . }}
 
