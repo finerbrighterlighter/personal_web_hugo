@@ -404,10 +404,6 @@ details[open].project-collapse summary::before { content: "▾ "; }
     margin-bottom: 0;
 }
 
-.project-title a {
-    color: var(--font-color);
-}
-
 .project-title a:hover {
     background-color: var(--primary-color);
     color: var(--invert-font-color);
