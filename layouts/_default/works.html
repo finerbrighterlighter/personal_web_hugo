@@ -57,7 +57,7 @@
 <br/>
 {{ .Content }}
 
-{{ $categories := slice "journal" "conference-speaking" "conference-poster" "preprint" "dissertation" "report" }}
+{{ $categories := slice "journal" "conference-proceeding" "conference-speaking" "conference-poster" "preprint" "dissertation" "report" }}
 {{ $papers := where site.RegularPages "Section" "works" }}
 {{ $rm := partial "researcher-map.html" . }}
 
@@ -99,7 +99,7 @@
 
                 <h4 itemprop="name">
                   <i class="{{ .Params.icon | default "fas fa-file-alt" }}"></i>
-                  {{- if hasPrefix .Params.type "conference-" -}}
+                  {{- if and (hasPrefix .Params.type "conference-") (ne .Params.type "conference-proceeding") -}}
                     {{ .Title }}
                   {{- else -}}
                     <a class="work-title-link" href="{{ .RelPermalink }}">{{ .Title }}</a>

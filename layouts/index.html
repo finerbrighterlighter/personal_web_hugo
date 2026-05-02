@@ -26,7 +26,7 @@
 
         <h2>
           <i class="{{ .Params.icon | default "fas fa-file-alt" }}"></i>
-          {{- if hasPrefix .Params.type "conference-" -}}
+          {{- if and (hasPrefix .Params.type "conference-") (ne .Params.type "conference-proceeding") -}}
             {{ .Title }}
           {{- else -}}
             <a class="work-title-link" href="{{ .RelPermalink }}">{{ .Title }}</a>
