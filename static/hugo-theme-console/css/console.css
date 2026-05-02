@@ -342,10 +342,44 @@ strong {
     margin-bottom: var(--space-4);
 }
 
+/* ── "More" affordance — shared by expand (summary) and navigate (a.more-link) ── */
+
+.experience-collapse summary,
+.project-collapse summary,
+a.more-link {
+    display: inline-block;
+    font-size: var(--font-sm);
+    font-weight: normal;
+    font-family: var(--font-stack);
+    color: var(--secondary-color);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.experience-collapse summary:hover,
+.project-collapse summary:hover,
+a.more-link:hover {
+    text-decoration: underline;
+}
+
+/* Hide browser disclosure triangle */
+.experience-collapse summary,
+.project-collapse summary {
+    list-style: none;
+}
+.experience-collapse summary::-webkit-details-marker,
+.project-collapse summary::-webkit-details-marker { display: none; }
+.experience-collapse summary::marker,
+.project-collapse summary::marker { display: none; }
+
+/* Expand/collapse indicator */
+.experience-collapse summary::before,
+.project-collapse summary::before { content: "▸ "; }
+details[open].experience-collapse summary::before,
+details[open].project-collapse summary::before { content: "▾ "; }
+
 .experience-collapse summary {
     cursor: pointer;
-    font-size: var(--font-lg);
-    color: var(--secondary-color);
 }
 
 .project {
@@ -384,14 +418,7 @@ strong {
 }
 
 .project-collapse summary {
-    cursor: pointer;
     margin-top: var(--space-2);
-    font-size: var(--font-lg);
-    color: var(--secondary-color);
-}
-
-.project-collapse summary:hover {
-    text-decoration: underline;
 }
 
 figure {
