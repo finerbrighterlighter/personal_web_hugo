@@ -244,9 +244,9 @@ Loaded first in `scripts.html` via `js.Build`. All other modules read `window.CO
 
 | URL pattern | Layout template | Notes |
 | --- | --- | --- |
-| `/` | `layouts/index.html` | Career profile; latest 2 posts; recent works (last 1 year) |
+| `/` | `layouts/index.html` | Career profile; latest 2 posts; recent works (last 1 year, excludes `under-review`) |
 | `/works/` | `_default/works.html` | Filter panel + publications grouped by category then year |
-| `/works/<type>/<slug>/` | `_default/work.html` | journal/preprint/dissertation rendered; conference and report suppressed |
+| `/works/<type>/<slug>/` | `_default/work.html` | journal/preprint/dissertation/conference-proceeding/under-review rendered; conference-speaking/poster and report suppressed |
 | `/posts/` | `_default/list.html` | Posts grouped by year |
 | `/posts/<slug>/` | `layouts/posts/single.html` | Blog post; supports `company` field |
 | `/blood/` | `_default/blood.html` | Blood donation centers + photo gallery |
@@ -258,8 +258,8 @@ Loaded first in `scripts.html` via `js.Build`. All other modules read `window.CO
 
 ```yaml
 # Required
-type: journal          # journal | conference-speaking | conference-poster
-                       # preprint | dissertation | report
+type: journal          # journal | conference-proceeding | conference-speaking | conference-poster
+                       # preprint | dissertation | report | under-review
 title: "Full paper title"
 date: 2024-01-15       # ISO date; controls display order and year grouping
 
@@ -342,7 +342,24 @@ cascade:
     layout: work       # journal/preprint/dissertation use _default/work.html
 ```
 
-Conference and report entries appear in the `/works/` filter page and in `llms.txt` (only when an external URL exists). They have no permalink — linking to `/works/?search=conference` or `/works/?search=report` is the fallback.
+`conference-speaking` and `conference-poster` entries appear in the `/works/` filter page and `llms.txt` (only when an external URL exists) but have no permalink.
+
+**`conference-proceeding` exception:** individual pages in `conference/` can override the cascade by setting `build: render: always` in their own front matter. These get a full work page and are linked in the works list.
+
+**`under-review`** lives in `content/works/review/` — no cascade suppression. Pages render normally. They are excluded from the homepage recent works panel (`ne .Params.type "under-review"` filter in `index.html`).
+
+### 3.5 Example skeletons
+
+Each works folder contains `example.md` with `draft: true`. Draft pages are excluded from `site.RegularPages` — they never appear in the works list, homepage, llms.txt, or get a rendered page. They are visible only with `hugo server -D`.
+
+| Folder | `example.md` covers |
+| --- | --- |
+| `journal/` | Full schema: all sources, scholar, tags, authors |
+| `conference/` | All three sub-types with comments; `build` block for proceeding |
+| `preprint/` | As journal without pubmed; scholar optional |
+| `dissertation/` | Advisors as co-authors note |
+| `report/` | No body; sources optional |
+| `review/` | Promotion note: when accepted, move to `journal/` and update type/scholar/DOI |
 
  ---
 
@@ -980,12 +997,12 @@ Both generated at build time via Hugo custom output formats. Only the home page 
 
 | Type | `llms.txt` | `llms-full.txt` |
 | --- | --- | --- |
-| journal, preprint, dissertation | Always (rendered pages → use `.Permalink`) | Always, with abstract |
-| conference, report | Only when external URL exists (fulltext/pubmed/poster/mirror) | Same |
+| journal, conference-proceeding, preprint, dissertation, under-review | Always (rendered pages → use `.Permalink`) | Always, with abstract |
+| conference-speaking, conference-poster, report | Only when external URL exists (fulltext/pubmed/poster/mirror) | Same |
 | posts | 10 most recent | Not included |
 | blood, gallery | Never | Never |
 
-Conference and report entries with `render: never` have no permalink. They're only included when a `fulltext`, `pubmed`, `poster`, or `mirror` source URL exists — otherwise they'd produce dead links.
+`conference-speaking`, `conference-poster`, and `report` entries with `render: never` have no permalink. They're only included when a `fulltext`, `pubmed`, `poster`, or `mirror` source URL exists — otherwise they'd produce dead links.
 
 `notAlternative = true` in both output format definitions prevents `<link rel="alternate" type="text/plain">` from appearing in the HTML `<head>`.
 

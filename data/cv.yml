@@ -33,10 +33,10 @@ education:
 
 work_experience:
   - role: "Graduate Research Assistant"
-    institution: "Mahidol University, Department of Clinical Epidemiology and Biostatistics"
+    institution: "Mahidol University, Faculty of Medicine Ramathibodi Hospital"
     time: "2021 - Present"
     bullets:
-      - "Affiliated under the Data Science and Clinical Informatics division"
+      - "Affiliated under the Data Science and Clinical Informatics division, Department of Clinical Epidemiology and Biostatistics"
       - text: "Research database development and quarterly updates"
         links:
           - {label: "CEB Data Warehouse", url: "https://www.rama.mahidol.ac.th/ceb/CEBdatawarehouse/Overview"}
@@ -67,5 +67,5 @@ awards:
     title: "Scholarship for postgraduate students"
     institution: "Faculty of Medicine Ramathibodi Hospital, Mahidol University"
   - year: 2019
-    title: "Mahidol postgraduate scholarships for graduate international students"
+    title: "Mahidol postgraduate scholarships for international students"
     institution: "Faculty of Graduate Studies, Mahidol University"
