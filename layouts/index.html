@@ -1,23 +1,5 @@
 {{ define "main" }}
 
-<!-- <h1>Latest posts</h1> -->
-<h2 class="category-header">Latest posts</h2>
-<div class="posts-list">
-{{ with .Site.GetPage "/posts" }}
-    {{ $posts := where .Pages ".Params.private" "!=" true }}
-    {{ $posts = sort $posts "Date" "desc" }}
-    {{ range first 2 $posts }}
-        <div class="post">
-            <div class="date">{{ .Date | time.Format ":date_medium" }}</div>
-            <h2><a href="{{ .RelPermalink }}" title="{{ .Title }}">{{ .Title }}</a></h2>
-            {{ .Summary }}
-        </div>    
-    {{ end }}
-{{ end }}
-</div>
-
-<br/>
-
 {{- with .Site.Data.homepage.career_profile -}}
 <!-- <h1>{{ .title }}</h1> -->
 <h2 class="category-header">{{ .title }}</h2>
@@ -27,105 +9,6 @@
 <p>{{ .para3 | markdownify | replaceRE `(^<p>|</p>\s*$)` "" | safeHTML }}</p>
 </div>
 {{- end -}}
-
-<br/>
-
-{{ with .Site.Data.homepage.experiences }}
-<!-- <h1>{{ .title }}</h1> -->
-<h2 class="category-header">{{ .title }}</h2>
-{{ range first 2 .info }}
-<div class="experience">
-  <div class="experience-header">
-    <h4 class="role">{{ .role }}</h4>
-    <span class="time">{{ .time }}</span>
-  </div>
-
-  <div class="company">
-    {{ .role_lan }} at 
-    <a href="{{ .company.link }}">{{ .company.name }}, {{ .company.country }}</a>
-  </div>
-
-  <div class="experience-details">
-    {{ .details | markdownify }}
-  </div>
-</div>
-{{ end }}
-
-<details class="experience-collapse">
-<summary>Show more experience</summary>
-
-{{ range after 2 .info }}
-<div class="experience">
-  <div class="experience-header">
-    <h4 class="role">{{ .role }}</h4>
-    <span class="time">{{ .time }}</span>
-  </div>
-
-  <div class="company">
-    {{ .role_lan }} at 
-    <a href="{{ .company.link }}">{{ .company.name }}</a>
-  </div>
-
-  <div class="experience-details">
-    {{ .details | markdownify }}
-  </div>
-</div>
-{{ end }}
-
-</details>
-
-{{ end }}
-
-<br/>
-
-{{ with .Site.Data.homepage.projects }}
-
-<!-- <h1>{{ .title }}</h1> -->
-<h2 class="category-header">{{ .title }}</h2>
-{{ range first 2 .assignments }}
-<div class="project">
-  <div class="project-header">
-    <h4 class="project-title">
-      {{ if .link }}
-        <a href="{{ .link }}">{{ .title }}</a>
-      {{ else }}
-        {{ .title }}
-      {{ end }}
-    </h4>
-    <span class="project-role">{{ .role }}</span>
-  </div>
-
-  <div class="project-tagline">
-    {{ .tagline }}
-  </div>
-</div>
-{{ end }}
-
-<details class="project-collapse">
-<summary>Show more projects</summary>
-
-{{ range after 2 .assignments }}
-<div class="project">
-  <div class="project-header">
-    <h4 class="project-title">
-      {{ if .link }}
-        <a href="{{ .link }}">{{ .title }}</a>
-      {{ else }}
-        {{ .title }}
-      {{ end }}
-    </h4>
-    <span class="project-role">{{ .role }}</span>
-  </div>
-
-  <div class="project-tagline">
-    {{ .tagline }}
-  </div>
-</div>
-{{ end }}
-
-</details>
-
-{{ end }}
 
 <br/>
 
@@ -213,6 +96,122 @@
   {{ end }}
 
   <p><a href="/works/">View all works →</a></p>
+</div>
+
+<br/>
+
+{{ with .Site.Data.homepage.experiences }}
+<!-- <h1>{{ .title }}</h1> -->
+<h2 class="category-header">{{ .title }}</h2>
+{{ range first 2 .info }}
+<div class="experience">
+  <div class="experience-header">
+    <h4 class="role">{{ .role }}</h4>
+    <span class="time">{{ .time }}</span>
+  </div>
+
+  <div class="company">
+    {{ .role_lan }} at
+    <a href="{{ .company.link }}">{{ .company.name }}, {{ .company.country }}</a>
+  </div>
+
+  <div class="experience-details">
+    {{ .details | markdownify }}
+  </div>
+</div>
+{{ end }}
+
+<details class="experience-collapse">
+<summary>Show more experience</summary>
+
+{{ range after 2 .info }}
+<div class="experience">
+  <div class="experience-header">
+    <h4 class="role">{{ .role }}</h4>
+    <span class="time">{{ .time }}</span>
+  </div>
+
+  <div class="company">
+    {{ .role_lan }} at
+    <a href="{{ .company.link }}">{{ .company.name }}</a>
+  </div>
+
+  <div class="experience-details">
+    {{ .details | markdownify }}
+  </div>
+</div>
+{{ end }}
+
+</details>
+
+{{ end }}
+
+<br/>
+
+{{ with .Site.Data.homepage.projects }}
+
+<!-- <h1>{{ .title }}</h1> -->
+<h2 class="category-header">{{ .title }}</h2>
+{{ range first 2 .assignments }}
+<div class="project">
+  <div class="project-header">
+    <h4 class="project-title">
+      {{ if .link }}
+        <a href="{{ .link }}">{{ .title }}</a>
+      {{ else }}
+        {{ .title }}
+      {{ end }}
+    </h4>
+    <span class="project-role">{{ .role }}</span>
+  </div>
+
+  <div class="project-tagline">
+    {{ .tagline }}
+  </div>
+</div>
+{{ end }}
+
+<details class="project-collapse">
+<summary>Show more projects</summary>
+
+{{ range after 2 .assignments }}
+<div class="project">
+  <div class="project-header">
+    <h4 class="project-title">
+      {{ if .link }}
+        <a href="{{ .link }}">{{ .title }}</a>
+      {{ else }}
+        {{ .title }}
+      {{ end }}
+    </h4>
+    <span class="project-role">{{ .role }}</span>
+  </div>
+
+  <div class="project-tagline">
+    {{ .tagline }}
+  </div>
+</div>
+{{ end }}
+
+</details>
+
+{{ end }}
+
+<br/>
+
+<h2 class="category-header">Latest posts</h2>
+<div class="posts-list">
+{{ with .Site.GetPage "/posts" }}
+    {{ $posts := where .Pages ".Params.private" "!=" true }}
+    {{ $posts = sort $posts "Date" "desc" }}
+    {{ range first 2 $posts }}
+        <div class="post">
+            <div class="date">{{ .Date | time.Format ":date_medium" }}</div>
+            <h2><a href="{{ .RelPermalink }}" title="{{ .Title }}">{{ .Title }}</a></h2>
+            {{ .Summary }}
+        </div>
+    {{ end }}
+{{ end }}
 </div>
 
 <br/>
