@@ -342,6 +342,14 @@ strong {
     margin-bottom: var(--space-4);
 }
 
+.experience-details p {
+    display: inline;
+}
+
+.experience-details p + p::before {
+    content: " ";
+}
+
 /* ── "More" affordance — shared by expand (summary) and navigate (a.more-link) ── */
 
 .experience-collapse summary,
