@@ -2,6 +2,3 @@ User-agent: *
 Allow: /
 
 Sitemap: https://htunteza.com/sitemap.xml
-
-# LLM index
-LLMs: https://htunteza.com/llms.txt
