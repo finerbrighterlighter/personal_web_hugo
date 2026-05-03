@@ -7,14 +7,15 @@ const slug    = rawPath.replace(/\/+$/, '').split('/').filter(Boolean).pop() || 
 const dPath   = rawPath.length > 36 ? rawPath.slice(0, 33) + '...' : rawPath;
 
 const SEQ = [
-  { t: 'cmd',   text: `ls .${dPath}` },
+  { t: 'cmd',   text: `cat .${dPath}` },
   { t: 'pause', ms: 380 },
-  { t: 'out',   text: `ls: cannot access '.${dPath}': No such file or directory`, cls: 'err' },
+  { t: 'out',   text: `cat: '.${dPath}': No such file or directory`, cls: 'err' },
   { t: 'blank' },
-  { t: 'cmd',   text: `git log --oneline --grep="${slug}"` },
+  { t: 'cmd',   text: `grep -rnw "." -e "${slug}"` },
   { t: 'pause', ms: 560 },
-  { t: 'out',   text: '(no commits)' },
+  { t: 'out',   text: ` `},
   { t: 'blank' },
+  { t: 'pause', ms: 560 },
   { t: 'cmd',   text: 'duck --locate-page --verbose' },
   { t: 'pause', ms: 400 },
   { t: 'out',   text: '🦆  checking cache...' },
