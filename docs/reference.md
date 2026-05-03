@@ -101,7 +101,7 @@ hugo_console/
 │   ├── index.html             Homepage
 │   ├── index.llmstxt          LLMs.txt output
 │   ├── index.llmsfull         LLMs-full.txt output
-│   ├── sitemap.xml            Custom sitemap (excludes private pages)
+│   ├── sitemap.xml            Custom sitemap (excludes private pages and render:never pages)
 │   └── 404.html
 ├── scripts/
 │   └── build_cv.py            CV PDF generator (WeasyPrint)
