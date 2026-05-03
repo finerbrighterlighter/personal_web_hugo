@@ -225,7 +225,7 @@ async function loadOpenAlexMetrics(elementId) {
 
     element.innerHTML = `
 
-<a href="https://openalex.org/authors/A5065083669" class="panel-terminal">
+<a href="https://openalex.org/authors/${authorId}" class="panel-terminal">
 $ openalex stats
 </a>
 
@@ -269,7 +269,7 @@ $ openalex stats
 
 <div id="oa-chart-container" style="position:relative;margin-top:10px">
 
-<a href="https://openalex.org/authors/A5065083669" class="panel-terminal">$ openalex history --limit=${graphDisplayYears}y</a>
+<a href="https://openalex.org/works?filter=authorships.author.id:${authorId},publication_year:${cutoffYear}-&include_xpac=true&page=1" class="panel-terminal">$ openalex history --limit=${graphDisplayYears}y</a>
 
 <div id="oa-tooltip"
      style="
