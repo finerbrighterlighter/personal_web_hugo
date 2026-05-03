@@ -646,6 +646,11 @@ p.social a {
     color: var(--global-font-color);
 }
 
+.cc-badge {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 /* ============================= */
 /* IMAGE GRID */
 /* ============================= */
