@@ -5,7 +5,9 @@ const inputEl = document.getElementById('nf-input');
 const rawPath = window.location.pathname;
 const slug    = rawPath.replace(/\/+$/, '').split('/').filter(Boolean).pop() || '404';
 const raw     = rawPath.length > 36 ? rawPath.slice(0, 33) + '...' : rawPath;
-const dPath   = raw.endsWith('/') ? raw.slice(0, -1) + '.html' : raw;
+const dPath   = /\.[^./]+$/.test(raw) || raw.endsWith('...')
+  ? raw
+  : raw.replace(/\/*$/, '') + '.html';
 
 const SEQ = [
   { t: 'cmd',   text: `cat .${dPath}` },
