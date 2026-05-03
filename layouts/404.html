@@ -1,8 +1,21 @@
 {{ define "main" }}
-<div id="nf-wrap" role="log" aria-live="polite" aria-label="Terminal session attempting to locate the missing page">
-  <div id="nf-history"></div>
-  <div id="nf-active">
-    <span id="nf-ps1">$</span><span id="nf-input"></span><span id="nf-cursor" aria-hidden="true"></span>
+<div class="terminal-window" aria-label="Terminal session attempting to locate the missing page">
+  <div class="window-header">
+    <div class="window-controls" aria-hidden="true">
+      <span class="control close"></span>
+      <span class="control minimize"></span>
+      <span class="control maximize"></span>
+    </div>
+    <div class="window-title">error.sh</div>
+  </div>
+  <div class="window-content" id="nf-content">
+    <div id="nf-history" role="log" aria-live="polite"></div>
+    <div id="nf-active">
+      <span id="nf-ps1">$</span><span id="nf-input"></span><span id="nf-cursor" aria-hidden="true"></span>
+    </div>
+  </div>
+  <div class="window-footer">
+    <a href="{{ "/" | absURL }}">→ return home</a>
   </div>
 </div>
 <noscript>

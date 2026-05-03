@@ -1728,12 +1728,11 @@ header.terminal-logo {
 
 /* ── 404 page ─────────────────────────────────────────────────────── */
 
-#nf-wrap {
-    font-family: var(--font-stack);
+#nf-content {
     font-size: var(--font-sm);
     line-height: 1.9;
-    margin-bottom: 1.5rem;
     min-height: 14rem;
+    color: var(--font-color);
 }
 
 .nf-line {
@@ -1741,10 +1740,13 @@ header.terminal-logo {
     word-break: break-word;
 }
 
-.nf-line-cmd { color: var(--font-color); }
+.nf-line-cmd {
+    color: var(--font-color);
+    margin-bottom: 0.5rem;
+}
 .nf-line-cmd::before {
     content: '$ ';
-    color: var(--primary-color);
+    color: var(--font-color);
     user-select: none;
 }
 
@@ -1762,7 +1764,7 @@ header.terminal-logo {
 }
 
 #nf-ps1 {
-    color: var(--primary-color);
+    color: var(--font-color);
     margin-right: 0.4em;
     flex-shrink: 0;
     user-select: none;

@@ -28,7 +28,7 @@ const SEQ = [
   { t: 'out',   text: '🦆  quack.' },
   { t: 'pause', ms: 460 },
   { t: 'out',   text: '[ERR]  exit 404: page not found.', cls: 'err' },
-  { t: 'link',  text: '→ return home', href: '/' },
+  { t: 'done' },
 ];
 
 let idx = 0;
@@ -80,14 +80,7 @@ function next() {
     setTimeout(next, 30);
   } else if (s.t === 'pause') {
     setTimeout(next, s.ms);
-  } else if (s.t === 'link') {
-    const line = document.createElement('span');
-    line.className = 'nf-line nf-line-out';
-    const a = document.createElement('a');
-    a.href = s.href;
-    a.textContent = s.text;
-    line.appendChild(a);
-    hist.appendChild(line);
+  } else if (s.t === 'done') {
     active.style.display = 'none';
   }
 }
