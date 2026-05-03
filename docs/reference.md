@@ -514,7 +514,7 @@ baseof.html                    Wraps every page
     └── panel-privacy.html
 ```
 
-Scripts loaded at bottom of `<body>` via `partials/scripts.html`.
+Scripts loaded at bottom of `<body>` via `partials/scripts.html`, followed by `{{ block "scripts-extra" . }}{{ end }}` — an extension point for page-specific scripts. Currently only `404.html` uses it to load `not_found.js`.
 
 ### 5.2 Key templates
 
@@ -535,6 +535,8 @@ Scripts loaded at bottom of `<body>` via `partials/scripts.html`.
 **`_default/list.html`** — Posts list, grouped by year. Skips pages with `private: true`.
 
 **`_default/blood.html`** — Blood donation centers from `data/blood.yml` + photo gallery from `content/blood-records/` page bundle resources.
+
+**`layouts/404.html`** — Custom 404 page. Renders an animated terminal session: types three commands (`ls`, `git log --oneline --grep`, `duck --locate-page --verbose`), each failing, then prints `[ERR] exit 404: page not found.` and a `→ return home` link. Path and slug are extracted dynamically from `window.location.pathname`. Animation logic lives in `static/js/not_found.js` (loaded exclusively on this page via the `scripts-extra` block in `baseof.html`). CSS uses the `#nf-` / `.nf-` prefix and lives in `console.css` under the `/* ── 404 page ── */` section.
 
 ### 5.3 Partials
 
@@ -557,7 +559,7 @@ Scripts loaded at bottom of `<body>` via `partials/scripts.html`.
 | `collab-summary.html` | `index.html` (inside `career_profile` para2) | Computes collab count, institution count, and country list in one pass; outputs bare inline sentence (no `<p>` wrapper) |
 | `researcher-map.html` | `work.html`, `works.html`, `index.html`, shortcodes | Returns `dict` keyed by researcher id; call with `partial "researcher-map.html" .` |
 | `footer.html` | `baseof.html` | Footer with `[Me]` link (`href="/about/"` for correct new-tab behaviour; JS intercepts normal clicks for the animation) |
-| `scripts.html` | `baseof.html` | `<script type="module">` tags for all JS modules |
+| `scripts.html` | `baseof.html` | `<script type="module">` tags for all JS modules; followed by `{{ block "scripts-extra" }}` for page-specific additions |
 | `works-filter-group.html` | `works.html` | Renders one filter group (condition/datasource/method) |
 
 ### 5.4 Shortcodes
@@ -610,6 +612,7 @@ All files in `static/js/`, loaded as `type="module"` in `partials/scripts.html`.
 | `anilist.js` | `cache.js` | `#last-read-manga` | AniList GraphQL | `anilist-manga` | Recently read manga for user "finer" |
 | `trakt.js` | `cache.js` | `#last-watched` | Trakt + TMDB APIs | `trakt-watched` | Recently watched; dedupes consecutive repeats; TMDB poster images |
 | `unsplash.js` | `cache.js` | `#latestimage` | Unsplash API | `unsplash-photos` | Latest 10 photos from account "finerbrighterlighter" |
+| `not_found.js` | — | `#nf-history`, `#nf-active`, `#nf-input` | — | — | 404 page only (via `scripts-extra` block); animated terminal sequence of three failing commands; ends with a `→ return home` link appended to `#nf-history` |
 
 ### 6.1a Tunable constants by module
 
@@ -1086,6 +1089,7 @@ Full audit results are in `docs/pa11y/` (CSV per page + `README.md` summary). Re
 | --- | --- |
 | `/` (home) | ✓ Clean |
 | `/posts/` | ✓ Clean |
+| `/404.html` | ✓ Clean |
 | `/about/`, `/works/`, `/works/<slug>/`, `/posts/<slug>/`, `/blood/` | ⚠ SVG only (see below) |
 
 **Only remaining finding — OpenAlex SVG chart (`#oa-svg`):** htmlcs flags 4 color-contrast errors on axis labels inside the SVG. The SVG carries `aria-hidden="true"` and all its data is in the `<table>` above. axe-core (the other pa11y checker) does not flag these because it respects `aria-hidden`. htmlcs does not — this is a known htmlcs limitation with SVG elements. The 1.03:1 ratios reported are a measurement artifact from htmlcs incorrectly inferring the background behind SVG `<text>` elements over colored `<circle>` elements. **Accepted — no accessible information loss.**
