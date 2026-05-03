@@ -120,5 +120,6 @@
     </div>
 
     {{ partial "scripts.html" . -}}
+    {{ block "scripts-extra" . }}{{ end }}
 </body>
 </html>

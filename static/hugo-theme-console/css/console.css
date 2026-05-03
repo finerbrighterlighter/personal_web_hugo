@@ -1722,6 +1722,63 @@ header.terminal-logo {
     font-size: 1.15rem;
     line-height: 1.5;
     /* Ensure the text has a higher stacking context than the mark */
-    position: relative; 
+    position: relative;
     z-index: 1;
 }
+
+/* ── 404 page ─────────────────────────────────────────────────────── */
+
+#nf-wrap {
+    font-family: var(--font-stack);
+    font-size: var(--font-sm);
+    line-height: 1.9;
+    margin-bottom: 1.5rem;
+    min-height: 14rem;
+}
+
+.nf-line {
+    display: block;
+    word-break: break-word;
+}
+
+.nf-line-cmd { color: var(--font-color); }
+.nf-line-cmd::before {
+    content: '$ ';
+    color: var(--primary-color);
+    user-select: none;
+}
+
+.nf-line-out { color: var(--secondary-color); }
+.nf-line-err { color: var(--error-color); }
+
+.nf-blank {
+    display: block;
+    height: 0.65em;
+}
+
+#nf-active {
+    display: flex;
+    align-items: baseline;
+}
+
+#nf-ps1 {
+    color: var(--primary-color);
+    margin-right: 0.4em;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+#nf-cursor {
+    display: inline-block;
+    width: 0.5em;
+    height: 1em;
+    background: var(--font-color);
+    margin-left: 1px;
+    vertical-align: text-bottom;
+    animation: nf-blink 0.9s step-end infinite;
+}
+
+@keyframes nf-blink {
+    50% { opacity: 0; }
+}
+

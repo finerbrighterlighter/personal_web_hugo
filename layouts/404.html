@@ -1,15 +1,15 @@
 {{ define "main" }}
-{{ $fallback := "images/404/http-cat-404.jpeg" | absURL }}
+<div id="nf-wrap" role="log" aria-live="polite" aria-label="Terminal session attempting to locate the missing page">
+  <div id="nf-history"></div>
+  <div id="nf-active">
+    <span id="nf-ps1">$</span><span id="nf-input"></span><span id="nf-cursor" aria-hidden="true"></span>
+  </div>
+</div>
+<noscript>
+  <p>404 — This page does not exist. <a href="{{ "/" | absURL }}">Return home</a>.</p>
+</noscript>
+{{ end }}
 
-<h2 class="category-header">404 — This page wandered off</h2>
-<p>The server looked. The cat looked. Nobody found it.</p>
-
-<img
-  src="https://http.cat/404"
-  alt="HTTP 404 Cat"
-  class="img-responsive"
-  onerror='this.onerror=null; this.src="{{ $fallback }}"; this.alt="Local fallback image";'>
-<p>
-  <a href="{{ "/" | absURL }}">Return to the home page</a>.
-</p>
+{{ define "scripts-extra" }}
+<script type="module" src="{{ "js/not_found.js" | relURL }}"></script>
 {{ end }}
