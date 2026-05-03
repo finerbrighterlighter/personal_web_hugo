@@ -113,6 +113,7 @@ hugo_console/
 │   └── reference.md           This file
 ├── hugo.toml                  Main site config
 ├── netlify.toml               Deployment config
+├── LICENSE                    CC BY 4.0 (copyright 2026 Htun Teza)
 ├── README.md                  Public-facing overview
 └── CLAUDE.md                  Claude Code instructions (gitignored)
 ```
@@ -558,7 +559,7 @@ Scripts loaded at bottom of `<body>` via `partials/scripts.html`, followed by `{
 | `panel-privacy.html` | `baseof.html` | GoatCounter disclosure + cache flush controls |
 | `collab-summary.html` | `index.html` (inside `career_profile` para2) | Computes collab count, institution count, and country list in one pass; outputs bare inline sentence (no `<p>` wrapper) |
 | `researcher-map.html` | `work.html`, `works.html`, `index.html`, shortcodes | Returns `dict` keyed by researcher id; call with `partial "researcher-map.html" .` |
-| `footer.html` | `baseof.html` | Footer with `[Me]` link (`href="/about/"` for correct new-tab behaviour; JS intercepts normal clicks for the animation) |
+| `footer.html` | `baseof.html` | Footer links (Hugo, Theme, Source, Me, CC BY license badge); `[Me]` click intercepted by `footer_roll.js` for the whoami animation; CC badge uses `static/images/icons/cc-by.svg` (80×15, explicit CSS dimensions) |
 | `scripts.html` | `baseof.html` | `<script type="module">` tags for all JS modules; followed by `{{ block "scripts-extra" }}` for page-specific additions |
 | `works-filter-group.html` | `works.html` | Renders one filter group (condition/datasource/method) |
 
