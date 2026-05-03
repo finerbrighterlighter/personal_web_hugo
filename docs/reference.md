@@ -537,7 +537,7 @@ Scripts loaded at bottom of `<body>` via `partials/scripts.html`, followed by `{
 
 **`_default/blood.html`** — Blood donation centers from `data/blood.yml` + photo gallery from `content/blood-records/` page bundle resources.
 
-**`layouts/404.html`** — Custom 404 page. A `.terminal-window` panel (`error.sh`) containing an animated terminal session: types three commands (`ls`, `git log --oneline --grep`, `duck --locate-page --verbose`), each failing, ending with `[ERR] exit 404: page not found.`. Path and slug are extracted dynamically from `window.location.pathname`. A `.window-footer` strip holds `→ return home` and is always visible — users are never blocked waiting for the animation. `collapse_windows.js` wires the window header as a collapsible toggle automatically (no `.panel` class, so state is not persisted to sessionStorage). Animation logic lives in `static/js/not_found.js` (loaded exclusively via the `scripts-extra` block in `baseof.html`). CSS uses `#nf-` / `.nf-` selectors in `console.css` under `/* ── 404 page ── */`; `$` prompt and command text use `var(--font-color)` (consistent with `.panel-terminal`); command lines carry `margin-bottom: 0.5rem` to match panel spacing.
+**`layouts/404.html`** — Custom 404 page. A `.terminal-window` panel (`query.sh`) containing an animated terminal session: types three commands (`cat`, `grep -rnw`, `duck --locate-page --verbose`), each failing, ending with `[ERR] exit 404: page not found.`. Path and slug are extracted dynamically from `window.location.pathname`. Directory paths (ending `/`) are displayed with `.html` appended (`/assets/` → `cat ./assets.html`) since `cat` expects a file. A `.window-footer` strip holds `→ return home` and is always visible — users are never blocked waiting for the animation. `collapse_windows.js` wires the window header as a collapsible toggle automatically (no `.panel` class, so state is not persisted to sessionStorage). Animation logic lives in `static/js/not_found.js` (loaded exclusively via the `scripts-extra` block in `baseof.html`). CSS uses `#nf-` / `.nf-` selectors in `console.css` under `/* ── 404 page ── */`; `$` prompt and command text use `var(--font-color)` (consistent with `.panel-terminal`); command lines carry `margin-bottom: 0.5rem` to match panel spacing.
 
 ### 5.3 Partials
 
@@ -613,7 +613,7 @@ All files in `static/js/`, loaded as `type="module"` in `partials/scripts.html`.
 | `anilist.js` | `cache.js` | `#last-read-manga` | AniList GraphQL | `anilist-manga` | Recently read manga for user "finer" |
 | `trakt.js` | `cache.js` | `#last-watched` | Trakt + TMDB APIs | `trakt-watched` | Recently watched; dedupes consecutive repeats; TMDB poster images |
 | `unsplash.js` | `cache.js` | `#latestimage` | Unsplash API | `unsplash-photos` | Latest 10 photos from account "finerbrighterlighter" |
-| `not_found.js` | — | `#nf-history`, `#nf-active`, `#nf-input` | — | — | 404 page only (via `scripts-extra` block); animated terminal sequence of three failing commands; ends with a `→ return home` link appended to `#nf-history` |
+| `not_found.js` | — | `#nf-history`, `#nf-active`, `#nf-input` | — | — | 404 page only (via `scripts-extra` block); animated terminal sequence: `cat` (directory paths get `.html` suffix), `grep -rnw`, `duck --locate-page --verbose`; cursor hides on completion |
 
 ### 6.1a Tunable constants by module
 

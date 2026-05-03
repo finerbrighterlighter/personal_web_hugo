@@ -4,12 +4,13 @@ const inputEl = document.getElementById('nf-input');
 
 const rawPath = window.location.pathname;
 const slug    = rawPath.replace(/\/+$/, '').split('/').filter(Boolean).pop() || '404';
-const dPath   = rawPath.length > 36 ? rawPath.slice(0, 33) + '...' : rawPath;
+const raw     = rawPath.length > 36 ? rawPath.slice(0, 33) + '...' : rawPath;
+const dPath   = raw.endsWith('/') ? raw.slice(0, -1) + '.html' : raw;
 
 const SEQ = [
   { t: 'cmd',   text: `cat .${dPath}` },
   { t: 'pause', ms: 380 },
-  { t: 'out',   text: `cat: '.${dPath}': No such file or directory`, cls: 'err' },
+  { t: 'out',   text: `cat: .${dPath}: No such file or directory`, cls: 'err' },
   { t: 'blank' },
   { t: 'cmd',   text: `grep -rnw "." -e "${slug}"` },
   { t: 'pause', ms: 560 },
