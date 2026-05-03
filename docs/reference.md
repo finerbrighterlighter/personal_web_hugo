@@ -559,7 +559,7 @@ Scripts loaded at bottom of `<body>` via `partials/scripts.html`, followed by `{
 | `panel-privacy.html` | `baseof.html` | GoatCounter disclosure + cache flush controls |
 | `collab-summary.html` | `index.html` (inside `career_profile` para2) | Computes collab count, institution count, and country list in one pass; outputs bare inline sentence (no `<p>` wrapper) |
 | `researcher-map.html` | `work.html`, `works.html`, `index.html`, shortcodes | Returns `dict` keyed by researcher id; call with `partial "researcher-map.html" .` |
-| `footer.html` | `baseof.html` | Footer links (Hugo, Theme, Source, Me, CC BY license badge); `[Me]` click intercepted by `footer_roll.js` for the whoami animation; CC badge uses `static/images/icons/cc-by.svg` (80×15, explicit CSS dimensions) |
+| `footer.html` | `baseof.html` | Footer links (Hugo, Theme, Source, Me, CC BY license badge); each item wrapped in `<span>` so `.footer` flex layout distributes them evenly (`justify-content: space-evenly`); CC badge uses two separate icons `cc.svg` + `by.svg` in `static/images/icons/`; `[Me]` click intercepted by `footer_roll.js` for the whoami animation |
 | `scripts.html` | `baseof.html` | `<script type="module">` tags for all JS modules; followed by `{{ block "scripts-extra" }}` for page-specific additions |
 | `works-filter-group.html` | `works.html` | Renders one filter group (condition/datasource/method) |
 
