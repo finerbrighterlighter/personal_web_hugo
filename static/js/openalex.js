@@ -7,6 +7,7 @@ import { getCache, setCache } from './cache.js';
 
 const authorId = "A5065083669";
 const graphDisplayYears = 5;
+const cutoffYear = new Date().getFullYear() - graphDisplayYears + 1; // +1 to include current year in graph
 
 /* ---------------------------- */
 /* FETCH DATA                   */
@@ -211,8 +212,6 @@ async function loadOpenAlexMetrics(elementId) {
 
   if (!element)
     return;
-
-  const cutoffYear = new Date().getFullYear() - graphDisplayYears;
 
   try {
 

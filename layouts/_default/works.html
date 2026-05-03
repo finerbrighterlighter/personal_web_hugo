@@ -57,7 +57,7 @@
 <br/>
 {{ .Content }}
 
-{{ $categories := slice "journal" "conference-proceeding" "conference-speaking" "conference-poster" "preprint" "dissertation" "report" }}
+{{ $categories := slice "journal" "conference-proceeding" "conference-poster" "conference-speaking" "preprint" "dissertation" "report" }}
 {{ $papers := where site.RegularPages "Section" "works" }}
 {{ $rm := partial "researcher-map.html" . }}
 
