@@ -9,6 +9,6 @@ I presented on a journal club on the topic of "Assessing the replicability of RC
 
 <!--more-->
 
-The paper is available [here](https://doi.org/10.1186/s12874-025-02589-z), and mirrored [here]("/docs/phd-journal-club/paper.pdf"). I served as the presentation lead, and the presentation slides are available [here]("/docs/phd-journal-club/present-htun.pdf"). Mr Bunjames Ngeth served as the commentator, and his commentary slides are available [here]("/docs/phd-journal-club/comment-bunjames.pdf").
+The paper is available [here](https://doi.org/10.1186/s12874-025-02589-z), and mirrored [here](/docs/phd-journal-club/paper.pdf). I served as the presentation lead, and the presentation slides are available [here](/docs/phd-journal-club/present-htun.pdf). Mr Bunjames Ngeth served as the commentator, and his commentary slides are available [here](/docs/phd-journal-club/comment-bunjames.pdf).
 
 {{< gallery match="phd_jc.png" >}}

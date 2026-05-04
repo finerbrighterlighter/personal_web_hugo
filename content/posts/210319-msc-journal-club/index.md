@@ -9,7 +9,7 @@ I presdented on a journal club on the topic of "Mixed Effect Machine Learning". 
 
 <!--more-->
 
-The paper is available [here](https://doi.org/10.1016/j.jbi.2018.09.001), and mirrored [here]("/docs/msc-journal-club/paper.pdf"). I served as the presentation lead, and the presentation slides are available [here]("/docs/msc-journal-club/present-htun.pdf"). Mr Pongsathorn Piebpien served as the commentator, and his commentary slides are available [here]("/docs/msc-journal-club/comment-Pongsathorn.pdf").
+The paper is available [here](https://doi.org/10.1016/j.jbi.2018.09.001), and mirrored [here](/docs/msc-journal-club/paper.pdf). I served as the presentation lead, and the presentation slides are available [here](/docs/msc-journal-club/present-htun.pdf). Mr Pongsathorn Piebpien served as the commentator, and his commentary slides are available [here](/docs/msc-journal-club/comment-Pongsathorn.pdf).
 
 Later, I applied this framework as one of the models in my research. The model application is detailed in:
 * My [Master's thesis](https://scholar.google.com/citations?view_op=view_citation&citation_for_view=7waEOqcAAAAJ:qjMakFHDy7sC)
