@@ -339,9 +339,12 @@ cascade:
       render: never
       list: always
   - _target:
+      path: /works/**
       kind: page
     layout: work       # journal/preprint/dissertation use _default/work.html
 ```
+
+**Important:** `path: /works/**` is required on the catch-all target. A bare `_target: { kind: page }` (no `path`) does not propagate `layout` to pages in subsections — Hugo silently ignores them and they fall back to `_default/single.html`.
 
 `conference-speaking` and `conference-poster` entries appear in the `/works/` filter page and `llms.txt` (only when an external URL exists) but have no permalink.
 

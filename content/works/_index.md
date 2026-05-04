@@ -14,6 +14,7 @@ cascade:
       render: never
       list: always
   - _target:
+      path: /works/**
       kind: page
     layout: work
 ---
