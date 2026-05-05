@@ -54,12 +54,21 @@ As detailed in my presentation, the **Sceptical P-Value** ($p_s$) offers a more 
 
 ### The Mathematical Framework
 
-1. **Matthews' Analysis of Credibility**: We calculate the most extreme prior disbelief ($\tau^2$) the RCT result can survive. As shown in [Figure 1](#figure-1), a strong RCT forces the sceptic into a narrower prior, leaving less room for doubt:
+- **Matthews' Analysis of Credibility**: We calculate the most extreme prior disbelief ($\tau^2$) the RCT result can survive. As shown in [Figure 1](#figure-1), a strong RCT forces the sceptic into a narrower prior, leaving less room for doubt:
     $$\tau^2 = \sigma_{RCT}^2 \times \left(\frac{z_{\alpha}}{|z_{RCT}|}\right)^2$$
-2. **Box's Prior-Data Conflict Test**: We then evaluate if the RWE data significantly conflicts with this sceptic’s prior:
+
+##### Figure 1
+    Matthew's Analysis of Credibility, showing the relationship between the sceptic's prior variance ($\tau^2$) and the strength of the RCT evidence ($z_{RCT}$).
+    {{< gallery match="matthew.png" >}}
+
+- **Box's Prior-Data Conflict Test**: We then evaluate if the RWE data significantly conflicts with this sceptic’s prior:
     $$t_{Box} = \frac{\theta_{RWE}}{\sqrt{\tau^2 + \sigma_{RWE}^2}}$$
 
 This gives us $p_{Box}$, the probability of observing a result as extreme as ours if the sceptic's worldview were correct. If $p_{Box}$ is less than our threshold (α), we conclude the data and the sceptic are in significant conflict, and the sceptic's position is rejected, as shown in [Figure 2](#figure-2).  
+
+##### Figure 2
+    Box's Prior-Data Conflict Test, showing how the RWE evidence ($\theta_{RWE}$) is evaluated against the sceptic's prior ($\tau^2$) and the RWE variance ($\sigma_{RWE}^2$).
+    {{< gallery match="box.png" >}}
 
 #### The Tipping Point: From $p_{Box}$ to $p_s$
 
@@ -135,17 +144,7 @@ The paper is available [here](https://doi.org/10.1186/s12874-025-02589-z), and m
 
 ---
 
-### Figure 1
+##### Figure 3
 
-{{< gallery match="matthew.png" >}}
-Matthew's Analysis of Credibility, showing the relationship between the sceptic's prior variance ($\tau^2$) and the strength of the RCT evidence ($z_{RCT}$).
-
-### Figure 2
-
-{{< gallery match="box.png" >}}
-Box's Prior-Data Conflict Test, showing how the RWE evidence ($\theta_{RWE}$) is evaluated against the sceptic's prior ($\tau^2$) and the RWE variance ($\sigma_{RWE}^2$).
-
-### Figure 3
-
-{{< gallery match="phd_jc.png" >}}
-The announcement for the Journal Club
+    The announcement for the Journal Club
+    {{< gallery match="phd_jc.png" >}}
