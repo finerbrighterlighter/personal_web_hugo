@@ -14,7 +14,7 @@ I recently hosted a journal club discussion covering the paper "Assessing the re
 
 - [The Efficacy-Effectiveness Gap](#the-efficacy-effectiveness-gap)
 - [Why the Two-Trials Rule (TTR) Falls Short](#why-the-two-trials-rule-ttr-falls-short)
-- [The Sceptical P-Value ($p\_s$): A Joint Credibility Test](#the-sceptical-p-value-p_s-a-joint-credibility-test)
+- [The Sceptical P-Value : A Joint Credibility Test](#the-sceptical-p-value--a-joint-credibility-test)
 - [Case Study: TRITON-TIMI 38](#case-study-triton-timi-38)
 - [The Regulatory Shift](#the-regulatory-shift)
 - [Documents](#documents)
@@ -48,7 +48,7 @@ The TTR assumes "exchangeability"—the idea that both studies are interchangeab
 
 By ignoring these differences, the TTR fails to account for the **uncertainty** inherent in the original RCT. A replication should be held to a higher standard if the original trial was borderline, a nuance that the TTR's fixed bar completely misses.
 
-## The Sceptical P-Value ($p_s$): A Joint Credibility Test
+## The Sceptical P-Value : A Joint Credibility Test
 
 As detailed in my presentation, the **Sceptical P-Value** ($p_s$) offers a more rigorous alternative. Instead of two separate significance tests, it adopts the perspective of a rational sceptic to test the **joint credibility** of both studies.
 
