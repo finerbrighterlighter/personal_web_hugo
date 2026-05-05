@@ -25,12 +25,12 @@ I presdented at a journal club regarding the topic of "Mixed Effect Machine Lear
 
 ## The Challenge of Correlated Observations
 
-Traditional machine learning algorithms rely heavily on the assumption that data points are Independent and Identically Distributed (i.i.d). However, this assumption is often violated in clinical data:
+Traditional machine learning algorithms rely heavily on the assumption that data points are **Independent and Identically Distributed (i.i.d)**. However, this assumption is often violated in clinical data:
 
 - **Clustered data:** such as patients treated within the same hospital or students in classrooms.
 - **Longitudinal data:** where repeated measures are taken from the same subject over time.
 
-This correlation results in a loss of independence. Classical machine learning models applied directly to such data often fail to generate high-quality, generalizable predictions.
+This correlation results in a **loss of independence**. Classical machine learning models applied directly to such data often fail to generate high-quality, **generalizable predictions**.
 
 ## Mixed Effects Models Overview
 
@@ -42,9 +42,9 @@ The traditional Linear Mixed Model separates the effects into two components:
 $$ y_{ij} = X_{ij}b + Z_{ij}u $$
 Where:
 
-- $y$ is the target variable.
-- $X_{ij}b$ is the population-average value (Fixed Effects), accounting for within-cluster variation.
-- $Z_{ij}u$ is the subject-specific value (Random Effects), accounting for between-cluster variation.
+- **$y$ is the target variable.
+- $X_{ij}b$ is the **population-average value (Fixed Effects)**, accounting for within-cluster variation.
+- $Z_{ij}u$ is the **subject-specific value (Random Effects)**, accounting for between-cluster variation.
 
 ### Non-linear Mixed Model
 
@@ -57,9 +57,9 @@ Here, $f(x)$ is a non-linear function representing the fixed effects.
 The core innovation of the paper is replacing the traditional non-linear function $f(x)$ with a machine learning regressor (such as Random Forest or Gradient Boosting Machines):
 $$ y = f_{ML}(x) + Zu $$
 
-In this framework, the random effect (RE) is considered the intra-subject or intra-cluster variability. The core methodology aims to mathematically exclude this RE from the total effect. By subtracting the RE, the resulting modified target consists of non-correlated observations lacking intra-cluster variability. Training the machine learning (or non-linear classifier) model on this remaining, independent fixed effect is the primary goal.
+In this framework, the random effect (RE) is considered the **intra-subject or intra-cluster variability**. The core methodology aims to **mathematically exclude this RE** from the total effect. By subtracting the RE, the resulting modified target consists of non-correlated observations lacking intra-cluster variability. Training the machine learning (or non-linear classifier) model on this remaining, **independent fixed effect** is the primary goal.
 
-The model learns these two components separately through an iterative Expectation-Maximization (EM) like algorithm:
+The model learns these two components separately through an iterative **Expectation-Maximization (EM)** like algorithm:
 
 1. **Fixed effects** are estimated using machine learning methods.
 2. **Random effects** are estimated using linear mixed models.
@@ -80,7 +80,7 @@ The training process uses an iterative Expectation-Maximization (EM) like algori
 
 ## Continuous Target (Regression)
 
-For continuous targets, the model is trained using a single iterative loop as shown in [Figure 2](#figure-2):
+For continuous targets, the model is trained using a **single iterative loop** as shown in [Figure 2](#figure-2):
 
 1. Start with an initial guess for the random effects.
 2. **Modify the target:** Subtract the current random effects from the actual target.
@@ -96,11 +96,11 @@ For continuous targets, the model is trained using a single iterative loop as sh
 
 ## Binary Target (Classification)
 
-For binary classification tasks, the framework employs a nested loop structure. Unlike regression where the continuous target is directly modified, classification requires estimating the underlying continuous logit (log-odds) values. Since the true logit values are unknown and must be iteratively approximated, a double loop is necessary: an inner loop to fit the model to the current logit estimates (similar to the regression loop), and an outer loop to update those logit estimates.
+For binary classification tasks, the framework employs a **nested loop structure**. Unlike regression where the continuous target is directly modified, classification requires estimating the underlying **continuous logit (log-odds) values**. Since the true logit values are unknown and must be iteratively approximated, a double loop is necessary: an **inner loop** to fit the model to the current logit estimates (similar to the regression loop), and an **outer loop** to update those logit estimates.
 
 **Inner Loop:**
 
-This loop functions similarly to the regression loop but operates on the current estimated logit values rather than the raw target as presented in [Figure 3](#figure-3):
+This loop functions similarly to the regression loop but operates on the **current estimated logit values** rather than the raw target as presented in [Figure 3](#figure-3):
 
 1. **Modify the target:** Subtract the current random effects from the current logit value.
 2. **Train the ML model:** Fit the machine learning regressor on this modified target to estimate the fixed effects (FE).
@@ -115,7 +115,7 @@ This loop functions similarly to the regression loop but operates on the current
 
 **Outer Loop:**
 
-As it is observed in [Figure 4](#figure-4), This loop governs the overall process by updating the overall logit values based on the inner loop's output.
+As it is observed in [Figure 4](#figure-4), this loop governs the overall process by **updating the overall logit values** based on the inner loop's output.
 
 1. Initialize the logit values based on the target class probabilities.
 2. Initialize random effects.
@@ -123,18 +123,18 @@ As it is observed in [Figure 4](#figure-4), This loop governs the overall proces
 4. **Update Logit Values:** Calculate the new logit values: $\text{Logit} = FE + RE$.
 5. **Check for Outer Convergence:** Evaluate the absolute change in the logit value ($\Delta \text{logit}$). If the change is below the tolerance limit, stop. Otherwise, repeat the Outer Loop with the newly calculated logit values.
 
-##### Figure 3
+##### Figure 4
 
     The outer loop iteratively updates the logit values based on the estimated fixed and random effects from the inner loop. The inner loop focuses on refining the estimates of FE and RE for the current logit values, while the outer loop ensures that these estimates converge to a stable solution.
     {{< gallery match="binary-outer-loop.png" >}}
 
 ## Results and Implications
 
-The authors demonstrated significant improvements when using Mixed Effects Machine Learning over classical machine learning methods on clustered/longitudinal data.
+The authors demonstrated significant improvements when using **Mixed Effects Machine Learning** over **classical machine learning methods** on clustered/longitudinal data.
 
-- As the number of repeated observations increased, the performance of the mixed-effects ML approach improved, whereas classical methods deteriorated.
-- By incorporating random effects, the models became resistant to variabilities introduced by correlated data and could leverage those dependencies to generate more robust predictions.
-- *Note:* While superior to basic ML, the paper noted that an improvement over generalized linear mixed models (GLMM) was not necessarily observed.
+- As the number of repeated observations increased, the performance of the mixed-effects ML approach improved, whereas **classical methods deteriorated**.
+- By incorporating random effects, the models became **resistant to variabilities** introduced by correlated data and could leverage those dependencies to generate more **robust predictions**.
+- *Note:* While superior to basic ML, the paper noted that an improvement over **generalized linear mixed models (GLMM)** was not necessarily observed.
 
 ---
 
