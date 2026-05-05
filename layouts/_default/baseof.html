@@ -18,6 +18,7 @@
       {{- partial "work-seo.html" . -}}
     {{- end -}}
     {{- partial "breadcrumb-ld.html" . -}}
+    {{ block "head-extra" . }}{{ end }}
 </head>
 
 <body class="terminal">

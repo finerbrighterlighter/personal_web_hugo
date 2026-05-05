@@ -54,6 +54,15 @@ hidden = true
 [outputs]
   home = ["HTML", "llmstxt", "llmsfull"]
 
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true
+        [markup.goldmark.extensions.passthrough.delimiters]
+          block = [["$$", "$$"]]
+          inline = [["$", "$"]]
+
 [taxonomies]
 
 [security]

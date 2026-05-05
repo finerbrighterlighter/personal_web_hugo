@@ -199,6 +199,18 @@ home = ["HTML", "llmstxt", "llmsfull"]
 
 Only the home page has extra output formats. All other pages default to `["HTML"]`.
 
+#### `[markup]`
+
+```toml
+[markup.goldmark.extensions.passthrough]
+  enable = true
+  [markup.goldmark.extensions.passthrough.delimiters]
+    block  = [["$$", "$$"]]
+    inline = [["$",  "$" ]]
+```
+
+Goldmark passthrough extension — instructs Hugo not to process content inside math delimiters. Without this, goldmark mangles LaTeX (e.g., `_` → `<em>`, `\` escaping). Enable on any post with `math: true` in front matter; KaTeX renders client-side via `posts/single.html`.
+
  ---
 
 ### 2.2 `netlify.toml`
@@ -334,7 +346,10 @@ date: 2024-03-28T12:00:00+07:00
 description: "Short excerpt shown in post lists"
 company: "Optional — shown as a tag on the post"  # optional
 private: false   # true → hidden from list, sitemap, and search engines
+math: false      # true → loads KaTeX CSS (<head>) and JS (</body>) for LaTeX rendering
 ```
+
+**Math rendering:** set `math: true` to enable KaTeX on that post. Inline math: `$...$`. Display (block) math: `$$...$$`. Requires the goldmark passthrough extension in `hugo.toml` (already configured) — without it, goldmark processes `_` and `\` inside delimiters and breaks the LaTeX.
 
 ### 3.4 Conference and report cascade
 
@@ -534,7 +549,14 @@ baseof.html                    Wraps every page
     └── panel-privacy.html
 ```
 
-Scripts loaded at bottom of `<body>` via `partials/scripts.html`, followed by `{{ block "scripts-extra" . }}{{ end }}` — an extension point for page-specific scripts. Currently only `404.html` uses it to load `not_found.js`.
+Scripts loaded at bottom of `<body>` via `partials/scripts.html`, followed by `{{ block "scripts-extra" . }}{{ end }}` — an extension point for page-specific scripts.
+
+`baseof.html` also exposes `{{ block "head-extra" . }}{{ end }}` just before `</head>` — for page-specific CSS that must load in `<head>` (e.g., KaTeX stylesheet).
+
+| Block | Location in `baseof.html` | Current users |
+| --- | --- | --- |
+| `head-extra` | Before `</head>` | `posts/single.html` (KaTeX CSS when `math: true`) |
+| `scripts-extra` | Before `</body>` | `404.html` (`not_found.js`), `posts/single.html` (KaTeX JS when `math: true`) |
 
 ### 5.2 Key templates
 
