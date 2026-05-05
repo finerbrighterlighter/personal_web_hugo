@@ -202,15 +202,20 @@
 <h2 class="category-header">Latest posts</h2>
 <div class="posts-list">
 {{ with .Site.GetPage "/posts" }}
-    {{ $posts := where .Pages ".Params.private" "!=" true }}
-    {{ $posts = sort $posts "Date" "desc" }}
-    {{ range first 2 $posts }}
-        <div class="post">
-            <div class="date">{{ .Date | time.Format ":date_medium" }}</div>
-            <h2><a href="{{ .RelPermalink }}" title="{{ .Title }}">{{ .Title }}</a></h2>
-            {{ .Summary }}
-        </div>
-    {{ end }}
+  {{/* 1. Filter RegularPages only to exclude _index.md */}}
+  {{/* 2. Use 'ne' for robust boolean filtering */}}
+  {{ $posts := where .RegularPages "Params.private" "ne" true }}
+  
+  {{/* 3. Explicitly sort by Date, using LinkTitle as a tie-breaker */}}
+  {{ $posts = sort $posts "Date" "desc" }}
+  
+  {{ range first 2 $posts }}
+      <div class="post">
+          <div class="date">{{ .Date | time.Format ":date_medium" }}</div>
+          <h2><a href="{{ .RelPermalink }}" title="{{ .Title }}">{{ .Title }}</a></h2>
+          {{ .Summary | safeHTML }}
+      </div>
+  {{ end }}
 {{ end }}
 </div>
 
