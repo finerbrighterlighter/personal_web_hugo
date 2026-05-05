@@ -6,7 +6,7 @@ company: "Mahidol University, Thailand"
 math: true
 ---
 
-I presdented on a journal club on the topic of "Mixed Effect Machine Learning". The presentation was based on the paper by Che Ngufora, Holly Van Houten, Brian S. Caffo, Nilay D. Shah and Rozalina G. McCoy, published in [Journal of Biomedical Informatics (2018)](http://doi.org/10.1016/j.jbi.2018.09.001). The resources for the Journal Club can be found [here](https://www.rama.mahidol.ac.th/ceb/news/10mar2021-0940).
+I presdented at a journal club regarding the topic of "Mixed Effect Machine Learning". The presentation was based on the paper by Che Ngufora, Holly Van Houten, Brian S. Caffo, Nilay D. Shah and Rozalina G. McCoy, published in [Journal of Biomedical Informatics (2018)](http://doi.org/10.1016/j.jbi.2018.09.001). The resources for the Journal Club can be found [here](https://www.rama.mahidol.ac.th/ceb/news/10mar2021-0940).
 
 <!--more-->
 
