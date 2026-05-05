@@ -612,8 +612,24 @@ figure {
     font-size: var(--font-base);
 }
 
-.post-company {
-    opacity: 0.6;
+.post-single h1 {
+    --display-h1-decoration: none;
+    font-size: 1.1rem;
+    font-weight: bold;
+    line-height: 1.5;
+    margin-bottom: var(--space-2);
+}
+
+.post-meta {
+    display: flex;
+    align-items: baseline;
+    color: var(--secondary-color);
+    font-size: var(--font-sm);
+    margin-bottom: var(--space-6);
+}
+
+.post-meta time {
+    margin-left: auto;
 }
 
 /* ============================= */

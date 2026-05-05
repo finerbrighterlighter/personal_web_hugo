@@ -1,10 +1,14 @@
 {{ define "main" }}
-<h1 id="post-title">{{ .Title }}</h1>
+<article class="post-single">
 
-{{with .Params.company}}
-    <h4>{{ . }}</h4>
-{{ end }}
-<h5>{{ .Date | time.Format ":date_medium" }}</h5>
+  <h1>{{ .Title }}</h1>
 
-{{ .Content }}
+  <p class="post-meta">
+    {{ with .Params.company }}<span class="post-company">{{ . }}</span>{{ end }}
+    <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time>
+  </p>
+
+  {{ .Content }}
+
+</article>
 {{ end }}
