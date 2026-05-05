@@ -18,6 +18,7 @@ Comprehensive reference for the Hugo site at `htunteza.com`. Covers structure, c
       - [Site-level](#site-level)
       - [`[params]`](#params)
       - [`[[params.navlinks]]`](#paramsnavlinks)
+      - [Nav link visibility](#nav-link-visibility)
       - [`[outputFormats]`](#outputformats)
       - [`[outputs]`](#outputs)
     - [2.2 `netlify.toml`](#22-netlifytoml)
@@ -164,7 +165,22 @@ Each entry defines one item in the nav bar. Order in the array = display order.
 
 Current links: **Home** (`/`, `homepage`), **Works** (`/works/`, `academia`), **Posts** (`/posts/`, `notebook`), **Blood** (`/blood/`, `rhesus`), **About** (`/about/`, `biography`, hidden).
 
-On work single pages the Works link is additionally suppressed — only Home, Posts, Blood remain. On the about page, Blood is also suppressed — only Home, Works, Posts remain.
+#### Nav link visibility
+
+The nav always shows exactly **3 links + the theme controls**. One link is suppressed per page context. Suppression logic is in the `{{ range .Site.Params.navlinks }}` block in `layouts/_default/baseof.html`.
+
+| Page context | Home | Works | Posts | Blood | Rule |
+| --- | :---: | :---: | :---: | :---: | --- |
+| Home `/` | — | ✓ | ✓ | ✓ | active page |
+| Works list `/works/` | ✓ | — | ✓ | ✓ | active page |
+| Work single `/works/*/*` | ✓ | — | ✓ | ✓ | `Section=works` + `IsPage` |
+| Posts list `/posts/` | ✓ | ✓ | — | ✓ | active page |
+| Post single `/posts/*` | ✓ | ✓ | — | ✓ | `HasPrefix "/posts/"` + `IsPage` |
+| Blood `/blood/` | ✓ | ✓ | ✓ | — | active page |
+| About `/about/` | ✓ | ✓ | ✓ | — | `RelPermalink="/about/"` |
+| 404 | — | ✓ | ✓ | ✓ | `Kind="404"` |
+
+**Active page** — the link whose `url` matches `$.RelPermalink` is always hidden (you don't link to the page you're already on). The section-specific rules handle the cases where the active URL is a child of the section (e.g. `/works/journal/foo/` is not `/works/` but Works still drops).
 
 #### `[outputFormats]`
 
