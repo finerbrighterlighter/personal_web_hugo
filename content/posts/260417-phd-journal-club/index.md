@@ -66,7 +66,7 @@ This gives us $p_{Box}$, the probability of observing a result as extreme as our
 The $p_{Box}$ value is not static; it depends on our chosen significance level ($\alpha$), which determines the "width" of the sceptic's disbelief. As we demand a stricter standard (lowering $\alpha$), the sceptic’s prior becomes wider, making it harder for the RWE to generate a conflict. This creates a dynamic chain:
 $$\alpha \downarrow \implies z_{\alpha} \uparrow \implies \tau^2 \uparrow \implies t_{Box} \downarrow \implies p_{Box} \uparrow$$
 
-The **Sceptical P-Value ($p_s$)** is the  "equilibrium" point where these two values meet ($$/alpha = p_{Box}$$). It represents the most demanding threshold the RWE can survive while  still forcing the sceptic to abandon their position. While $p_{Box}$ tells you if the sceptic is rejected at a *fixed* level, $p_s$ provides a single, continuous measure of replication success.
+The **Sceptical P-Value ($p_s$)** is the  "equilibrium" point where these two values meet ($\alpha = p_{Box}$). It represents the most demanding threshold the RWE can survive while  still forcing the sceptic to abandon their position. While $p_{Box}$ tells you if the sceptic is rejected at a *fixed* level, $p_s$ provides a single, continuous measure of replication success.
 
 Replication is only declared successful if the RWE evidence is strong enough to reach this equilibrium at an acceptable level. (Typically $p_s < 0.025$)
 
