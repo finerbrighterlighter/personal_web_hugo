@@ -41,23 +41,26 @@
 /* --- Noto Sans Myanmar (Burmese Script) --- */
 @font-face {
     font-family: "Roboto Mono";
-    src: url("../font/NotoSansMyanmar-Regular.ttf") format("truetype");
+    src: url("../font/Thit_Sar_Shwe_Si.ttf") format("truetype");
     font-style: normal;
     font-weight: 400;
     font-display: swap;
     /* Ranges: Myanmar, Myanmar Extended-A, Myanmar Extended-B */
     unicode-range: U+1000-109F, U+AA60-AA7F, U+A9E0-A9FF;
 }
+/* "../font/NotoSansMyanmar-Regular.ttf" */
+
 
 @font-face {
     font-family: "Roboto Mono";
-    src: url("../font/NotoSansMyanmar-Bold.ttf") format("truetype");
+    src: url("../font/Thit_Sar_Shwe_Si.ttf") format("truetype");
     font-style: normal;
     font-weight: 700;
     font-display: swap;
     /* Ranges: Myanmar, Myanmar Extended-A, Myanmar Extended-B */
     unicode-range: U+1000-109F, U+AA60-AA7F, U+A9E0-A9FF;
 }
+/* "../font/NotoSansMyanmar-Bold.ttf" */
 
 /* Myanmar characters are taller than Latin — needs more line-height to avoid clipping */
 :lang(my) {

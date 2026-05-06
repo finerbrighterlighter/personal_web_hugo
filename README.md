@@ -200,6 +200,8 @@ The privacy panel has two cache flush options: now, and in 10 seconds. There is 
 
 ## Attributions
 
+- [Thit Sar Shwe Si font](https://www.facebook.com/share/p/1LQYFSUkXy/) created by [Phoenix Digital Art](https://www.facebook.com/PhoenixDigitalArt)
+  - [Link](https://drive.google.com/file/d/13pxe53JQQ3p72gkoRjzJ4Fl0gc7UqfSF/view?usp=sharing), find mirror in `static/hugo-theme-console/font/Thit_Sar_Shwe_Si.ttf`
 - [Eye test icons](https://www.flaticon.com/free-icons/eye-test) created by Freepik - Flaticon
 - [Duck Favicon](https://www.magnific.com/icon/duck_530260) created by Magnific - Roundicons
 
