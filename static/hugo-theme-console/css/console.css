@@ -867,7 +867,6 @@ p.social a {
 .lang-badge {
     font-family: var(--mono-font-stack);
     font-size: var(--global-font-size);
-    font-weight: bold;
     color: var(--primary-color);
     letter-spacing: 0.03em;
     line-height: 1;
