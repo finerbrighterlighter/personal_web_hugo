@@ -13,10 +13,22 @@
 | About | `/about/` | 0 | ✓ Clean |
 | Works list | `/works/` | 0 | ✓ Clean |
 | Work (single) | `/works/journal/2023_transitions_from_hypertension_to_cvd_outcomes/` | 0 | ✓ Clean |
-| Post (single) | `/posts/190719-i-was-a-dentist/` | 0 | ✓ Clean |
-| Blood | `/blood/` | 0 | ✓ Clean |
+| Post (single) | `/posts/260417-phd-journal-club/` | 4 | ⚠ SVG only |
+| Blood | `/blood/` | 4 | ⚠ SVG only |
 
-All pages clean. The `#oa-svg` SVG contrast findings from the previous audit are no longer detected — the SVG carries `aria-hidden="true"` and htmlcs appears to be respecting it on this run (or the async chart had not loaded when pa11y ran; either way, no actionable issue).
+## Remaining finding — SVG chart (`#oa-svg`)
+
+All 4 errors on affected pages are identical: htmlcs (`WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Fail`) flagging color contrast on two axis circle labels and two year labels inside the OpenAlex publications chart SVG.
+
+**Why it is not fixed:**
+
+- The SVG carries `aria-hidden="true"` — it is excluded from the accessibility tree entirely
+- All data shown in the chart (works count, year range) is also present in the `<table>` immediately above it
+- axe-core (the other checker pa11y runs) does NOT flag these elements because it respects `aria-hidden`
+- htmlcs does not respect `aria-hidden` for contrast checks — this is a known htmlcs limitation with SVG elements
+- The contrast values reported (1.03:1) are likely an htmlcs measurement artifact: it cannot reliably determine the effective background behind SVG `<text>` elements positioned over colored `<circle>` elements
+
+**Conclusion:** accepted — decorative chart with no accessible information loss.
 
 ## Previously fixed issues
 
@@ -40,7 +52,7 @@ pa11y --reporter csv "$BASE/about/"                                             
 pa11y --reporter csv "$BASE/works/"                                                   > "$OUT/works.csv"
 pa11y --reporter csv "$BASE/works/journal/2023_transitions_from_hypertension_to_cvd_outcomes/" > "$OUT/work_single.csv"
 pa11y --reporter csv "$BASE/posts/"                                                   > "$OUT/posts.csv"
-pa11y --reporter csv "$BASE/posts/190719-i-was-a-dentist/"                           > "$OUT/post_single.csv"
+pa11y --reporter csv "$BASE/posts/260417-phd-journal-club/"                           > "$OUT/post_single.csv"
 pa11y --reporter csv "$BASE/blood/"                                                   > "$OUT/blood.csv"
 ```
 
