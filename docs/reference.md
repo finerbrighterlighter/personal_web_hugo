@@ -20,9 +20,12 @@ Comprehensive reference for the Hugo site at `htunteza.com`. Covers structure, c
       - [`[[params.navlinks]]`](#paramsnavlinks)
       - [Nav link visibility](#nav-link-visibility)
       - [`[outputFormats]`](#outputformats)
-      - [`[outputs]`](#outputs)
+      - [`[languages.en.outputs]` / `[languages.mm.outputs]`](#languagesenoutputs--languagesmmoutputs)
+      - [`[taxonomies]`](#taxonomies)
+      - [`[security]`](#security)
     - [2.2 `netlify.toml`](#22-netlifytoml)
-    - [2.3 `window.CONFIG`](#23-windowconfig)
+    - [2.3 Multilingual (`/mm/`)](#23-multilingual-mm)
+    - [2.4 `window.CONFIG`](#24-windowconfig)
   - [3. Content](#3-content)
     - [3.1 Sections overview](#31-sections-overview)
     - [3.2 Works front matter](#32-works-front-matter)
@@ -140,17 +143,24 @@ hugo_console/
 
 #### `[params]`
 
+Global params (all languages):
+
 | Param | Type | Value | Effect |
 | --- | --- | --- | --- |
 | `author` | string | `"Htun Teza"` | `<meta name="author">` |
-| `description` | string | Site tagline | Default `<meta description>`, og:description, home JSON-LD |
 | `animateStyle` | string | `"animate-fade-up"` | CSS class on `.terminal-layout` container |
-| `ogImage` | string | `"assets/general/og_image.webp"` | Referenced for og:image |
+| `ogImage` | string | `"assets/general/og_image.webp"` | Kept for reference; `header.html` reads this path via `absURL` |
 | `promptName` | string | `"hteza"` | Left side of shell prompt (`hteza@hostname`) |
 | `promptHost` | string | `"homepage"` | Default hostname in nav header |
 | `buildFuture` | bool | `true` | Future-dated works visible in `hugo server` |
 | `cacheTTLMinutes` | int | `60` | localStorage cache TTL for all API panels; injected into `window.CONFIG` |
-| `researchTagLimit` | int | `10` | Max tags in the topics panel; injected into `window.CONFIG` |
+| `researchTagLimit` | int | `5` (current) | Max tags in topics panel; injected into `window.CONFIG`. The `config.js` template fallback is `30` — update `hugo.toml` to override. |
+
+Per-language params (in `[languages.en.params]` / `[languages.mm.params]`):
+
+| Param | Effect |
+| --- | --- |
+| `description` | Default `<meta description>`, `og:description`, `twitter:description`, home JSON-LD `description`. Resolved by `.Site.Params.description` — Hugo returns the current language's value automatically. Each language has its own string. |
 
 #### `[[params.navlinks]]`
 
@@ -191,10 +201,16 @@ The nav always shows exactly **3 links + the theme controls**. One link is suppr
 
 `notAlternative = true` prevents `<link rel="alternate">` from leaking into the HTML `<head>`.
 
-#### `[outputs]`
+#### `[languages.en.outputs]` / `[languages.mm.outputs]`
+
+Output formats are scoped **per-language**, not global. English home gets all three formats; Burmese home gets only HTML:
 
 ```toml
-home = ["HTML", "llmstxt", "llmsfull"]
+[languages.en.outputs]
+  home = ["HTML", "llmstxt", "llmsfull"]  # produces /llms.txt and /llms-full.txt
+
+[languages.mm.outputs]
+  home = ["HTML"]                          # no llms files for /mm/
 ```
 
 Only the home page has extra output formats. All other pages default to `["HTML"]`.
@@ -210,6 +226,22 @@ Only the home page has extra output formats. All other pages default to `["HTML"
 ```
 
 Goldmark passthrough extension — instructs Hugo not to process content inside math delimiters. Without this, goldmark mangles LaTeX (e.g., `_` → `<em>`, `\` escaping). Enable on any post with `math: true` in front matter; KaTeX renders client-side via `posts/single.html`.
+
+#### `[taxonomies]`
+
+`[taxonomies]` is declared as an empty block, which **disables all taxonomies** (overrides Hugo's defaults of `tag` and `category`). This prevents `/tags/` and `/categories/` pages from being generated.
+
+#### `[security]`
+
+```toml
+[security]
+  enableInlineShortcodes = false
+
+[security.funcs]
+  getenv = ["^HUGO_"]
+```
+
+`getenv` whitelist — only environment variables prefixed `HUGO_` are accessible from templates. This means `getenv "HUGO_UNSPLASH_KEY"` works but `getenv "HOME"` would be blocked.
 
  ---
 
@@ -239,7 +271,105 @@ For local dev, export these before running `hugo server`.
 
  ---
 
-### 2.3 `window.CONFIG`
+### 2.3 Multilingual (`/mm/`)
+
+The site is bilingual: English at the root (`/`, no subdir) and Burmese at `/mm/`.
+
+```toml
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = false   # English stays at /, not /en/
+
+[languages.en]  weight = 1  languageCode = "en-us"  title = "Htun Teza"
+[languages.mm]  weight = 2  languageCode = "my"     title = "ထွန်းတေဇာ"
+```
+
+#### What is translated
+
+| Content | Translated? | Source |
+| --- | --- | --- |
+| Sidebar (name, job title) | ✓ | `data/homepage_mm.yml` |
+| Career profile, education, experiences, projects | ✓ | `data/homepage_mm.yml` |
+| Works and posts | ✗ — always English | `$enSite.RegularPages` in templates |
+| Right panels (API data) | ✗ — always English | JS modules fetch language-blind |
+| Footer | ✗ | Hardcoded English in `footer.html` |
+| UI strings (section headings, buttons) | ✓ | `i18n/mm.yaml` |
+| Site description (OG meta) | ✓ | `[languages.mm.params] description` |
+
+#### Template switching pattern
+
+Both `layouts/index.html` and `partials/sidebar-content.html` switch data source at the top:
+
+```go
+{{- $hp := .Site.Data.homepage -}}
+{{- if eq .Site.Language.Lang "mm" -}}{{- $hp = .Site.Data.homepage_mm -}}{{- end -}}
+```
+
+Works and posts are always pulled from `$enSite` (the English site object) to avoid duplication.
+
+#### i18n keys (`i18n/en.yaml` / `i18n/mm.yaml`)
+
+| Key | EN | MM |
+| --- | --- | --- |
+| `recent_works` | "Recent Works" | "နောက်ဆုံးထွက် သုတေသန စာတမ်းများ" |
+| `latest_posts` | "Latest posts" | "နောက်ဆုံးရ မှတ်စုများ" |
+| `all_works` | "→ all works" | "→ အားလုံးကြည့်ရန်" |
+| `show_more` | "show more" | "ထပ်ကြည့်ရန်" |
+| `collab_sentence` | `...collaboration with <N> researchers across <M> institutions in <countries>` | Burmese word order: `<countries> ရှိ <M> institutions မှ <N> ဦး...` |
+| `country_and` | "and" | "နှင့်" |
+| `country_sep` | ", " | "၊ " |
+| `blood_address` | "Address" | "လိပ်စာ" |
+| `blood_telephone` | "Telephone" | "ဖုန်း" |
+| `blood_gallery` | "Gallery" | "ဓာတ်ပုံများ" |
+
+Use in templates: `{{ i18n "show_more" }}`. For sentences with injected values: `{{ i18n "collab_sentence" (dict "collabN" $n "instN" $m "countryStr" $str) }}`.
+
+#### `collab-summary.html` — Burmese transforms
+
+Two Burmese-specific transforms run inside `partials/collab-summary.html` when `site.Language.Lang == "mm"`:
+
+1. **Country name translation** — `$expandMy` dict maps English names to Burmese (`ထိုင်းနိုင်ငံ`, `မြန်မာနိုင်ငံ`, `သြစတြေးလျနိုင်ငံ`, etc.)
+2. **Myanmar numeral conversion** — Arabic digits `0–9` are replaced with Myanmar digits `၀–၉` before injecting the counts into the i18n sentence
+
+#### Font system for Myanmar script
+
+Defined in `static/hugo-theme-console/css/console.css`:
+
+```css
+@font-face {
+    font-family: "Roboto Mono";
+    src: url("../font/Thit_Sar_Shwe_Si.ttf") format("truetype");
+    unicode-range: U+1000-109F, U+AA60-AA7F, U+A9E0-A9FF;
+}
+```
+
+The active Burmese font is **Thit_Sar_Shwe_Si** — a handwriting typeface intentionally informal. The `unicode-range` override shares the `"Roboto Mono"` family name — no `lang` attribute or class needed; the browser automatically picks the right font for each codepoint. A `:lang(my)` rule bumps `line-height` to prevent stacked Burmese characters from clipping.
+
+NotoSansMyanmar-Regular/Bold exist in `static/hugo-theme-console/font/` as committed fallbacks but are not currently active in the CSS.
+
+#### `content/_index.mm.md`
+
+A minimal stub — just a YAML title (`title: "ထွန်းတဇာ"`). The Burmese homepage body comes entirely from `data/homepage_mm.yml`.
+
+#### Nav link routing on the Burmese site
+
+All nav links in `baseof.html` use `relLangURL` (not bare strings) so their URLs resolve correctly as `/mm/works/` on the Burmese site. The suppression conditions (`eq $.RelPermalink ("/about/" | relLangURL)`, etc.) also use `relLangURL` — they work on both English and Burmese pages.
+
+#### Breadcrumb on the Burmese site
+
+`baseof.html` strips the `/{lang}/` prefix before splitting the path for breadcrumb segments:
+
+```go
+{{- $langPrefix := printf "/%s/" .Site.Language.Lang -}}
+{{- if hasPrefix .RelPermalink $langPrefix -}}
+  {{- $crumbPath = printf "/%s" (strings.TrimPrefix $langPrefix .RelPermalink) -}}
+{{- end -}}
+```
+
+So `/mm/about/` renders as `~/about$` just like the English site.
+
+ ---
+
+### 2.4 `window.CONFIG`
 
 **File:** `assets/js/config.js` (Hugo template processed by esbuild)
 
@@ -253,6 +383,8 @@ window.CONFIG = {
   researchTagLimit:{{ site.Params.researchTagLimit | default 30 }}
 };
 ```
+
+Note: `researchTagLimit` falls back to `30` in the code template, but is currently set to `5` in `hugo.toml`. The `hugo.toml` value takes precedence; the fallback only applies if the param is absent entirely.
 
 Loaded first in `scripts.html` via `js.Build`. All other modules read `window.CONFIG` at runtime.
 
@@ -603,6 +735,10 @@ Scripts loaded at bottom of `<body>` via `partials/scripts.html`, followed by `{
 | `footer.html` | `baseof.html` | Footer links (Hugo, Theme, Source, Me, CC BY license badge); each item wrapped in `<span>` so `.footer` flex layout distributes them evenly (`justify-content: space-evenly`); CC badge uses two separate icons `cc.svg` + `by.svg` in `static/images/icons/`; `[Me]` click intercepted by `footer_roll.js` for the whoami animation |
 | `scripts.html` | `baseof.html` | `<script type="module">` tags for all JS modules; followed by `{{ block "scripts-extra" }}` for page-specific additions |
 | `works-filter-group.html` | `works.html` | Renders one filter group (condition/datasource/method) |
+
+**Vestigial partials (not called by the site):** `opengraph.html` and `twitter_cards.html` exist in `layouts/partials/` as base-theme files. They are **not invoked** by any current template — OG and Twitter tags are handled entirely in `header.html`. Safe to ignore; harmless if left in place.
+
+**Language note — `home-seo.html`:** This partial always reads from `site.Data.homepage.sidebar` (English), regardless of the current language. The JSON-LD `Person` schema is intentionally language-neutral — it describes the person, not the page.
 
 ### 5.4 Shortcodes
 
@@ -995,10 +1131,22 @@ sudo apt-get install libcairo2 libpango-1.0-0 libpangocairo-1.0-0 \
 
 | Partial | Condition | Output |
 | --- | --- | --- |
-| `header.html` | Every page | `<meta name="description">` (abstract on works, site description elsewhere); `og:title`, `og:description`, `og:type` (`website` home / `article` others), `og:image`, `og:logo` (apple-touch-icon.png), `og:site_name`; Twitter Card tags; `<link rel="canonical">` |
+| `header.html` | Every page | `<meta name="description">` (abstract on works, site description elsewhere); `og:title`, `og:description`, `og:type` (`website` home / `article` others), `og:image`, `og:logo` (apple-touch-icon.png), `og:site_name`; Twitter Card tags; `<link rel="canonical">` (guarded — only emitted when `.Permalink` is non-empty, i.e. not on conference/report suppressed pages) |
 | `home-seo.html` | `.IsHome` | JSON-LD `Person` — name, jobTitle, image (apple-touch-icon.png, 180×180), description, sameAs (ORCID + Google Scholar) |
 | `work-seo.html` | `works` section + `.IsPage` | `citation_title`, `citation_author` (Family, Given — one tag per author), `citation_publication_date`, `citation_journal_title`, `citation_doi`, `citation_abstract_html_url`, `citation_fulltext_html_url`; JSON-LD `ScholarlyArticle` with author ORCID as `identifier` |
 | `breadcrumb-ld.html` | Every non-home page | JSON-LD `BreadcrumbList` built from URL path segments; each item has `@type`, `position`, `name`, `item` (URL) |
+
+**`$desc` resolution in `header.html`:**
+
+```go
+{{- $desc := .Site.Params.description -}}       // 1. site default (per-language)
+{{- with .Params.description }}{{- $desc = . -}}{{- end -}}  // 2. page-level override
+{{- if and (eq .Section "works") .IsPage .Plain -}}
+  {{- $desc = .Plain | truncate 160 "..." -}}   // 3. works pages → abstract body (truncated)
+{{- end -}}
+```
+
+Priority: works abstract → page front matter `description` → site-level (per-language) description. The OG image is a single unified variable (`$ogImage := "general/og_image.webp" | absURL`) used for both `og:image` and `twitter:image`.
 
 ### JSON-LD encoding
 
@@ -1027,11 +1175,33 @@ Intermediate path segments that don't resolve to a Hugo page (`site.GetPage` ret
 
 `data-doi` is the bare DOI (prefix stripped) — consumed by `work-citation.js` for the OpenAlex API call.
 
+### Sitemap structure
+
+Hugo multilingual mode generates a **sitemap index** at the root:
+
+```
+/sitemap.xml           → sitemapindex, references en/sitemap.xml + mm/sitemap.xml
+/en/sitemap.xml        → child sitemap for English pages
+/mm/sitemap.xml        → child sitemap for Burmese pages (mostly just /mm/ and /mm/about/)
+```
+
+Submit only `/sitemap.xml` to Google Search Console (the index is valid; Google resolves the children automatically).
+
+**`layouts/sitemap.xml`** is the custom template applied to each child sitemap (not the index itself — the index is generated by Hugo internally). The custom template:
+
+- Excludes pages with `private: true` in front matter
+- Excludes pages with empty `.Permalink` (conference/report entries with `render: never` from the cascade would otherwise emit `<loc></loc>` — invalid XML)
+- Emits `xhtml:link rel="alternate"` hreflang tags for translated pages (English ↔ Burmese cross-references)
+
+The `<urlset>` namespace includes `xmlns:xhtml` to allow hreflang output.
+
  ---
 
 ## 9. LLMs.txt Outputs
 
 Both generated at build time via Hugo custom output formats. Only the home page (`[outputs] home = [...]`) produces these files.
+
+**Language guard:** Both templates are wrapped in `{{- if eq .Site.Language.Lang "en" -}}...{{- end -}}`. This ensures the llms files are only generated for the English site — no `/mm/llms.txt` is produced, and no Burmese-language URLs appear in the output. The guard works in tandem with `[languages.mm.outputs] home = ["HTML"]` (which would generate the file at the template level), adding a second safeguard.
 
 | File | URL | Template | Content |
 | --- | --- | --- | --- |
