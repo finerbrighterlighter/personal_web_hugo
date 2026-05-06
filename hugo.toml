@@ -7,10 +7,16 @@ defaultContentLanguageInSubdir = false
   weight = 1
   title = "Htun Teza"
 
+  [languages.en.outputs]
+    home = ["HTML", "llmstxt", "llmsfull"]
+
 [languages.mm]
   languageCode = "my"
   weight = 2
   title = "ထွန်းတေဇာ"
+
+  [languages.mm.outputs]
+    home = ["HTML"]
 
 [params]
 author = "Htun Teza"
@@ -60,9 +66,6 @@ hidden = true
   baseName       = "llms-full"
   isPlainText    = true
   notAlternative = true
-
-[outputs]
-  home = ["HTML", "llmstxt", "llmsfull"]
 
 [markup]
   [markup.goldmark]

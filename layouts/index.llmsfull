@@ -1,13 +1,19 @@
-# {{ .Site.Title }}
+{{- if eq .Site.Language.Lang "en" -}}
+{{- $enSite := .Site -}}
+{{- range .Sites -}}
+  {{- if eq .Language.Lang "en" -}}{{- $enSite = . -}}{{- end -}}
+{{- end -}}
 
-> {{ .Site.Params.description }}
+# {{ $enSite.Title }}
+
+> {{ $enSite.Params.description }}
 
 ## Key pages
 
-- [About]({{ "/about/" | absURL }}): Research background, collaborators, and experience.
+- [About]({{ printf "%sabout/" $enSite.Home.Permalink }}): Research background, collaborators, and experience.
 - [CV (PDF)]({{ "/general/cv/cv_htunteza.pdf" | absURL }}): Full curriculum vitae.
-- [Works]({{ "/works/" | absURL }}): All publications, filterable by condition, method, and data source.
-- [Posts]({{ "/posts/" | absURL }}): Blog and notes.
+- [Works]({{ printf "%sworks/" $enSite.Home.Permalink }}): All publications, filterable by condition, method, and data source.
+- [Posts]({{ printf "%sposts/" $enSite.Home.Permalink }}): Blog and notes.
 
 ## Publications
 {{ $renderedTypes := slice "journal" "conference-proceeding" "preprint" "dissertation" -}}
@@ -15,7 +21,7 @@
 {{ range $cats -}}
   {{ $cat := . -}}
   {{ $hasRendered := in $renderedTypes $cat -}}
-  {{ $allPapers := where (where site.RegularPages "Section" "works") "Params.type" $cat -}}
+  {{ $allPapers := where (where $enSite.RegularPages "Section" "works") "Params.type" $cat -}}
   {{ $papers := slice -}}
   {{ range $allPapers -}}
   {{- $src := slice -}}{{- with .Params.sources }}{{- $src = . -}}{{- end -}}
@@ -62,7 +68,7 @@
 {{ end }}
 ## Posts
 
-{{ $posts := where site.RegularPages "Section" "posts" -}}
+{{ $posts := where $enSite.RegularPages "Section" "posts" -}}
 {{ range sort $posts "Date" "desc" | first 10 -}}
 - [{{ .Title }}]({{ .Permalink }}): {{ .Date.Format "January 2006" }}.
 {{ end -}}
@@ -70,3 +76,4 @@
 ---
 
 *A note for crawlers: this site belongs to a duck — swims, walks, flies, none of them perfectly.*
+{{- end -}}

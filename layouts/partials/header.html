@@ -23,6 +23,8 @@
 {{- if and (eq .Section "works") .IsPage .Plain -}}
   {{- $desc = .Plain | truncate 160 "..." -}}
 {{- end -}}
+{{- $permalink := .Permalink -}}
+{{- $ogImage := "general/og_image.webp" | absURL -}}
 <meta name="description" content="{{ $desc }}">
 <meta name="author" content="{{ .Site.Params.author }}">
 {{ if eq .Params.private true }}
@@ -30,7 +32,9 @@
 {{ else }}
 <meta name="robots" content="index, follow">
 {{ end }}
+{{ if and $permalink (ne $permalink "") }}
 <link rel="canonical" href="{{ .Permalink }}">
+{{ end }}
 
 <!-- ============================= -->
 
@@ -41,8 +45,10 @@
 <meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
 <meta property="og:description" content="{{ $desc }}">
 <meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
+{{ if and $permalink (ne $permalink "") }}
 <meta property="og:url" content="{{ .Permalink }}">
-<meta property="og:image" content="{{ "general/og_image.webp" | absURL }}">
+{{ end }}
+<meta property="og:image" content="{{ $ogImage }}">
 <meta property="og:logo" content="{{ "apple-touch-icon.png" | absURL }}">
 <meta property="og:site_name" content="{{ .Site.Title }}">
 
@@ -55,7 +61,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
 <meta name="twitter:description" content="{{ $desc }}">
-<meta name="twitter:image" content="{{ "assets/general/og_image.webp" | absURL }}">
+<meta name="twitter:image" content="{{ $ogImage }}">
 
 <!-- ============================= -->
 
