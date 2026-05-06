@@ -61,7 +61,13 @@
               {{ range .Site.Params.navlinks }}
               {{ if and (not .hidden) (not (eq $.RelPermalink (.url | relLangURL))) (not (and (eq $.Section "works") $.IsPage (eq .url (printf "/%s/" $.Section)))) (not (and (strings.HasPrefix $.RelPermalink ("/posts/" | relLangURL)) $.IsPage (eq .url "/posts/"))) (not (and (eq $.RelPermalink ("/about/" | relLangURL)) (eq .url "/blood/"))) (not (and (eq $.Kind "404") (eq .url "/"))) }}
               <li>
-                <a href="{{ if eq .url "/" }}{{ .url | relLangURL }}{{ else }}{{ .url | relURL }}{{ end }}">{{ .name }}</a>
+                {{- $href := .url | relURL -}}
+                {{- if eq .url "/" -}}
+                  {{- $href = .url | relLangURL -}}
+                {{- else if $.Site.GetPage .url -}}
+                  {{- $href = .url | relLangURL -}}
+                {{- end -}}
+                <a href="{{ $href }}">{{ .name }}</a>
               </li>
               {{ end }}
               {{ end }}
