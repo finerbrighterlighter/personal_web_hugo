@@ -9,14 +9,14 @@
 | Page | URL | Errors | Status |
 | --- | --- | --- | --- |
 | Home | `/` | 4 | ⚠ SVG only |
-| Posts list | `/posts/` | 0 | ✓ Clean |
+| Posts list | `/posts/` | 4 | ⚠ SVG only |
 | About | `/about/` | 4 | ⚠ SVG only |
-| Works list | `/works/` | 0 | ✓ Clean |
-| Work (single) | `/works/journal/2023_transitions_from_hypertension_to_cvd_outcomes/` | 0 | ✓ Clean |
+| Works list | `/works/` | 4 | ⚠ SVG only |
+| Work (single) | `/works/journal/2023_transitions_from_hypertension_to_cvd_outcomes/` | 4 | ⚠ SVG only |
 | Post (single) | `/posts/260417-phd-journal-club/` | 4 | ⚠ SVG only |
 | Blood | `/blood/` | 4 | ⚠ SVG only |
 
-**Note on consistency:** The `#oa-svg` panel is rendered by `openalex.js` via an async API call — pa11y catches it only if the fetch completes within the `--wait` window. Results are run with `--wait 3000`. Pages that still show 0 errors (posts list, works list, work single) likely had the panel still fetching when the 3 s elapsed; this is a timing artifact, not a real difference in accessibility.
+**Note on wait time:** The `#oa-svg` panel is rendered by `openalex.js` via an async API call. Pa11y must wait long enough for the fetch to complete before scanning. All runs use `--wait 10000` (10 seconds); at this interval all 7 pages consistently reproduce the same 4 SVG errors.
 
 ## Remaining finding — SVG chart (`#oa-svg`)
 
@@ -45,17 +45,9 @@ All 4 errors on affected pages are identical: htmlcs (`WCAG2AA.Principle1.Guidel
 ## How to re-run
 
 ```bash
-export PATH="/home/finer/.config/nvm/versions/node/v25.9.0/bin:$PATH"
-BASE=http://localhost:1313
-OUT=docs/pa11y
-
-pa11y --wait 3000 --reporter csv "$BASE/"                                                         > "$OUT/index.csv"
-pa11y --wait 3000 --reporter csv "$BASE/about/"                                                   > "$OUT/about.csv"
-pa11y --wait 3000 --reporter csv "$BASE/works/"                                                   > "$OUT/works.csv"
-pa11y --wait 3000 --reporter csv "$BASE/works/journal/2023_transitions_from_hypertension_to_cvd_outcomes/" > "$OUT/work_single.csv"
-pa11y --wait 3000 --reporter csv "$BASE/posts/"                                                   > "$OUT/posts.csv"
-pa11y --wait 3000 --reporter csv "$BASE/posts/260417-phd-journal-club/"                           > "$OUT/post_single.csv"
-pa11y --wait 3000 --reporter csv "$BASE/blood/"                                                   > "$OUT/blood.csv"
+bash docs/pa11y/run_audit.sh
 ```
+
+The script (`docs/pa11y/run_audit.sh`) runs all 7 pages with `--wait 10000` and prints a summary. Hugo dev server must be running on `localhost:1313` first.
 
 Update the date and work/post slugs as needed when re-running.

@@ -1294,16 +1294,15 @@ Links embedded in paragraph text on the about page are intentionally subtle — 
 
 ### pa11y audit results
 
-Full audit results are in `docs/pa11y/` (CSV per page + `README.md` summary). Re-run instructions are in the README.
+Full audit results are in `docs/pa11y/` (CSV per page + `README.md` summary). Re-run with `bash docs/pa11y/run_audit.sh` (Hugo dev server must be running).
 
-**Current state (2026-05-02, pa11y 9.1.1):**
+**Important:** always use `--wait 10000` (10 seconds). The `#oa-svg` panel is rendered async by `openalex.js` after a live API fetch — shorter waits produce inconsistent results where pages look clean simply because the fetch hadn't returned yet.
+
+**Current state (2026-05-06, pa11y 9.1.1, `--wait 10000`):**
 
 | Page | Result |
 | --- | --- |
-| `/` (home) | ✓ Clean |
-| `/posts/` | ✓ Clean |
-| `/404.html` | ✓ Clean |
-| `/about/`, `/works/`, `/works/<slug>/`, `/posts/<slug>/`, `/blood/` | ⚠ SVG only (see below) |
+| All 7 pages | ⚠ SVG only (4 errors each) |
 
 **Only remaining finding — OpenAlex SVG chart (`#oa-svg`):** htmlcs flags 4 color-contrast errors on axis labels inside the SVG. The SVG carries `aria-hidden="true"` and all its data is in the `<table>` above. axe-core (the other pa11y checker) does not flag these because it respects `aria-hidden`. htmlcs does not — this is a known htmlcs limitation with SVG elements. The 1.03:1 ratios reported are a measurement artifact from htmlcs incorrectly inferring the background behind SVG `<text>` elements over colored `<circle>` elements. **Accepted — no accessible information loss.**
 
