@@ -6,7 +6,7 @@ Personal website for [Htun Teza](https://htunteza.com): a Hugo site built around
 
 Previous version (Jekyll): [finerbrighterlighter.github.io](https://github.com/finerbrighterlighter/finerbrighterlighter.github.io)
 
-For full implementation details, data schemas, and template internals, use [docs/reference.md](docs/reference.md) as the canonical source.
+For full implementation details, data schemas, and template internals, use [docs/reference.md](docs/reference.md) as the canonical source. AI assistant notes: `CLAUDE.md` (Claude Code) and `COPILOT.md` (GitHub Copilot) are gitignored working files in the repo root.
 
 ---
 

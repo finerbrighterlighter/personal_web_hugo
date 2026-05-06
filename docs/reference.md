@@ -4,7 +4,8 @@ Comprehensive reference for the Hugo site at `htunteza.com`. Covers structure, c
 
 > **Other docs:**  
 > `README.md` — public-facing overview  
-> `CLAUDE.md` — Claude Code instructions (gitignored)
+> `CLAUDE.md` — Claude Code instructions (gitignored)  
+> `COPILOT.md` — GitHub Copilot working notes (gitignored)
 
 ---
 
