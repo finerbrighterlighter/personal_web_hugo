@@ -10,6 +10,9 @@ defaultContentLanguageInSubdir = false
   [languages.en.outputs]
     home = ["HTML", "llmstxt", "llmsfull"]
 
+  [languages.en.params]
+    description = "Htun Teza is a Burmese Data Scientist, Research Assistant and Dentist: currently based in Bangkok Thailand."
+
 [languages.mm]
   languageCode = "my"
   weight = 2
@@ -18,9 +21,11 @@ defaultContentLanguageInSubdir = false
   [languages.mm.outputs]
     home = ["HTML"]
 
+  [languages.mm.params]
+    description = "ထွန်းတေဇာ မြန်မာလူမျိုး ဒေတာသိပ္ပံပညာရှင်၊ သုတေသီနှင့် သွားဘက်ဆိုင်ရာဆရာဝန်တစ်ဦးဖြစ်ပြီး ထိုင်းနိုင်ငံ ဘန်ကောက်မြို့တွင် တာဝန်ထမ်းဆောင်လျက်ရှိသည်။"
+
 [params]
 author = "Htun Teza"
-description = "Htun Teza is a Burmese Data Scientist, Research Assistant and Dentist: currently based in Bangkok Thailand."
 animateStyle = "animate-fade-up"
 ogImage = "assets/general/og_image.webp"
 promptName = "hteza"
