@@ -59,7 +59,7 @@ The typed command in the nav header switches to `less paper.pdf` (typed once, he
 
 ---
 
-## Burmese Version (`/my/`)
+## Burmese Version (`/mm/`)
 
 A Burmese-language homepage lives at `htunteza.com/my/`. Hugo's multilingual mode serves it as a second language (`languageCode = "my"`, weight 2); English remains the default at `/`.
 

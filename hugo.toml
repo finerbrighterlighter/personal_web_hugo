@@ -7,7 +7,7 @@ defaultContentLanguageInSubdir = false
   weight = 1
   title = "Htun Teza"
 
-[languages.my]
+[languages.mm]
   languageCode = "my"
   weight = 2
   title = "ထွန်းတေဇာ"

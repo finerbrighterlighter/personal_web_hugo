@@ -1,5 +1,5 @@
 {{- $hp := .Site.Data.homepage -}}
-{{- if eq .Site.Language.Lang "my" -}}{{- $hp = .Site.Data.homepage_my -}}{{- end -}}
+{{- if eq .Site.Language.Lang "mm" -}}{{- $hp = .Site.Data.homepage_mm -}}{{- end -}}
 {{ $data := $hp.sidebar }}
 {{ $edu := $hp.education }}
 
@@ -10,7 +10,7 @@
     </div>
     {{ end }}
     <h2 id="author-name">
-      <a href="{{ "/about" | relURL }}">{{ $data.name }}</a>
+      <a href="{{ "/about/" | relLangURL }}">{{ $data.name }}</a>
     </h2>
     <small id="job-title">{{ $data.job_title }}</small>
 </div>

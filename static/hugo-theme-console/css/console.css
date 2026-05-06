@@ -62,6 +62,25 @@
 }
 /* "../font/NotoSansMyanmar-Bold.ttf" */
 
+/* Italic slot — same file (handwriting font has no separate italic variant) */
+@font-face {
+    font-family: "Roboto Mono";
+    src: url("../font/Thit_Sar_Shwe_Si.ttf") format("truetype");
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    unicode-range: U+1000-109F, U+AA60-AA7F, U+A9E0-A9FF;
+}
+
+@font-face {
+    font-family: "Roboto Mono";
+    src: url("../font/Thit_Sar_Shwe_Si.ttf") format("truetype");
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+    unicode-range: U+1000-109F, U+AA60-AA7F, U+A9E0-A9FF;
+}
+
 /* Myanmar characters are taller than Latin — needs more line-height to avoid clipping */
 :lang(my) {
     line-height: 2em;

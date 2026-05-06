@@ -1,7 +1,7 @@
 {{ define "main" }}
 
 {{- $hpdata := .Site.Data.homepage -}}
-{{- if eq .Site.Language.Lang "my" -}}{{- $hpdata = .Site.Data.homepage_my -}}{{- end -}}
+{{- if eq .Site.Language.Lang "mm" -}}{{- $hpdata = .Site.Data.homepage_mm -}}{{- end -}}
 {{- $enSite := .Site -}}
 {{- range .Sites -}}{{- if eq .Language.Lang "en" -}}{{- $enSite = . -}}{{- end -}}{{- end -}}
 

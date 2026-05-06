@@ -106,6 +106,10 @@ function delay(ms) {
    it falls back to a normal navigation — the user always reaches
    /about/ one way or another.
 --------------------------------------------------------------- */
+/* Language-aware about URL: /mm/about/ on the Burmese site, /about/ otherwise */
+const _langPrefix = window.location.pathname.startsWith('/mm/') ? '/mm' : '';
+const _aboutURL   = _langPrefix + '/about/';
+
 async function transitionToAbout() {
 
   const currentMain = document.querySelector('main.main-content');
@@ -114,15 +118,9 @@ async function transitionToAbout() {
   try {
 
     /* ----------------------------------------------------------
-       Step 1: Download /about/ HTML
-       ----------------------------------------------------------
-       fetch() sends a GET request to /about/ and returns the
-       full HTML response — the same bytes the browser would
-       receive during a normal navigation.
-
-       await pauses execution here until the download completes.
+       Step 1: Download the about page HTML (language-aware)
        ---------------------------------------------------------- */
-    const response = await fetch('/about/');
+    const response = await fetch(_aboutURL);
 
     if (!response.ok) throw new Error(`fetch failed: ${response.status}`);
 
@@ -187,7 +185,7 @@ async function transitionToAbout() {
          '' → title hint (ignored by almost all browsers)
          '/about/' → the URL to display
        ---------------------------------------------------------- */
-    history.pushState({}, '', '/about/');
+    history.pushState({}, '', _aboutURL);
 
 
     /* ----------------------------------------------------------
@@ -219,7 +217,7 @@ async function transitionToAbout() {
        /about/ — just without the smooth transition.
        ---------------------------------------------------------- */
     console.warn('footer_roll: smooth transition failed, falling back.', err);
-    window.location.href = '/about/';
+    window.location.href = _aboutURL;
 
   }
 }
@@ -304,7 +302,7 @@ document.querySelector('.author-link').addEventListener('click', function (e) {
               typeText(roleEl, roleText, 30, async () => {
 
                 /* Already on about page — skip transition */
-                if (window.location.pathname.startsWith('/about')) return;
+                if (window.location.pathname.startsWith(_langPrefix + '/about')) return;
 
                 /* STEP 5 — Brief pause, then load about page content */
                 await delay(600);
