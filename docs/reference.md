@@ -113,7 +113,7 @@ hugo_console/
 ├── static/
 │   ├── js/                    17 ES6 modules (loaded as type="module")
 │   ├── general/               PDFs, images, VCF, CV outputs
-│   └── hugo-theme-console/    Base theme CSS + vendor assets; `console.css` keeps Roboto Mono as the default stack and switches Burmese pages (`html:lang(my)`) to the combined handwriting family
+│   └── hugo-theme-console/    Base theme CSS + vendor assets; `console.css` keeps Roboto Mono as the default stack and applies a Burmese dual-typography model: handwriting for "filled" content, monospace for terminal/printed UI
 ├── docs/
 │   └── reference.md           This file
 ├── hugo.toml                  Main site config
@@ -343,7 +343,33 @@ Defined in `static/hugo-theme-console/css/console.css`:
 }
 ```
 
-The active Burmese font is **Thit_Sar_Shwe_Si** — a handwriting typeface intentionally informal. The `unicode-range` override shares the `"Roboto Mono"` family name — no `lang` attribute or class needed; the browser automatically picks the right font for each codepoint. A `:lang(my)` rule bumps `line-height` to prevent stacked Burmese characters from clipping.
+The active Burmese handwriting font is **Thit_Sar_Shwe_Si**. The `unicode-range` override shares the `"Roboto Mono"` family name — no `lang` attribute or class needed; the browser automatically picks the right font for each codepoint. A `:lang(my)` rule bumps `line-height` to prevent stacked Burmese characters from clipping.
+
+#### Burmese typography model (EN base + MM overrides)
+
+Design intent: **English UI is the original baseline**; Burmese UI is an intentional overwrite layer to show Burmese language while keeping the original terminal identity visible.
+
+In practice, the Burmese UI combines two visual systems:
+
+1. **"Filled by hand" (handwriting)** — user-authored content areas
+2. **"Printed terminal" (monospace)** — TUI chrome, prompts, and machine-like outputs
+
+Implemented in `static/hugo-theme-console/css/console.css` using `html:lang(my)` overrides:
+
+| Area | Typeface in Burmese mode | Key selectors |
+| --- | --- | --- |
+| Main content body (home/about/blood/posts/works content) | Handwriting | `html:lang(my)` sets `--font-stack: var(--handwriting-font-stack)` |
+| Right-side panels (all panel content, fake CLI + fake output) | Monospace | `html:lang(my) .right-panels .terminal-window`, `html:lang(my) .right-panels .terminal-window *` |
+| Top nav / prompt / logo | Monospace | `html:lang(my) .terminal-prompt`, `.terminal-nav`, `.terminal-menu`, `.terminal-menu a`, `.logo` |
+| Footer | Monospace | `html:lang(my) .footer`, `.footer a` |
+| Sidebar header chrome (`profile.sh` titlebar only) | Monospace | `html:lang(my) .sidebar .window-header`, `.sidebar .window-title` |
+| Sidebar author name + job title | Handwriting | `html:lang(my) #author-name`, `#author-name a`, `#job-title` |
+| Sidebar labels (`[mail]`, `[tel]`, decorative `$`) | Monospace | `html:lang(my) .sidebar-label`, `.sidebar-links li::after` |
+| Sidebar values/links | Handwriting | `html:lang(my) .sidebar-links a` |
+| Sidebar education block | Handwriting | `html:lang(my) .education-title a`, `.education-university a`, `.education-time` |
+| Last track status (`#lasttrack`) and API error text | Monospace | `.lasttrack`, `.api-error` use `var(--mono-font-stack)` |
+
+Maintenance rule: treat EN as source-of-truth defaults and add the smallest possible `html:lang(my)` overrides. For new UI in Burmese mode, classify it first as **filled content** (handwriting) or **printed/system output** (monospace), then scope selectors under the existing MM override block without changing global EN defaults.
 
 NotoSansMyanmar-Regular/Bold exist in `static/hugo-theme-console/font/` as committed fallbacks but are not currently active in the CSS.
 

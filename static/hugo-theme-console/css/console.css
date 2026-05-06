@@ -125,6 +125,39 @@ html:lang(my) {
     word-spacing: 0.05em;
 }
 
+/* Burmese pages: keep TUI chrome in monospace for terminal feel.
+   Panels are forced to mono end-to-end (fake CLI + fake output). */
+html:lang(my) .terminal-prompt,
+html:lang(my) .terminal-nav,
+html:lang(my) .terminal-menu,
+html:lang(my) .terminal-menu a,
+html:lang(my) .logo,
+html:lang(my) .right-panels .terminal-window,
+html:lang(my) .right-panels .terminal-window *,
+html:lang(my) .sidebar .window-header,
+html:lang(my) .sidebar .window-title,
+html:lang(my) .footer,
+html:lang(my) .footer a {
+    font-family: var(--mono-font-stack);
+}
+
+/* Burmese sidebar typography split:
+   name/title + values + education = handwriting, labels = monospace. */
+html:lang(my) #author-name,
+html:lang(my) #author-name a,
+html:lang(my) #job-title,
+html:lang(my) .sidebar-links a,
+html:lang(my) .education-title a,
+html:lang(my) .education-university a,
+html:lang(my) .education-time {
+    font-family: var(--handwriting-font-stack);
+}
+
+html:lang(my) .sidebar-label,
+html:lang(my) .sidebar-links li::after {
+    font-family: var(--mono-font-stack);
+}
+
 /* ============================= */
 /* ROOT VARIABLES */
 /* ============================= */
@@ -790,6 +823,7 @@ p.social a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    font-family: var(--mono-font-stack);
     width: 1.9rem;
     height: 1.3rem;
     border-radius: 3px;
@@ -831,8 +865,8 @@ p.social a {
 }
 
 .lang-badge {
-    font-family: var(--font-stack);
-    font-size: var(--font-xs);
+    font-family: var(--mono-font-stack);
+    font-size: var(--global-font-size);
     font-weight: bold;
     color: var(--primary-color);
     letter-spacing: 0.03em;
@@ -1120,7 +1154,7 @@ p.social a {
 }
 
 .lasttrack {
-    font-family: var(--font-stack);
+    font-family: var(--mono-font-stack);
     font-size: var(--font-base);
     background-color: var(--background-color);
     display: inline-flex;
@@ -1621,7 +1655,7 @@ header.terminal-logo {
 
 .api-error {
     color: var(--error-color);
-    font-family: var(--font-stack);
+    font-family: var(--mono-font-stack);
     font-size: var(--font-base);
     animation: textBlink 1s step-end infinite;
 }

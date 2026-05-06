@@ -86,6 +86,12 @@ Intentionally English areas:
 
 - Works and posts content collections
 
+Design philosophy for Burmese mode:
+
+- English is the original/base UI.
+- Burmese is an override layer on top of that base (not a separate redesign).
+- Keep terminal identity intact in Burmese pages; only overwrite what is needed for language and "filled-by-hand" tone.
+
 Important nav behavior:
 
 - Links should be language-aware only when a page exists in current language.
@@ -119,6 +125,12 @@ Current active fonts are intentionally minimal:
 - Thit_Sar_Shwe_Si for Myanmar script on Burmese pages
 
 The Burmese switch is applied at page level via html:lang(my) in [static/hugo-theme-console/css/console.css](static/hugo-theme-console/css/console.css).
+
+Typography intent in Burmese mode:
+
+- Main content reads like handwritten notes/forms (handwriting stack).
+- Printed/system UI remains monospace (nav, prompts, panel chrome and outputs, footer controls).
+- Sidebar is mixed by role: labels are printed (monospace), values look filled in (handwriting).
 
 ---
 
