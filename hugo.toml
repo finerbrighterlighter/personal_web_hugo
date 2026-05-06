@@ -1,6 +1,16 @@
 baseURL = "https://htunteza.com"
-languageCode = "en-us"
-title = "Htun Teza"
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = false
+
+[languages.en]
+  languageCode = "en-us"
+  weight = 1
+  title = "Htun Teza"
+
+[languages.my]
+  languageCode = "my"
+  weight = 2
+  title = "ထွန်းတေဇာ"
 
 [params]
 author = "Htun Teza"

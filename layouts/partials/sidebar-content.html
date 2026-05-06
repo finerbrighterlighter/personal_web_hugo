@@ -1,5 +1,7 @@
-{{ $data := .Site.Data.homepage.sidebar }}
-{{ $edu := .Site.Data.homepage.education }}
+{{- $hp := .Site.Data.homepage -}}
+{{- if eq .Site.Language.Lang "my" -}}{{- $hp = .Site.Data.homepage_my -}}{{- end -}}
+{{ $data := $hp.sidebar }}
+{{ $edu := $hp.education }}
 
 <div class="profile-header">
     {{ with $data.avatar }}

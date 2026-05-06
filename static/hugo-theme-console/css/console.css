@@ -1,12 +1,13 @@
 /* ============================= */
 /* FONTS */
 /* ============================= */
-
+/* --- Roboto Mono (Latin/English) --- */
 @font-face {
     font-family: "Roboto Mono";
     src: url("../font/RobotoMono-Regular.ttf") format("truetype");
     font-style: normal;
     font-weight: 400;
+    font-display: swap;
     text-rendering: optimizeLegibility;
 }
 
@@ -15,6 +16,7 @@
     src: url("../font/RobotoMono-Italic.ttf") format("truetype");
     font-style: italic;
     font-weight: 400;
+    font-display: swap;
     text-rendering: optimizeLegibility;
 }
 
@@ -23,6 +25,7 @@
     src: url("../font/RobotoMono-Bold.ttf") format("truetype");
     font-style: normal;
     font-weight: 700;
+    font-display: swap;
     text-rendering: optimizeLegibility;
 }
 
@@ -31,7 +34,35 @@
     src: url("../font/RobotoMono-BoldItalic.ttf") format("truetype");
     font-style: italic;
     font-weight: 700;
+    font-display: swap;
     text-rendering: optimizeLegibility;
+}
+
+/* --- Noto Sans Myanmar (Burmese Script) --- */
+@font-face {
+    font-family: "Roboto Mono";
+    src: url("../font/NotoSansMyanmar-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    /* Ranges: Myanmar, Myanmar Extended-A, Myanmar Extended-B */
+    unicode-range: U+1000-109F, U+AA60-AA7F, U+A9E0-A9FF;
+}
+
+@font-face {
+    font-family: "Roboto Mono";
+    src: url("../font/NotoSansMyanmar-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    /* Ranges: Myanmar, Myanmar Extended-A, Myanmar Extended-B */
+    unicode-range: U+1000-109F, U+AA60-AA7F, U+A9E0-A9FF;
+}
+
+/* Myanmar characters are taller than Latin — needs more line-height to avoid clipping */
+:lang(my) {
+    line-height: 2em;
+    word-spacing: 0.05em;
 }
 
 /* ============================= */
@@ -41,9 +72,8 @@
 :root {
     --global-font-size: 0.8rem;
     --global-font-color: #444;
-    --font-stack: Roboto Mono, Menlo, Monaco, Lucida Console, Liberation Mono,
-        DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace,
-        serif;
+    --font-stack: "Roboto Mono", Menlo, Monaco, Lucida Console, Liberation Mono, 
+              "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace;
     --mono-font-stack: var(--font-stack); /* alias — terminal-0.7.4.min.css uses this for code/pre */
     --global-line-height: 1.6em;
     --page-width: 95%;

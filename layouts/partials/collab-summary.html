@@ -1,3 +1,5 @@
+{{- $enSite := site -}}
+{{- range site.Sites -}}{{- if eq .Language.Lang "en" -}}{{- $enSite = . -}}{{- end -}}{{- end -}}
 {{- $rm := dict -}}
 {{- range site.Data.researchers -}}
   {{- $rm = merge $rm (dict .id .) -}}
@@ -14,7 +16,7 @@
 {{- $countMap := dict -}}
 {{- $seenPairs := slice -}}
 
-{{- range where site.RegularPages "Section" "works" -}}
+{{- range where $enSite.RegularPages "Section" "works" -}}
   {{- range .Params.authors -}}
     {{- with .id -}}
       {{- $person := index $rm . -}}
@@ -71,22 +73,57 @@
 {{- $names := slice -}}
 {{- range $sorted -}}{{- $names = $names | append .name -}}{{- end -}}
 
+{{/* Translate country names when rendering in Burmese */}}
+{{- $expandMy := dict
+    "Thailand"            "ထိုင်းနိုင်ငံ"
+    "Australia"           "သြစတြေးလျနိုင်ငံ"
+    "Myanmar"             "မြန်မာနိုင်ငံ"
+    "the United Kingdom"  "ဗြိတိန်နိုင်ငံ"
+    "the United States"   "အမေရိကန်ပြည်ထောင်စု"
+    "the United Arab Emirates" "အာရပ်စော်ဘွားများပြည်ထောင်စု"
+-}}
+{{- if eq site.Language.Lang "my" -}}
+  {{- $translated := slice -}}
+  {{- range $names -}}
+    {{- $t := . -}}
+    {{- with index $expandMy . -}}{{- $t = . -}}{{- end -}}
+    {{- $translated = $translated | append $t -}}
+  {{- end -}}
+  {{- $names = $translated -}}
+{{- end -}}
+
 {{- $n := len $names -}}
 {{- $countryStr := "" -}}
+{{- $and := i18n "country_and" -}}
+{{- $sep := i18n "country_sep" -}}
 {{- if eq $n 1 -}}
   {{- $countryStr = index $names 0 -}}
 {{- else if eq $n 2 -}}
-  {{- $countryStr = printf "%s and %s" (index $names 0) (index $names 1) -}}
+  {{- $countryStr = printf "%s %s %s" (index $names 0) $and (index $names 1) -}}
 {{- else -}}
   {{- range $i, $c := $names -}}
     {{- if eq $i (sub $n 1) -}}
-      {{- $countryStr = printf "%sand %s" $countryStr $c -}}
+      {{- $countryStr = printf "%s%s %s" $countryStr $and $c -}}
     {{- else -}}
-      {{- $countryStr = printf "%s%s, " $countryStr $c -}}
+      {{- $countryStr = printf "%s%s%s" $countryStr $c $sep -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
 
-{{- if and $collabN $instN $countryStr -}}
-To date, this has grown into collaboration with <strong>{{ $collabN }} researchers</strong> across <strong>{{ $instN }} institutions</strong> in {{ $countryStr }}.
+{{- /* Initialize as strings to ensure replace works */ -}}
+{{- $collabNStr := printf "%d" (int $collabN) -}}
+{{- $instNStr  := printf "%d" (int $instN) -}}
+
+{{- if eq site.Language.Lang "my" -}}
+    {{- $en := slice "0" "1" "2" "3" "4" "5" "6" "7" "8" "9" -}}
+    {{- $my := slice "၀" "၁" "၂" "၃" "၄" "၅" "၆" "၇" "၈" "၉" -}}
+    {{- range $i, $e := $en -}}
+        {{- $collabNStr = replace $collabNStr $e (index $my $i) -}}
+        {{- $instNStr  = replace $instNStr  $e (index $my $i) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- /* Use 'isset' or check against nil if 0 is a valid value you want to display */ -}}
+{{- if and (ne $collabN nil) (ne $instN nil) $countryStr -}}
+    {{ i18n "collab_sentence" (dict "collabN" $collabNStr "instN" $instNStr "countryStr" $countryStr) | safeHTML }}
 {{- end -}}

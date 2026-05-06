@@ -18,4 +18,6 @@ __pycache__/
 
 # LLM / Claude
 CLAUDE.md
+COPILOT.md
 .claude/
+.vscode/extensions.json

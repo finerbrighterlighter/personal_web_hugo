@@ -1,0 +1,7 @@
+recent_works: "Recent Works"
+latest_posts: "Latest posts"
+all_works: "→ all works"
+show_more: "show more"
+collab_sentence: "To date, this has grown into collaboration with <strong>{{ .collabN }} researchers</strong> across <strong>{{ .instN }} institutions</strong> in {{ .countryStr }}."
+country_and: "and"
+country_sep: ", "

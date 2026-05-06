@@ -1,0 +1,7 @@
+recent_works: "နောက်ဆုံးထွက် သုတေသန စာတမ်းများ"
+latest_posts: "နောက်ဆုံးရ မှတ်စုများ"
+all_works: "→ အားလုံးကြည့်ရန်"
+show_more: "ထပ်ကြည့်ရန်"
+collab_sentence: "ယနေ့အထိ ဤလုပ်ငန်းသည် {{ .countryStr }} ရှိ <strong> အဖွဲ့အစည်း {{ .instN }} ခု </strong>မှ <strong>{{ .collabN }} ဦး</strong> သော သုတေသနပညာရှင်များနှင့် ပူးပေါင်းဆောင်ရွက်လျက်ရှိပါသည်။"
+country_and: "နှင့်"
+country_sep: "၊ "

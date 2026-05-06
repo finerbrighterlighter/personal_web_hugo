@@ -1,6 +1,11 @@
 {{ define "main" }}
 
-{{- with .Site.Data.homepage.career_profile -}}
+{{- $hpdata := .Site.Data.homepage -}}
+{{- if eq .Site.Language.Lang "my" -}}{{- $hpdata = .Site.Data.homepage_my -}}{{- end -}}
+{{- $enSite := .Site -}}
+{{- range .Sites -}}{{- if eq .Language.Lang "en" -}}{{- $enSite = . -}}{{- end -}}{{- end -}}
+
+{{- with $hpdata.career_profile -}}
 <!-- <h1>{{ .title }}</h1> -->
 <h2 class="category-header">{{ .title }}</h2>
 <div class="profile-details">
@@ -13,9 +18,9 @@
 <br/>
 
 <!-- <h1>Recent Works</h1> -->
-<h2 class="category-header">Recent Works</h2>
+<h2 class="category-header">{{ i18n "recent_works" }}</h2>
 <div class="posts-list">
-  {{ $papers := where site.RegularPages "Section" "works" }}
+  {{ $papers := where $enSite.RegularPages "Section" "works" }}
   {{ $cutoff := now.AddDate -1 0 0 }}
   {{ $rm := partial "researcher-map.html" . }}
 
@@ -74,7 +79,7 @@
 
         <small class="sources">
           {{ with .Params.scholar }}
-            [<a href="https://scholar.google.com/citations?view_op=view_citation&citation_for_view={{ $.Site.Data.homepage.sidebar.scholar_profile }}:{{ . }}" target="_blank">scholar</a>]
+            [<a href="https://scholar.google.com/citations?view_op=view_citation&citation_for_view={{ $hpdata.sidebar.scholar_profile }}:{{ . }}" target="_blank">scholar</a>]
           {{ end }}
 
           {{ range .Params.sources }}
@@ -96,11 +101,11 @@
   {{ end }}
 
 </div>
-<p><a class="more-link" href="/works/">→ all works</a></p>
+<p><a class="more-link" href="/works/">{{ i18n "all_works" }}</a></p>
 
 <br/>
 
-{{ with .Site.Data.homepage.experiences }}
+{{ with $hpdata.experiences }}
 <!-- <h1>{{ .title }}</h1> -->
 <h2 class="category-header">{{ .title }}</h2>
 {{ range first 2 .info }}
@@ -122,7 +127,7 @@
 {{ end }}
 
 <details class="experience-collapse">
-<summary>show more</summary>
+<summary>{{ i18n "show_more" }}</summary>
 
 {{ range after 2 .info }}
 <div class="experience">
@@ -148,7 +153,7 @@
 
 <br/>
 
-{{ with .Site.Data.homepage.projects }}
+{{ with $hpdata.projects }}
 
 <!-- <h1>{{ .title }}</h1> -->
 <h2 class="category-header">{{ .title }}</h2>
@@ -172,7 +177,7 @@
 {{ end }}
 
 <details class="project-collapse">
-<summary>show more</summary>
+<summary>{{ i18n "show_more" }}</summary>
 
 {{ range after 2 .assignments }}
 <div class="project">
@@ -199,9 +204,9 @@
 
 <br/>
 
-<h2 class="category-header">Latest posts</h2>
+<h2 class="category-header">{{ i18n "latest_posts" }}</h2>
 <div class="posts-list">
-{{ with .Site.GetPage "/posts" }}
+{{ with $enSite.GetPage "/posts" }}
   {{/* 1. Filter RegularPages only to exclude _index.md */}}
   {{/* 2. Use 'ne' for robust boolean filtering */}}
   {{ $posts := where .RegularPages "Params.private" "ne" true }}
