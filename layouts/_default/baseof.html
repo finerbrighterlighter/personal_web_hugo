@@ -38,7 +38,12 @@
               <a href="{{ "/" | relLangURL }}" class="no-style {{ with .Site.Params.TitleCutting }}site-name{{ end }}">
                 {{ .Site.Params.promptName }}@{{ $host -}}
               </a> :~{{- $parts := slice -}}
-              {{- range (split .RelPermalink "/") -}}
+              {{- $crumbPath := .RelPermalink -}}
+              {{- $langPrefix := printf "/%s/" .Site.Language.Lang -}}
+              {{- if hasPrefix .RelPermalink $langPrefix -}}
+                {{- $crumbPath = printf "/%s" (strings.TrimPrefix $langPrefix .RelPermalink) -}}
+              {{- end -}}
+              {{- range (split $crumbPath "/") -}}
                 {{- if ne . "" -}}{{- $parts = $parts | append . -}}{{- end -}}
               {{- end -}}
               {{- $lastIdx := sub (len $parts) 1 -}}
