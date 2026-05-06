@@ -864,6 +864,35 @@ All files in `static/js/`, loaded as `type="module"` in `partials/scripts.html`.
 | `research.js` | `MAX_BAR` | `10` | Bar width in segments; 1 segment = 10% of all works; fractional remainder sets opacity of last filled segment |
 | `work-bibtex.js` | `FETCH_DONE_DELAY` | `1200` | ms the `[OK]` status line is held before being replaced by formatted citation content |
 
+### 6.1b Cache system (`cache.js` + `cache-expires.js`)
+
+Most API panels share one localStorage TTL helper in `static/js/cache.js`.
+
+**Storage model (`cache.js`):**
+
+- `setCache(key, data)` writes `{"data": <payload>, "ts": <unix-ms>}` to localStorage.
+- `getCache(key)` returns `data` when fresh; returns `null` when missing, expired, or malformed.
+- TTL is global per page load: `(window.CONFIG.cacheTTLMinutes ?? 60) * 60 * 1000`.
+- Expired entries are deleted lazily on read (`localStorage.removeItem(key)`).
+
+**Key conventions currently used:**
+
+| Key pattern | Producer(s) | Notes |
+| --- | --- | --- |
+| `openalex-author-data` | `openalex.js` | Author summary + works payload |
+| `openalex-work-<doi>` | `work-citation.js` | Citation count on work single page |
+| `bibtex-<doi>` | `work-bibtex.js` | Raw doi.org BibTeX response |
+| `lastfm-<method>-<limit>` | `lastFM.js` | Cached for `user.gettopalbums`; recent-track endpoint skips cache |
+| `anilist-<username>-<media>-<limit>` | `anilist.js` | Manga list response payload |
+| `trakt-<username>-<limit>` | `trakt.js` | Processed watch-history list with TMDB image URLs |
+| `unsplash-<username>-<limit>` | `unsplash.js` | Reduced photo metadata used for rendering |
+
+**Privacy panel integration (`cache-expires.js`):**
+
+- The `[expires]` line scans localStorage for entries with numeric `ts` and shows the soonest remaining TTL.
+- `clear now` and `do not click` both call `localStorage.clear()` and reload after `FLUSH_RELOAD_DELAY` (400ms).
+- Flush is global to localStorage, not scoped to cache keys only.
+
 ### 6.2 `work-bibtex.js` — CITE panel
 
 Activated on any work single page that has a `data-doi` attribute on the `<article>` element. The bare DOI (e.g. `10.1016/j.jclinepi.2024.111234`) is extracted by the Hugo template from the first source URL containing `doi.org/`.
@@ -1059,7 +1088,7 @@ const graphDisplayYears = 5;             // Years shown in the bar chart
 1. `GET https://api.openalex.org/authors/A5065083669` — author summary (h-index, i10, cited_by_count, counts_by_year)
 2. `GET https://api.openalex.org/works?filter=author.id:A5065083669&per_page=200` — full works list
 
-**Cache:** Manual TTL pattern (not using `cache.js`). Key: `openalex-author-data`. TTL from `window.CONFIG.cacheTTLMinutes`.
+**Cache:** Uses shared helpers from `cache.js` (`getCache` / `setCache`). Key: `openalex-author-data`; TTL comes from `window.CONFIG.cacheTTLMinutes` via the cache helper.
 
 **Metrics computed:**
 
