@@ -8,13 +8,15 @@
 
 | Page | URL | Errors | Status |
 | --- | --- | --- | --- |
-| Home | `/` | 0 | ✓ Clean |
+| Home | `/` | 4 | ⚠ SVG only |
 | Posts list | `/posts/` | 0 | ✓ Clean |
-| About | `/about/` | 0 | ✓ Clean |
+| About | `/about/` | 4 | ⚠ SVG only |
 | Works list | `/works/` | 0 | ✓ Clean |
 | Work (single) | `/works/journal/2023_transitions_from_hypertension_to_cvd_outcomes/` | 0 | ✓ Clean |
 | Post (single) | `/posts/260417-phd-journal-club/` | 4 | ⚠ SVG only |
 | Blood | `/blood/` | 4 | ⚠ SVG only |
+
+**Note on consistency:** The `#oa-svg` panel is rendered by `openalex.js` via an async API call — pa11y catches it only if the fetch completes within the `--wait` window. Results are run with `--wait 3000`. Pages that still show 0 errors (posts list, works list, work single) likely had the panel still fetching when the 3 s elapsed; this is a timing artifact, not a real difference in accessibility.
 
 ## Remaining finding — SVG chart (`#oa-svg`)
 
@@ -47,13 +49,13 @@ export PATH="/home/finer/.config/nvm/versions/node/v25.9.0/bin:$PATH"
 BASE=http://localhost:1313
 OUT=docs/pa11y
 
-pa11y --reporter csv "$BASE/"                                                         > "$OUT/index.csv"
-pa11y --reporter csv "$BASE/about/"                                                   > "$OUT/about.csv"
-pa11y --reporter csv "$BASE/works/"                                                   > "$OUT/works.csv"
-pa11y --reporter csv "$BASE/works/journal/2023_transitions_from_hypertension_to_cvd_outcomes/" > "$OUT/work_single.csv"
-pa11y --reporter csv "$BASE/posts/"                                                   > "$OUT/posts.csv"
-pa11y --reporter csv "$BASE/posts/260417-phd-journal-club/"                           > "$OUT/post_single.csv"
-pa11y --reporter csv "$BASE/blood/"                                                   > "$OUT/blood.csv"
+pa11y --wait 3000 --reporter csv "$BASE/"                                                         > "$OUT/index.csv"
+pa11y --wait 3000 --reporter csv "$BASE/about/"                                                   > "$OUT/about.csv"
+pa11y --wait 3000 --reporter csv "$BASE/works/"                                                   > "$OUT/works.csv"
+pa11y --wait 3000 --reporter csv "$BASE/works/journal/2023_transitions_from_hypertension_to_cvd_outcomes/" > "$OUT/work_single.csv"
+pa11y --wait 3000 --reporter csv "$BASE/posts/"                                                   > "$OUT/posts.csv"
+pa11y --wait 3000 --reporter csv "$BASE/posts/260417-phd-journal-club/"                           > "$OUT/post_single.csv"
+pa11y --wait 3000 --reporter csv "$BASE/blood/"                                                   > "$OUT/blood.csv"
 ```
 
 Update the date and work/post slugs as needed when re-running.
