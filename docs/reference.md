@@ -759,7 +759,7 @@ Scripts loaded at bottom of `<body>` via `partials/scripts.html`, followed by `{
 | `panel-privacy.html` | `baseof.html` | GoatCounter disclosure + cache flush controls |
 | `collab-summary.html` | `index.html` (inside `career_profile` para2) | Computes collab count, institution count, and country list in one pass; outputs bare inline sentence (no `<p>` wrapper) |
 | `researcher-map.html` | `work.html`, `works.html`, `index.html`, shortcodes | Returns `dict` keyed by researcher id; call with `partial "researcher-map.html" .` |
-| `footer.html` | `baseof.html` | Footer links (Hugo, Theme, Source, Me, CC BY license badge, language switcher); each item wrapped in `<span>` so `.footer` flex layout distributes them evenly (`justify-content: space-evenly`); CC badge uses two separate icons `cc.svg` + `by.svg` in `static/images/icons/`; `[Me]` click intercepted by `footer_roll.js` for the whoami animation; language switcher shows `MM` (on EN pages) or `EN` (on Burmese pages) as a bold text badge (`.lang-badge`, `var(--primary-color)`); if no translation exists for the current page, button gets `.is-unavailable` styling (crossed-out circle via pseudo-elements using `var(--error-color)`) |
+| `footer.html` | `baseof.html` | Footer links (Hugo, Theme, Source, Me, CC BY license badge, language switcher); each item wrapped in `<span>` so `.footer` flex layout distributes them evenly (`justify-content: space-evenly`); CC badge uses two separate icons `cc.svg` + `by.svg` in `static/images/icons/`; `[Me]` click intercepted by `footer_roll.js` for the whoami animation; language switcher shows `Bur` (on EN pages) or `Eng` (on Burmese pages) as a text badge (`.lang-badge`, `var(--primary-color)`); if no translation exists for the current page, button gets `.is-unavailable` styling (crossed-out circle via pseudo-elements using `var(--error-color)`) |
 | `scripts.html` | `baseof.html` | `<script type="module">` tags for all JS modules; followed by `{{ block "scripts-extra" }}` for page-specific additions |
 | `works-filter-group.html` | `works.html` | Renders one filter group (condition/datasource/method) |
 
@@ -809,7 +809,7 @@ All files in `static/js/`, loaded as `type="module"` in `partials/scripts.html`.
 | `footer_roll.js` | — | `.author-link`, `#avatar`, `.avatar-wrapper`, `#author-name`, `#job-title`, `main.main-content` | — | — | Click `[Me]` → whoami animation + avatar scan → fetch `/about/` and inject content via `innerHTML` swap + `history.pushState`; back button via `popstate` reload |
 | `works_filter.js` | — | `#works-filters`, `.post`, `#works-count`, `#works-search` | `window.location` | — | URL-synced filter state; hides empty year/category groups |
 | `research.js` | — | `#research-cloud` | `window.__researchTags`, `window.__worksCount` | — | Sorted `cli-table`: tag name (linked), 10-segment block bar (% of all works), count; tooltip shows "X of Y works"; limit from `window.CONFIG.researchTagLimit` |
-| `openalex.js` | `cache.js` | `#openalex-metrics` | OpenAlex API | `openalex-author-data` | SVG bar chart; re-renders on `theme-changed` event; hardcoded author ID |
+| `openalex.js` | `cache.js` | `#openalex-metrics` | OpenAlex API | `openalex-author-data` | HTML/CSS bar chart (no SVG); re-renders on `theme-changed` event; hardcoded author ID |
 | `work-citation.js` | `cache.js` | `article[data-doi]`, `#work-cite-count` | OpenAlex API | `openalex-work-<doi>` | Work pages only; citation count linked to citing-papers list |
 | `work-bibtex.js` | `cache.js` | `article[data-doi]`, `#bibtex-btn` | doi.org (content negotiation) | `bibtex-<doi>` | Work pages only; CITE button opens `fetch.sh` terminal panel; prompt line shows `$ pub-get --ref --format=<fmt>` (updates on format change). On open: CLI-style status sequence in content area — `[INFO] Searching local cache...`; if miss adds `[INFO] Not found. Requesting metadata from doi.org...`; on success adds `[OK] Key identified: <key>`; after `FETCH_DONE_DELAY` (1200ms) replaced by formatted content; `[ERR]` on failure. Format selector (bibtex/nlm/apa/ama); Copy; BIB download; RIS download; collapse via `collapse_windows.js`, EXIT closes fully. BibTeX display: prettified (one field per line, aligned keys, preferred field order), syntax-highlighted (keys in primary, punctuation in secondary), Courier New at `--font-sm`; Copy and BIB download use raw doi.org response. NLM: all authors listed. AMA: ≤6 authors in full; >6 → first 3 + et al. |
 | `duck.js` | — | `.avatar-wrapper` | — | — | Avatar easter egg: click reveals `duck_mascot.png` with `duckGlitch` CSS animation (0.6s hue-rotate + jitter), crossfades back over 1.5s. Three `quack` spans cycle mid→right→left on successive clicks — active span flickers bright then dims to 0.25 opacity; all fade back to 0 and cycle resets 1500ms after the last click. |
@@ -996,7 +996,7 @@ filters = {
 | `theme-palette-dark` | palette id (e.g. `"nord"`) | Dark mode palette |
 | `theme-palette-light` | palette id (e.g. `"nord"`) | Light mode palette |
 
-**Events:** Emits `CustomEvent("theme-changed")` on `document` whenever mode or palette changes. `openalex.js` listens to re-render the SVG chart with new CSS color values.
+**Events:** Emits `CustomEvent("theme-changed")` on `document` whenever mode or palette changes. `openalex.js` listens to re-render the OpenAlex chart with new CSS color values.
 
 **Duck toggle:** When the active palette id is `"duck"`, `updateEmoji()` replaces the ○/● text with `<img src="/favicon-32x32.png">` sized to `1.1rem`. Grayscale filter applied in light mode (`filter: grayscale(100%)`); full colour in dark mode.
 
@@ -1070,7 +1070,7 @@ const graphDisplayYears = 5;             // Years shown in the bar chart
 | h-index | `summary_stats.h_index` | Recalculated from filtered works |
 | i10-index | `summary_stats.i10_index` | Works with ≥10 citations in window |
 
-**Chart:** SVG bar chart, 450×150px viewBox. Bar heights proportional to max publications in the display window. Colors read from CSS custom properties at render time — re-renders on `theme-changed` to pick up new palette. Tooltip shows year + works count on hover, flips to left side when near right edge.
+**Chart:** HTML/CSS bar chart rendered directly into the panel (no SVG). Bar heights are proportional to max publications in the display window. Colors read from CSS custom properties at render time and re-render on `theme-changed` to pick up palette changes. Tooltip shows year + works count on hover.
 
 ---
 
@@ -1322,15 +1322,15 @@ Links embedded in paragraph text on the about page are intentionally subtle — 
 
 Full audit results are in `docs/pa11y/` (CSV per page + `README.md` summary). Re-run with `bash docs/pa11y/run_audit.sh` (Hugo dev server must be running).
 
-**Important:** always use `--wait 10000` (10 seconds). The `#oa-svg` panel is rendered async by `openalex.js` after a live API fetch — shorter waits produce inconsistent results where pages look clean simply because the fetch hadn't returned yet.
+**Important:** always use `--wait 10000` (10 seconds). OpenAlex metrics render async via `openalex.js`; shorter waits can produce inconsistent results where pages appear clean before async content loads.
 
-**Current state (2026-05-06, pa11y 9.1.1, `--wait 10000`):**
+**Current state (2026-05-07, pa11y 9.1.1, `--wait 10000`):**
 
 | Page | Result |
 | --- | --- |
-| All 7 pages | ⚠ SVG only (4 errors each) |
+| All 7 pages | ✅ 0 errors |
 
-**Only remaining finding — OpenAlex SVG chart (`#oa-svg`):** htmlcs flags 4 color-contrast errors on axis labels inside the SVG. The SVG carries `aria-hidden="true"` and all its data is in the `<table>` above. axe-core (the other pa11y checker) does not flag these because it respects `aria-hidden`. htmlcs does not — this is a known htmlcs limitation with SVG elements. The 1.03:1 ratios reported are a measurement artifact from htmlcs incorrectly inferring the background behind SVG `<text>` elements over colored `<circle>` elements. **Accepted — no accessible information loss.**
+The previous OpenAlex SVG contrast finding was eliminated by replacing the SVG chart with an HTML/CSS bar chart.
 
 **Previously fixed and cleared:**
 
@@ -1339,5 +1339,6 @@ Full audit results are in `docs/pa11y/` (CSV per page + `README.md` summary). Re
 | `.uni-country` contrast | `aria-hidden="true"` — decorative label |
 | Research bar `█░` chars | `aria-hidden="true"` on bar `<td>` |
 | OpenAlex footer `color:#aaa` | → `color:var(--secondary-color)` |
+| OpenAlex SVG contrast false positives | Replaced SVG chart with HTML/CSS bars |
 | Filter button `.active` contrast | False positive — chained CSS custom properties confuse htmlcs/axe; real ratios ~5.5:1 (light) / ~11:1 (dark) |
 | Prose link underlines (`/about/`) | Accepted — intentional design; links are easter eggs |
