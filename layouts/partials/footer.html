@@ -9,12 +9,12 @@
 {{- end -}}
 
 {{- $langTarget := $burmesePage -}}
-{{- $langButtonClass := "myanmar-flag" -}}
+{{- $langText := "MM" -}}
 {{- $langLabel := "Open Burmese version" -}}
 {{- $missingLabel := "No Burmese version for this page" -}}
 {{- if eq .Site.Language.Lang "mm" -}}
   {{- $langTarget = $englishPage -}}
-  {{- $langButtonClass = "uk-flag" -}}
+  {{- $langText = "EN" -}}
   {{- $langLabel = "Open English version" -}}
   {{- $missingLabel = "No English version for this page" -}}
 {{- end -}}
@@ -27,11 +27,11 @@
     [
     {{- if $langTarget -}}
       <a href="{{ $langTarget.RelPermalink }}" class="footer-lang-button" aria-label="{{ $langLabel }}" title="{{ $langLabel }}">
-        <span class="{{ $langButtonClass }}" aria-hidden="true"></span>
+        <span class="lang-badge" aria-hidden="true">{{ $langText }}</span>
       </a>
     {{- else -}}
       <span class="footer-lang-button is-unavailable" aria-label="{{ $missingLabel }}" title="{{ $missingLabel }}">
-        <span class="{{ $langButtonClass }}" aria-hidden="true"></span>
+        <span class="lang-badge" aria-hidden="true">{{ $langText }}</span>
       </span>
     {{- end -}}
     ]
