@@ -126,80 +126,43 @@ function processData(author, works, cutoffYear) {
 }
 
 /* ---------------------------- */
-/* RENDER SVG CHART             */
+/* RENDER HTML CHART            */
 /* ---------------------------- */
 
-function renderChartSVG(timeline) {
+function renderChartHTML(timeline) {
 
-  const width    = 450;
-  const height   = 150;
-  const paddingX = 44;
-  const paddingY = 30;
-
-  /* Read theme colors from CSS custom properties */
-
-  const css = getComputedStyle(document.documentElement);
-  const primary    = css.getPropertyValue("--primary-color").trim();
-  const secondary  = css.getPropertyValue("--secondary-color").trim();
-  const invertFont = css.getPropertyValue("--invert-font-color").trim();
-  const codeBg     = css.getPropertyValue("--code-bg-color").trim();
-
-  /* Scale constants */
-
-  const maxPubs         = Math.max(...timeline.map(d => d.pubs), 1);
-  const availableHeight = height - paddingY * 2;
-  const barWidth        = (width - paddingX * 2) / timeline.length;
-
-  /* Linear bar height — proportional to max, anchored at 0 */
-
-  const getBarH = (val) => {
-    if (val === 0) return 0;
-    return (val / maxPubs) * availableHeight;
-  };
+  const maxPubs = Math.max(...timeline.map(d => d.pubs), 1);
 
   return `
-<svg viewBox="0 0 ${width} ${height}"
-     id="oa-svg"
-     aria-hidden="true"
-     style="width:100%; height:auto; font-family:monospace; overflow:visible; background:${codeBg}; border:0.1px dashed ${secondary}; margin-top:0.5rem;">
+<div class="oa-chart" aria-hidden="true">
+  <div class="oa-chart-main">
 
-  <!-- LEFT AXIS: top marker -->
-  <circle cx="18" cy="${paddingY}" r="10" fill="${primary}" />
-  <text x="18" y="${paddingY + 4}" font-size="11" font-weight="bold"
-        fill="${invertFont}" text-anchor="middle">${maxPubs}</text>
+    <div class="oa-axis">
+      <span class="oa-axis-badge">${maxPubs}</span>
+      <span class="oa-axis-spine" aria-hidden="true"></span>
+      <span class="oa-axis-badge">0</span>
+      <span class="oa-axis-year-gap" aria-hidden="true"></span>
+    </div>
 
-  <!-- LEFT AXIS: bottom marker -->
-  <circle cx="18" cy="${height - paddingY}" r="10" fill="${primary}" />
-  <text x="18" y="${height - paddingY + 4}" font-size="11" font-weight="bold"
-        fill="${invertFont}" text-anchor="middle">0</text>
+    <div class="oa-bars" style="--oa-cols:${timeline.length};">
+      ${timeline.map((d) => {
+        const pct = d.pubs === 0 ? 0 : (d.pubs / maxPubs) * 100;
+        const h = d.pubs === 0 ? 0 : Math.max(pct, 2);
+        return `
+          <div class="oa-bar-col">
+            <div class="oa-bar-slot">
+              <div class="oa-bar"
+                   data-year="${d.year}"
+                   data-pubs="${d.pubs}"
+                   style="height:${h}%;"></div>
+            </div>
+            <div class="oa-year">${d.year}</div>
+          </div>`;
+      }).join("")}
+    </div>
 
-  <!-- LEFT AXIS: spine -->
-  <line x1="${paddingX - 5}" y1="${paddingY}"
-        x2="${paddingX - 5}" y2="${height - paddingY}"
-        stroke="${secondary}" stroke-opacity="0.4" />
-
-  <!-- PUBLICATION BARS -->
-  ${timeline.map((d, i) => `
-    <rect class="oa-bar"
-          data-year="${d.year}"
-          data-pubs="${d.pubs}"
-          x="${paddingX + (i * barWidth) + 2}"
-          y="${height - paddingY - getBarH(d.pubs)}"
-          width="${barWidth - 4}"
-          height="${getBarH(d.pubs)}"
-          fill="${primary}"
-          opacity="0.8"
-          rx="2" />
-  `).join("")}
-
-  <!-- YEAR LABELS -->
-  <text x="${paddingX}" y="${height - 10}" font-size="10"
-        fill="${secondary}">${timeline[0].year}</text>
-
-  <text x="${width - paddingX}" y="${height - 10}" font-size="10"
-        fill="${secondary}" text-anchor="end">${timeline[timeline.length - 1].year}</text>
-
-</svg>`;
+  </div>
+</div>`;
 }
 
 /* ---------------------------- */
@@ -288,7 +251,7 @@ $ openalex stats
 ">
 </div>
 
-${renderChartSVG(graphTimeline)}
+${renderChartHTML(graphTimeline)}
 
 </div>
 
