@@ -49,7 +49,7 @@
     font-weight: 400;
     font-display: swap;
     text-rendering: optimizeLegibility;
-    unicode-range: U+0000-U+0DFF, U+0F00-U+1FFF, U+2000-U+DBFF;
+    unicode-range: U+0000-U+024F, U+1E00-U+1EFF, U+2000-U+206F, U+3000-U+303F;
 }
 
 @font-face {
@@ -59,7 +59,7 @@
     font-weight: 700;
     font-display: swap;
     text-rendering: optimizeLegibility;
-    unicode-range: U+0000-U+0DFF, U+0F00-U+1FFF, U+2000-U+DBFF;
+    unicode-range: U+0000-U+024F, U+1E00-U+1EFF, U+2000-U+206F, U+3000-U+303F;
 }
 
 @font-face {
@@ -69,7 +69,7 @@
     font-weight: 400;
     font-display: swap;
     text-rendering: optimizeLegibility;
-    unicode-range: U+0000-U+0DFF, U+0F00-U+1FFF, U+2000-U+DBFF;
+    unicode-range: U+0000-U+024F, U+1E00-U+1EFF, U+2000-U+206F, U+3000-U+303F;
 }
 
 @font-face {
@@ -79,7 +79,7 @@
     font-weight: 700;
     font-display: swap;
     text-rendering: optimizeLegibility;
-    unicode-range: U+0000-U+0DFF, U+0F00-U+1FFF, U+2000-U+DBFF;
+    unicode-range: U+0000-U+024F, U+1E00-U+1EFF, U+2000-U+206F, U+3000-U+303F;
 }
 
 @font-face {
