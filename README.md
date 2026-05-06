@@ -59,6 +59,35 @@ The typed command in the nav header switches to `less paper.pdf` (typed once, he
 
 ---
 
+## Burmese Version (`/my/`)
+
+A Burmese-language homepage lives at `htunteza.com/my/`. Hugo's multilingual mode serves it as a second language (`languageCode = "my"`, weight 2); English remains the default at `/`.
+
+**What is translated:**
+
+- Sidebar name and job title — `data/homepage_my.yml`
+- Career profile, education, experiences, projects — `data/homepage_my.yml`
+- UI strings (section headings, "show more", collaboration sentence) — `i18n/my.yaml`
+- Country names in the collaboration summary are mapped to Burmese equivalents
+- Arabic numerals in the collaboration summary are converted to Myanmar numerals (၀–၉)
+
+**What stays English:**
+
+- Works and Posts sections always pull from the English site (`$enSite`) — no Burmese content files exist for those sections
+
+**Key files:**
+
+| File | Purpose |
+| --- | --- |
+| `content/_index.my.md` | Burmese homepage stub |
+| `data/homepage_my.yml` | Full translation of `data/homepage.yml` |
+| `i18n/my.yaml` + `i18n/en.yaml` | UI string translations |
+| `layouts/partials/collab-summary.html` | Language-aware numeral + country name conversion |
+
+**Font:** Myanmar codepoints (U+1000–109F, Extended-A/B) are served via a `unicode-range` override within the `"Roboto Mono"` font stack — no class or `lang` attribute required in markup. The active face is Thit Sar Shwe Si, an intentionally messy handwriting typeface.
+
+---
+
 ## Right Panels
 
 | Window title        | Template                | Source                                                                                        |
