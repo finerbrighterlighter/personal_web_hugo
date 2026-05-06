@@ -109,7 +109,7 @@ hugo_console/
 ├── static/
 │   ├── js/                    17 ES6 modules (loaded as type="module")
 │   ├── general/               PDFs, images, VCF, CV outputs
-│   └── hugo-theme-console/    Base theme CSS + vendor assets
+│   └── hugo-theme-console/    Base theme CSS + vendor assets; `console.css` keeps Roboto Mono as the default stack and switches Burmese pages (`html:lang(my)`) to the combined handwriting family
 ├── docs/
 │   └── reference.md           This file
 ├── hugo.toml                  Main site config

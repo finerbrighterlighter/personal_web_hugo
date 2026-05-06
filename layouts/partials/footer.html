@@ -1,7 +1,41 @@
+{{- $englishPage := false -}}
+{{- $burmesePage := false -}}
+{{- range .AllTranslations -}}
+  {{- if eq .Language.Lang "en" -}}
+    {{- $englishPage = . -}}
+  {{- else if eq .Language.Lang "mm" -}}
+    {{- $burmesePage = . -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $langTarget := $burmesePage -}}
+{{- $langButtonClass := "myanmar-flag" -}}
+{{- $langLabel := "Open Burmese version" -}}
+{{- $missingLabel := "No Burmese version for this page" -}}
+{{- if eq .Site.Language.Lang "mm" -}}
+  {{- $langTarget = $englishPage -}}
+  {{- $langButtonClass = "uk-flag" -}}
+  {{- $langLabel = "Open English version" -}}
+  {{- $missingLabel = "No English version for this page" -}}
+{{- end -}}
+
 <div class="footer">
   <span>[<a href="https://gohugo.io/">Hugo</a>]</span>
   <span>[<a href="https://github.com/mrmierzejewski/hugo-theme-console/">Theme</a>]</span>
   <span>[<a href="https://github.com/finerbrighterlighter/personal_web_hugo">Source</a>]</span>
-  <span>[<a href="/about/" class="author-link" aria-label="About the author">Me</a>]</span>
+  <span>[<a href="{{ "/about/" | relLangURL }}" class="author-link" aria-label="About the author">Me</a>]</span>
+  <span>
+    [
+    {{- if $langTarget -}}
+      <a href="{{ $langTarget.RelPermalink }}" class="footer-lang-button" aria-label="{{ $langLabel }}" title="{{ $langLabel }}">
+        <span class="{{ $langButtonClass }}" aria-hidden="true"></span>
+      </a>
+    {{- else -}}
+      <span class="footer-lang-button is-unavailable" aria-label="{{ $missingLabel }}" title="{{ $missingLabel }}">
+        <span class="{{ $langButtonClass }}" aria-hidden="true"></span>
+      </span>
+    {{- end -}}
+    ]
+  </span>
   <span>[<a rel="license" href="https://creativecommons.org/licenses/by/4.0/" aria-label="Creative Commons Attribution 4.0 International license"><img src="/images/icons/cc.svg" alt="CC" class="cc-badge"><img src="/images/icons/by.svg" alt="BY" class="cc-badge"></a>]</span>
 </div>

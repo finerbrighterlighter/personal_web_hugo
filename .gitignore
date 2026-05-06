@@ -21,3 +21,5 @@ CLAUDE.md
 COPILOT.md
 .claude/
 .vscode/extensions.json
+.github/hooks/rtk-rewrite.json
+.github/copilot-instructions.md

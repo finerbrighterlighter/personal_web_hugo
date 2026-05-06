@@ -1,7 +1,7 @@
 /* ============================= */
 /* FONTS */
 /* ============================= */
-/* --- Roboto Mono (Latin/English) --- */
+/* --- Roboto Mono (default mono UI) --- */
 @font-face {
     font-family: "Roboto Mono";
     src: url("../font/RobotoMono-Regular.ttf") format("truetype");
@@ -38,33 +38,66 @@
     text-rendering: optimizeLegibility;
 }
 
-/* --- Noto Sans Myanmar (Burmese Script) --- */
+/* --- Handwriting stack for Burmese site pages ---
+   Latin glyphs use ArchitectsDaughter; Myanmar glyphs use
+   Thit_Sar_Shwe_Si under the same family so Burmese pages can
+   switch stacks cleanly at the page level. --- */
 @font-face {
-    font-family: "Roboto Mono";
+    font-family: "Site Handwriting";
+    src: url("../font/ArchitectsDaughter.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: "Site Handwriting";
+    src: url("../font/ArchitectsDaughter.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: "Site Handwriting";
+    src: url("../font/ArchitectsDaughter.ttf") format("truetype");
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: "Site Handwriting";
+    src: url("../font/ArchitectsDaughter.ttf") format("truetype");
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: "Site Handwriting";
     src: url("../font/Thit_Sar_Shwe_Si.ttf") format("truetype");
     font-style: normal;
     font-weight: 400;
     font-display: swap;
-    /* Ranges: Myanmar, Myanmar Extended-A, Myanmar Extended-B */
     unicode-range: U+1000-109F, U+AA60-AA7F, U+A9E0-A9FF;
 }
-/* "../font/NotoSansMyanmar-Regular.ttf" */
-
 
 @font-face {
-    font-family: "Roboto Mono";
+    font-family: "Site Handwriting";
     src: url("../font/Thit_Sar_Shwe_Si.ttf") format("truetype");
     font-style: normal;
     font-weight: 700;
     font-display: swap;
-    /* Ranges: Myanmar, Myanmar Extended-A, Myanmar Extended-B */
     unicode-range: U+1000-109F, U+AA60-AA7F, U+A9E0-A9FF;
 }
-/* "../font/NotoSansMyanmar-Bold.ttf" */
 
-/* Italic slot — same file (handwriting font has no separate italic variant) */
 @font-face {
-    font-family: "Roboto Mono";
+    font-family: "Site Handwriting";
     src: url("../font/Thit_Sar_Shwe_Si.ttf") format("truetype");
     font-style: italic;
     font-weight: 400;
@@ -73,7 +106,7 @@
 }
 
 @font-face {
-    font-family: "Roboto Mono";
+    font-family: "Site Handwriting";
     src: url("../font/Thit_Sar_Shwe_Si.ttf") format("truetype");
     font-style: italic;
     font-weight: 700;
@@ -81,9 +114,10 @@
     unicode-range: U+1000-109F, U+AA60-AA7F, U+A9E0-A9FF;
 }
 
-/* Myanmar characters are taller than Latin — needs more line-height to avoid clipping */
-:lang(my) {
-    line-height: 2em;
+/* Myanmar pages use the handwriting stack; code/pre remain mono. */
+html:lang(my) {
+    --font-stack: var(--handwriting-font-stack);
+    --global-line-height: 2em;
     word-spacing: 0.05em;
 }
 
@@ -94,9 +128,11 @@
 :root {
     --global-font-size: 0.8rem;
     --global-font-color: #444;
+    --handwriting-font-stack: "Site Handwriting", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive, sans-serif;
     --font-stack: "Roboto Mono", Menlo, Monaco, Lucida Console, Liberation Mono, 
               "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace;
-    --mono-font-stack: var(--font-stack); /* alias — terminal-0.7.4.min.css uses this for code/pre */
+    --mono-font-stack: "Roboto Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+              "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace;
     --global-line-height: 1.6em;
     --page-width: 95%;
     --display-h1-decoration: 1;
@@ -715,6 +751,8 @@ p.social a {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
 }
 
 .cc-badge {
@@ -722,6 +760,127 @@ p.social a {
     vertical-align: middle;
     width: 15px;
     height: 15px;
+}
+
+.footer-lang-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.9rem;
+    height: 1.3rem;
+    border-radius: 3px;
+    vertical-align: middle;
+    background: transparent;
+}
+
+.footer a.footer-lang-button:hover {
+    background: transparent;
+    color: inherit;
+    border-color: var(--primary-color);
+}
+
+.footer-lang-button.is-unavailable {
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+.footer-lang-button.is-unavailable::before,
+.footer-lang-button.is-unavailable::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+}
+
+.footer-lang-button.is-unavailable::before {
+    inset: -2px;
+    border: 2px solid var(--error-color);
+    border-radius: 999px;
+}
+
+.footer-lang-button.is-unavailable::after {
+    top: 50%;
+    left: 50%;
+    width: 1.35rem;
+    height: 2px;
+    background: var(--error-color);
+    transform: translate(-50%, -50%) rotate(-35deg);
+}
+
+.myanmar-flag {
+    position: relative;
+    display: block;
+    width: 1.45rem;
+    height: 0.95rem;
+    border-radius: 1px;
+    overflow: hidden;
+    background: linear-gradient(
+        to bottom,
+        #f7d116 0,
+        #f7d116 33.333%,
+        #34b233 33.333%,
+        #34b233 66.666%,
+        #ea2839 66.666%,
+        #ea2839 100%
+    );
+}
+
+.myanmar-flag::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.5rem;
+    height: 0.5rem;
+    background: #fff;
+    clip-path: polygon(
+        50% 0%,
+        61% 35%,
+        98% 35%,
+        68% 57%,
+        79% 91%,
+        50% 70%,
+        21% 91%,
+        32% 57%,
+        2% 35%,
+        39% 35%
+    );
+    transform: translate(-50%, -50%);
+}
+
+.uk-flag {
+    position: relative;
+    display: block;
+    width: 1.45rem;
+    height: 0.95rem;
+    border-radius: 1px;
+    overflow: hidden;
+    background:
+        linear-gradient(to bottom right,
+            transparent 0 41%,
+            #fff 41% 47%,
+            #c8102e 47% 53%,
+            #fff 53% 59%,
+            transparent 59% 100%),
+        linear-gradient(to top right,
+            transparent 0 41%,
+            #fff 41% 47%,
+            #c8102e 47% 53%,
+            #fff 53% 59%,
+            transparent 59% 100%),
+        linear-gradient(to right,
+            transparent 0 37%,
+            #fff 37% 45%,
+            #c8102e 45% 55%,
+            #fff 55% 63%,
+            transparent 63% 100%),
+        linear-gradient(to bottom,
+            transparent 0 30%,
+            #fff 30% 40%,
+            #c8102e 40% 60%,
+            #fff 60% 70%,
+            transparent 70% 100%),
+        #012169;
 }
 
 /* ============================= */
@@ -802,7 +961,7 @@ p.social a {
 .window-title {
     font-size: var(--font-base);
     color: var(--font-color);
-    font-family: monospace;
+    font-family: var(--font-stack);
 }
 
 
@@ -1737,6 +1896,7 @@ header.terminal-logo {
     .footer {
         margin-top: 50px;
         padding-top: 5px;
+        justify-content: center;
     }
 
     #works-filters {
