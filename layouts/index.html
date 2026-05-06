@@ -79,7 +79,7 @@
 
         <small class="sources">
           {{ with .Params.scholar }}
-            [<a href="https://scholar.google.com/citations?view_op=view_citation&citation_for_view={{ $hpdata.sidebar.scholar_profile }}:{{ . }}" target="_blank">scholar</a>]
+            <a href="https://scholar.google.com/citations?view_op=view_citation&citation_for_view={{ $hpdata.sidebar.scholar_profile }}:{{ . }}" target="_blank">[scholar]</a>
           {{ end }}
 
           {{ range .Params.sources }}
