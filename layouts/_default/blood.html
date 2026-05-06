@@ -1,6 +1,10 @@
 {{ define "main" }}
 
-{{ $bld := .Site.Data.blood.bld_cen }}
+{{- $bdata := .Site.Data.blood -}}
+{{- if eq .Site.Language.Lang "mm" -}}{{- $bdata = .Site.Data.blood_mm -}}{{- end -}}
+{{- $bld := $bdata.bld_cen -}}
+{{- $enSite := .Site -}}
+{{- range .Sites -}}{{- if eq .Language.Lang "en" -}}{{- $enSite = . -}}{{- end -}}{{- end -}}
 
 <div class="works-grouped">
 
@@ -9,39 +13,37 @@
   </h2>
 
   {{ range $bld.direction }}
+  <div class="blood-center-item">
 
-
-  <h2>
-    <a href="{{ .link }}" target="_blank">{{ .name }}</a>
-    {{ with .note }}
-      <small>({{ . }})</small>
-    {{ end }}
-  </h2>
-
-  {{ if .address }}
-    <small>
-      {{ if .geo }}
-        <a href="{{ .geo }}" target="_blank">Address</a>:
-      {{ else }}
-        Address:
+    <h2 class="blood-center-name">
+      <a href="{{ .link }}" target="_blank">{{ .name }}</a>
+      {{ with .note }}
+        <small>({{ . }})</small>
       {{ end }}
-      {{ .address }}
-    </small>
-    <br/>
-  {{ end }}
+    </h2>
 
-  {{ with .phone }}
-    <small>Telephone: {{ . }}</small>
-  {{ end }}
+    {{ if .address }}
+      <small class="blood-center-address">
+        {{ if .geo }}
+          <a href="{{ .geo }}" target="_blank">{{ i18n "blood_address" }}</a>:
+        {{ else }}
+          {{ i18n "blood_address" }}:
+        {{ end }}
+        {{ .address }}
+      </small>
+    {{ end }}
 
-  <div class="spacer"></div>
+    {{ with .phone }}
+      <small class="blood-center-phone">{{ i18n "blood_telephone" }}: {{ . }}</small>
+    {{ end }}
 
+  </div>
   {{ end }}
 
 </div>
 
 
-{{ $bundle := .Site.GetPage "blood-records" }}
+{{ $bundle := $enSite.GetPage "blood-records" }}
 {{ $images := $bundle.Resources.ByType "image" }}
 
 
@@ -52,7 +54,7 @@
 {{ $namesorted := sort $withoutExif "Name" "asc" }}
 
 <h2 class="category-header">
-Gallery
+{{ i18n "blood_gallery" }}
 </h2>
 
 <div class="image-grid">

@@ -442,6 +442,25 @@ strong {
     content: " ";
 }
 
+.blood-center-item {
+    margin-bottom: var(--space-4);
+}
+
+.blood-center-name {
+    margin-top: 0;
+    margin-bottom: var(--space-2);
+}
+
+.blood-center-address,
+.blood-center-phone {
+    display: block;
+    margin: 0;
+}
+
+.blood-center-phone {
+    margin-top: var(--space-1);
+}
+
 /* ── "More" affordance — shared by expand (summary) and navigate (a.more-link) ── */
 
 .experience-collapse summary,

@@ -116,7 +116,7 @@
   </div>
 
   <div class="company">
-    {{ .role_lan }} at
+    {{ with .role_lan }}{{ . }} at {{ end }}
     <a href="{{ .company.link }}">{{ .company.name }}, {{ .company.country }}</a>
   </div>
 
@@ -137,7 +137,7 @@
   </div>
 
   <div class="company">
-    {{ .role_lan }} at
+    {{ with .role_lan }}{{ . }} at {{ end }}
     <a href="{{ .company.link }}">{{ .company.name }}</a>
   </div>
 
