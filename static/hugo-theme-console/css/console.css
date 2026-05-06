@@ -40,8 +40,8 @@
 
 /* --- Handwriting stack for Burmese site pages ---
    Latin glyphs use ArchitectsDaughter; Myanmar glyphs use
-   Thit_Sar_Shwe_Si under the same family so Burmese pages can
-   switch stacks cleanly at the page level. --- */
+   Thit_Sar_Shwe_Si; Thai glyphs use CkOmeletDemo under the same family
+   so Burmese pages can switch stacks cleanly at the page level. --- */
 @font-face {
     font-family: "Site Handwriting";
     src: url("../font/ArchitectsDaughter.ttf") format("truetype");
@@ -49,6 +49,7 @@
     font-weight: 400;
     font-display: swap;
     text-rendering: optimizeLegibility;
+    unicode-range: U+0000-U+0DFF, U+0F00-U+1FFF, U+2000-U+DBFF;
 }
 
 @font-face {
@@ -58,6 +59,7 @@
     font-weight: 700;
     font-display: swap;
     text-rendering: optimizeLegibility;
+    unicode-range: U+0000-U+0DFF, U+0F00-U+1FFF, U+2000-U+DBFF;
 }
 
 @font-face {
@@ -67,6 +69,7 @@
     font-weight: 400;
     font-display: swap;
     text-rendering: optimizeLegibility;
+    unicode-range: U+0000-U+0DFF, U+0F00-U+1FFF, U+2000-U+DBFF;
 }
 
 @font-face {
@@ -76,6 +79,7 @@
     font-weight: 700;
     font-display: swap;
     text-rendering: optimizeLegibility;
+    unicode-range: U+0000-U+0DFF, U+0F00-U+1FFF, U+2000-U+DBFF;
 }
 
 @font-face {
@@ -112,6 +116,42 @@
     font-weight: 700;
     font-display: swap;
     unicode-range: U+1000-109F, U+AA60-AA7F, U+A9E0-A9FF;
+}
+
+@font-face {
+    font-family: "Site Handwriting";
+    src: url("../font/CkOmeletDemo.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    unicode-range: U+0E00-U+0E7F;
+}
+
+@font-face {
+    font-family: "Site Handwriting";
+    src: url("../font/CkOmeletDemo.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    unicode-range: U+0E00-U+0E7F;
+}
+
+@font-face {
+    font-family: "Site Handwriting";
+    src: url("../font/CkOmeletDemo.ttf") format("truetype");
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    unicode-range: U+0E00-U+0E7F;
+}
+
+@font-face {
+    font-family: "Site Handwriting";
+    src: url("../font/CkOmeletDemo.ttf") format("truetype");
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+    unicode-range: U+0E00-U+0E7F;
 }
 
 /* Myanmar pages use the handwriting stack; code/pre remain mono. */
