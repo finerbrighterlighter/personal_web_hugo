@@ -475,9 +475,7 @@ if (document.querySelector('.work-single')) {
     setTimeout(() => typeLine(token), staticDelay);
 } else if (document.querySelector('.post-single')) {
     staticMode = true;
-    const slugMatch = window.location.pathname.match(/\/posts\/([^/]+)/);
-    const postSlug = slugMatch ? slugMatch[1] : 'post';
-    currentLine = `cat ${postSlug}.md`;
+    currentLine = "cat post.md";
     setTimeout(() => typeLine(token), staticDelay);
 } else {
     nextLine(token);
