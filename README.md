@@ -18,11 +18,32 @@ Run locally:
 hugo server
 ```
 
+If you use `dotenv` for local API keys, prefer:
+
+```bash
+dotenv run hugo server
+```
+
 Production build:
 
 ```bash
 hugo --gc --minify
 ```
+
+### Hugo Version Parity (Important)
+
+Netlify is the deploy source of truth for Hugo version via [netlify.toml](netlify.toml).
+
+- Deploy pin: `HUGO_VERSION` in [netlify.toml](netlify.toml)
+- Local recommendation: run Hugo through `dotenv` with a PATH-prepended pinned binary that matches Netlify
+
+Quick check before running local builds:
+
+```bash
+dotenv run hugo version
+```
+
+If this differs from `HUGO_VERSION` in [netlify.toml](netlify.toml), update local pinning first, then test.
 
 Site roots:
 

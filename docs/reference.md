@@ -260,6 +260,20 @@ HUGO_VERSION = "0.157.0"
 
 Hugo version is pinned here. To upgrade: change `HUGO_VERSION` and test locally with that version first.
 
+#### Local parity workflow
+
+Netlify does not read the project's local `.env` when choosing Hugo; it installs Hugo from `HUGO_VERSION` in `netlify.toml`.
+
+For local development, keep your Hugo binary aligned to that value (for example by prepending a pinned Hugo path in your local `.env` when using `dotenv run ...`).
+
+Recommended pre-flight check:
+
+```bash
+dotenv run hugo version
+```
+
+Expected behavior: this command reports the same version as `HUGO_VERSION` in `netlify.toml`.
+
 **Environment variables** (set in Netlify dashboard, not in this file):
 
 | Variable              | Used by         | Purpose                          |
