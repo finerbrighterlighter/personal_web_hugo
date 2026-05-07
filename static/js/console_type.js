@@ -473,6 +473,10 @@ if (document.querySelector('.work-single')) {
     staticMode = true;
     currentLine = "less paper.pdf";
     setTimeout(() => typeLine(token), staticDelay);
+} else if (document.querySelector('.post-single')) {
+    staticMode = true;
+    currentLine = "cat post.md";
+    setTimeout(() => typeLine(token), staticDelay);
 } else {
     nextLine(token);
 }

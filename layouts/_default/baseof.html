@@ -51,7 +51,8 @@
               {{- range $i, $part := $parts -}}
                 {{- $path = printf "%s/%s" $path $part -}}
                 {{- $isWorkSlug := and (eq $i $lastIdx) (eq $.Section "works") (gt (len $parts) 2) -}}
-                {{- if not $isWorkSlug -}}
+                {{- $isPostSlug := and (eq $i $lastIdx) (eq $.Section "posts") $.IsPage -}}
+                {{- if not (or $isWorkSlug $isPostSlug) -}}
                   {{- $pg := site.GetPage $path -}}
                   /{{ if $pg }}<a href="{{ $path | relURL }}">{{ $part }}</a>{{ else }}<a href="{{ "/works/" | relURL }}?search={{ $part }}">{{ $part }}</a>{{ end }}
                 {{- end -}}
