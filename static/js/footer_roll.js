@@ -230,8 +230,14 @@ async function transitionToAbout() {
    When the user presses back, the URL reverts to the previous
    page but the DOM still contains the about page content we
    injected. A reload restores the correct content for that URL.
+
+   Guard: ignore hash-only navigation (anchor links / TOC clicks).
+   Those also fire popstate on pages where pushState was previously
+   called, but they don't need a reload — the browser handles
+   scrolling itself.
 --------------------------------------------------------------- */
-window.addEventListener('popstate', () => {
+window.addEventListener('popstate', (e) => {
+  if (window.location.hash) return;   // hash anchor nav — let browser scroll
   window.location.reload();
 });
 
