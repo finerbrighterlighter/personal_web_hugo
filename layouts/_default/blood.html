@@ -1,10 +1,10 @@
 {{ define "main" }}
 
-{{- $bdata := .Site.Data.blood -}}
-{{- if eq .Site.Language.Lang "mm" -}}{{- $bdata = .Site.Data.blood_mm -}}{{- end -}}
+{{- $bdata := hugo.Data.blood -}}
+{{- if eq .Site.Language.Lang "mm" -}}{{- $bdata = hugo.Data.blood_mm -}}{{- end -}}
 {{- $bld := $bdata.bld_cen -}}
 {{- $enSite := .Site -}}
-{{- range .Sites -}}{{- if eq .Language.Lang "en" -}}{{- $enSite = . -}}{{- end -}}{{- end -}}
+{{- range hugo.Sites -}}{{- if eq .Language.Lang "en" -}}{{- $enSite = . -}}{{- end -}}{{- end -}}
 
 <div class="works-grouped">
 

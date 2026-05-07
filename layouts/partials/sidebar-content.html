@@ -1,5 +1,5 @@
-{{- $hp := .Site.Data.homepage -}}
-{{- if eq .Site.Language.Lang "mm" -}}{{- $hp = .Site.Data.homepage_mm -}}{{- end -}}
+{{- $hp := hugo.Data.homepage -}}
+{{- if eq .Site.Language.Lang "mm" -}}{{- $hp = hugo.Data.homepage_mm -}}{{- end -}}
 {{ $data := $hp.sidebar }}
 {{ $edu := $hp.education }}
 

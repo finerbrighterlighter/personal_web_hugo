@@ -1,5 +1,5 @@
 {{- $rm := dict -}}
-{{- range site.Data.researchers -}}
+{{- range hugo.Data.researchers -}}
   {{- $rm = merge $rm (dict .id .) -}}
 {{- end -}}
 

@@ -1,19 +1,19 @@
 ---
 title: Works
 cascade:
-  - _target:
+  - target:
       kind: page
       path: /works/conference/**
     build:
       render: never
       list: always
-  - _target:
+  - target:
       kind: page
       path: /works/report/**
     build:
       render: never
       list: always
-  - _target:
+  - target:
       path: /works/**
       kind: page
     layout: work

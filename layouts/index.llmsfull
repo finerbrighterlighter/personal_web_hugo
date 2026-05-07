@@ -1,6 +1,6 @@
 {{- if eq .Site.Language.Lang "en" -}}
 {{- $enSite := .Site -}}
-{{- range .Sites -}}
+{{- range hugo.Sites -}}
   {{- if eq .Language.Lang "en" -}}{{- $enSite = . -}}{{- end -}}
 {{- end -}}
 

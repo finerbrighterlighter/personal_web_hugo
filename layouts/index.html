@@ -1,9 +1,9 @@
 {{ define "main" }}
 
-{{- $hpdata := .Site.Data.homepage -}}
-{{- if eq .Site.Language.Lang "mm" -}}{{- $hpdata = .Site.Data.homepage_mm -}}{{- end -}}
+{{- $hpdata := hugo.Data.homepage -}}
+{{- if eq .Site.Language.Lang "mm" -}}{{- $hpdata = hugo.Data.homepage_mm -}}{{- end -}}
 {{- $enSite := .Site -}}
-{{- range .Sites -}}{{- if eq .Language.Lang "en" -}}{{- $enSite = . -}}{{- end -}}{{- end -}}
+{{- range hugo.Sites -}}{{- if eq .Language.Lang "en" -}}{{- $enSite = . -}}{{- end -}}{{- end -}}
 
 {{- with $hpdata.career_profile -}}
 <!-- <h1>{{ .title }}</h1> -->

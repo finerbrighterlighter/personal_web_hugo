@@ -1,5 +1,5 @@
 {{- $enSite := site -}}
-{{- range site.Sites -}}{{- if eq .Language.Lang "en" -}}{{- $enSite = . -}}{{- end -}}{{- end -}}
+{{- range hugo.Sites -}}{{- if eq .Language.Lang "en" -}}{{- $enSite = . -}}{{- end -}}{{- end -}}
 
 {{ $allTags := slice }}
 {{ range where $enSite.RegularPages "Section" "works" }}

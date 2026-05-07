@@ -1,7 +1,7 @@
 {{- $enSite := site -}}
-{{- range site.Sites -}}{{- if eq .Language.Lang "en" -}}{{- $enSite = . -}}{{- end -}}{{- end -}}
+{{- range hugo.Sites -}}{{- if eq .Language.Lang "en" -}}{{- $enSite = . -}}{{- end -}}{{- end -}}
 {{- $rm := dict -}}
-{{- range site.Data.researchers -}}
+{{- range hugo.Data.researchers -}}
   {{- $rm = merge $rm (dict .id .) -}}
 {{- end -}}
 

@@ -32,9 +32,9 @@
   {{ $years = $years | uniq | sort | collections.Reverse }}
   {{ $priorityYears := first 3 $years }}
 
-  {{ partial "works-filter-group.html" (dict "filter" "condition" "label" "Condition" "values" $conditions "priority" .Site.Data.work_filters.conditions) }}
-  {{ partial "works-filter-group.html" (dict "filter" "datasource" "label" "Data"      "values" $datasource "priority" .Site.Data.work_filters.datasource) }}
-  {{ partial "works-filter-group.html" (dict "filter" "method"     "label" "Method"    "values" $methods    "priority" .Site.Data.work_filters.methods) }}
+  {{ partial "works-filter-group.html" (dict "filter" "condition" "label" "Condition" "values" $conditions "priority" hugo.Data.work_filters.conditions) }}
+  {{ partial "works-filter-group.html" (dict "filter" "datasource" "label" "Data"      "values" $datasource "priority" hugo.Data.work_filters.datasource) }}
+  {{ partial "works-filter-group.html" (dict "filter" "method"     "label" "Method"    "values" $methods    "priority" hugo.Data.work_filters.methods) }}
   {{ partial "works-filter-group.html" (dict "filter" "year"       "label" "Year"      "values" $years      "priority" $priorityYears) }}
 
   <div class="filter-group">
@@ -137,7 +137,7 @@
 
                   {{ with .Params.scholar }}
                     <a itemprop="sameAs"
-                       href="https://scholar.google.com/citations?view_op=view_citation&citation_for_view={{ $.Site.Data.homepage.sidebar.scholar_profile }}:{{ . }}"
+                       href="https://scholar.google.com/citations?view_op=view_citation&citation_for_view={{ hugo.Data.homepage.sidebar.scholar_profile }}:{{ . }}"
                        target="_blank">
                       [scholar]
                     </a>

@@ -140,7 +140,7 @@ hugo_console/
 | Key              | Value                      | Effect                                                     |
 | ---------------- | -------------------------- | ---------------------------------------------------------- |
 | `baseURL`      | `"https://htunteza.com"` | Canonical base for all `absURL` calls                    |
-| `languageCode` | `"en-us"`                | HTML `lang` attribute                                    |
+| `locale` | `"en-us"`                | HTML `lang` attribute                                    |
 | `title`        | `"Htun Teza"`            | `{{ .Site.Title }}` — used in `<title>`, og:site_name |
 
 #### `[params]`
@@ -281,8 +281,8 @@ The site is bilingual: English at the root (`/`, no subdir) and Burmese at `/mm/
 defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = false   # English stays at /, not /en/
 
-[languages.en]  weight = 1  languageCode = "en-us"  title = "Htun Teza"
-[languages.mm]  weight = 2  languageCode = "my"     title = "ထွန်းတေဇာ"
+[languages.en]  weight = 1  locale = "en-us"  title = "Htun Teza"
+[languages.mm]  weight = 2  locale = "my"     title = "ထွန်းတေဇာ"
 ```
 
 #### What is translated
@@ -302,8 +302,8 @@ defaultContentLanguageInSubdir = false   # English stays at /, not /en/
 Both `layouts/index.html` and `partials/sidebar-content.html` switch data source at the top:
 
 ```go
-{{- $hp := .Site.Data.homepage -}}
-{{- if eq .Site.Language.Lang "mm" -}}{{- $hp = .Site.Data.homepage_mm -}}{{- end -}}
+{{- $hp := hugo.Data.homepage -}}
+{{- if eq .Site.Language.Lang "mm" -}}{{- $hp = hugo.Data.homepage_mm -}}{{- end -}}
 ```
 
 Works and posts are always pulled from `$enSite` (the English site object) to avoid duplication.
@@ -517,25 +517,25 @@ math: false      # true → loads KaTeX CSS (<head>) and JS (</body>) for LaTeX 
 
 ```yaml
 cascade:
-  - _target:
+  - target:
       kind: page
       path: /works/conference/**
     build:
       render: never    # No HTML file written to public/
       list: always     # Still included in page collections (works filter, llms.txt)
-  - _target:
+  - target:
       kind: page
       path: /works/report/**
     build:
       render: never
       list: always
-  - _target:
+  - target:
       path: /works/**
       kind: page
     layout: work       # journal/preprint/dissertation use _default/work.html
 ```
 
-**Important:** `path: /works/**` is required on the catch-all target. A bare `_target: { kind: page }` (no `path`) does not propagate `layout` to pages in subsections — Hugo silently ignores them and they fall back to `_default/single.html`.
+**Important:** `path: /works/**` is required on the catch-all target. A bare `target: { kind: page }` (no `path`) does not propagate `layout` to pages in subsections — Hugo silently ignores them and they fall back to `_default/single.html`.
 
 `conference-speaking` and `conference-poster` entries appear in the `/works/` filter page and `llms.txt` (only when an external URL exists) but have no permalink.
 
@@ -766,7 +766,7 @@ Scripts loaded at bottom of `<body>` via `partials/scripts.html`, followed by `{
 
 **Vestigial partials (not called by the site):** `opengraph.html` and `twitter_cards.html` exist in `layouts/partials/` as base-theme files. They are **not invoked** by any current template — OG and Twitter tags are handled entirely in `header.html`. Safe to ignore; harmless if left in place.
 
-**Language note — `home-seo.html`:** This partial always reads from `site.Data.homepage.sidebar` (English), regardless of the current language. The JSON-LD `Person` schema is intentionally language-neutral — it describes the person, not the page.
+**Language note — `home-seo.html`:** This partial always reads from `hugo.Data.homepage.sidebar` (English), regardless of the current language. The JSON-LD `Person` schema is intentionally language-neutral — it describes the person, not the page.
 
 ### 5.4 Shortcodes
 
