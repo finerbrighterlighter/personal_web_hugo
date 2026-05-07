@@ -475,7 +475,8 @@ if (document.querySelector('.work-single')) {
     setTimeout(() => typeLine(token), staticDelay);
 } else if (document.querySelector('.post-single')) {
     staticMode = true;
-    currentLine = "cat post.md";
+    const postSlug = document.querySelector('.post-single').dataset.slug || 'post';
+    currentLine = `cat ${postSlug}.md`;
     setTimeout(() => typeLine(token), staticDelay);
 } else {
     nextLine(token);

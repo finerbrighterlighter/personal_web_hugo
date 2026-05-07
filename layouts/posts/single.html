@@ -5,7 +5,12 @@
 {{ end }}
 
 {{ define "main" }}
-<article class="post-single">
+{{- $parts := slice -}}
+{{- range (split (strings.TrimSuffix .RelPermalink "/") "/") -}}
+  {{- if ne . "" -}}{{- $parts = $parts | append . -}}{{- end -}}
+{{- end -}}
+{{- $slug := index $parts (sub (len $parts) 1) -}}
+<article class="post-single" data-slug="{{ $slug }}">
 
   <h1>{{ .Title }}</h1>
 
