@@ -1,0 +1,12 @@
+{{- $num := .Get "num" -}}
+{{- $src := .Get "src" -}}
+{{- $img := .Page.Resources.GetMatch $src -}}
+<figure id="figure-{{ $num }}" aria-labelledby="figure-{{ $num }}-caption" class="post-figure">
+  {{- with $img }}
+  <img src="{{ .RelPermalink }}" alt="" class="img-responsive">
+  {{- end }}
+  <figcaption id="figure-{{ $num }}-caption">
+    <span class="figure-label">Figure {{ $num }}.</span>
+    {{ .Inner | markdownify }}
+  </figcaption>
+</figure>

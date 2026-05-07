@@ -756,6 +756,37 @@ figure {
     font-size: var(--font-base);
 }
 
+/* ── Figure shortcode ───────────────────────────── */
+
+.post-figure {
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.post-figure img {
+    max-width: 100%;
+}
+
+.post-figure figcaption {
+    margin-top: 0.5rem;
+    font-size: var(--font-sm);
+    color: var(--secondary-color);
+    text-align: left;
+    line-height: 1.5;
+}
+
+.post-figure figcaption p {
+    margin: 0;
+}
+
+.figure-label {
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-right: 0.35em;
+}
+
+/* ─────────────────────────────────────────────── */
+
 .post-single h1 {
     --display-h1-decoration: none;
     font-size: 1.1rem;

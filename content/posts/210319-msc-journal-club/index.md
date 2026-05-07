@@ -71,10 +71,9 @@ The training process uses an iterative Expectation-Maximization (EM) like algori
 - **Expectation Step (E-step):** Uses the currently available data and parameter estimates to guess the values of the "missing" or latent data.
 - **Maximization Step (M-step):** Uses that complete data (observed + guessed) to update the parameters and maximize the model's likelihood.
 
-##### Figure 1
-
-    The EM algorithm iteratively estimates the missing data and updates the model parameters until convergence. In the context of Mixed Effects Machine Learning, the "missing" data are the isolated fixed and random effects, which must be iteratively estimated.
-    {{< gallery match="em-loop.png" >}}
+{{< fig num="1" src="em-loop.png" >}}
+The EM algorithm iteratively estimates the missing data and updates the model parameters until convergence. In the context of Mixed Effects Machine Learning, the "missing" data are the isolated fixed and random effects, which must be iteratively estimated.
+{{< /fig >}}
 
 `IterativeImputator` from scikit-learn is an example of an EM-like algorithm that iteratively imputes missing values. In the context of Mixed Effects Machine Learning, the "missing" data are the isolated fixed and random effects, which must be iteratively estimated.
 
@@ -89,10 +88,9 @@ For continuous targets, the model is trained using a **single iterative loop** a
 5. **Estimate Random Effects:** Fit a Linear Mixed Model on these residuals.
 6. **Check for convergence:** Calculate the change in log-likelihood. If the change is below a set tolerance or the maximum iterations are reached, stop. Otherwise, update the random effects and repeat from step 2.
 
-##### Figure 2
-
-    The goal is to exclude the random effects from the target variable, allowing the machine learning model to focus on learning the fixed effects. The modified target lacking the random effects is considered to be independent and identically distributed (i.i.d), making it suitable for training the machine learning model.
-    {{< gallery match="regression-loop.png" >}}
+{{< fig num="2" src="regression-loop.png" >}}
+The goal is to exclude the random effects from the target variable, allowing the machine learning model to focus on learning the fixed effects. The modified target lacking the random effects is considered to be independent and identically distributed (i.i.d), making it suitable for training the machine learning model.
+{{< /fig >}}
 
 ## Binary Target (Classification)
 
@@ -108,10 +106,9 @@ This loop functions similarly to the regression loop but operates on the **curre
 4. **Estimate Random Effects:** Fit a Linear Mixed Model on these residuals to estimate the random effects (RE).
 5. **Check for Inner Convergence:** Calculate the change in log-likelihood. If the change is below a set tolerance, stop and return the FE and RE to the Outer Loop. Otherwise, update the random effects and repeat the Inner Loop.
 
-##### Figure 3
-
-    The inner loop focuses on refining the estimates of fixed and random effects for the current logit values. By iteratively updating these estimates, the model can effectively capture the underlying structure of the data, leading to improved classification performance.
-    {{< gallery match="binary-inner-loop.png" >}}
+{{< fig num="3" src="binary-inner-loop.png" >}}
+The inner loop focuses on refining the estimates of fixed and random effects for the current logit values. By iteratively updating these estimates, the model can effectively capture the underlying structure of the data, leading to improved classification performance.
+{{< /fig >}}
 
 **Outer Loop:**
 
@@ -123,10 +120,9 @@ As it is observed in [Figure 4](#figure-4), this loop governs the overall proces
 4. **Update Logit Values:** Calculate the new logit values: $\text{Logit} = FE + RE$.
 5. **Check for Outer Convergence:** Evaluate the absolute change in the logit value ($\Delta \text{logit}$). If the change is below the tolerance limit, stop. Otherwise, repeat the Outer Loop with the newly calculated logit values.
 
-##### Figure 4
-
-    The outer loop iteratively updates the logit values based on the estimated fixed and random effects from the inner loop. The inner loop focuses on refining the estimates of FE and RE for the current logit values, while the outer loop ensures that these estimates converge to a stable solution.
-    {{< gallery match="binary-outer-loop.png" >}}
+{{< fig num="4" src="binary-outer-loop.png" >}}
+The outer loop iteratively updates the logit values based on the estimated fixed and random effects from the inner loop. The inner loop focuses on refining the estimates of FE and RE for the current logit values, while the outer loop ensures that these estimates converge to a stable solution.
+{{< /fig >}}
 
 ## Results and Implications
 
@@ -154,7 +150,6 @@ The corresponding journal manuscript was eventually published in [JMIR Formative
 
 ---
 
-##### Figure 5
-
-    The announcement for the Journal Club
-    {{< gallery match="msc_jc.jpg" >}}
+{{< fig num="5" src="msc_jc.jpg" >}}
+The announcement for the Journal Club
+{{< /fig >}}
