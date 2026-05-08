@@ -220,3 +220,4 @@ The goal is clarity with character.
 - [Thit Sar Shwe Si font](https://www.facebook.com/share/p/1LQYFSUkXy/) by [Phoenix Digital Art](https://www.facebook.com/PhoenixDigitalArt)
 - [Eye test icons](https://www.flaticon.com/free-icons/eye-test) by Freepik on Flaticon
 - [Duck favicon](https://www.magnific.com/icon/duck_530260) by Magnific - Roundicons
+- [Duck sound](https://www.myinstants.com/en/instant/quackmp3/) by MyInstants
