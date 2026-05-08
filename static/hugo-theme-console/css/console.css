@@ -849,58 +849,17 @@ p.social a {
     height: 15px;
 }
 
-.footer-lang-button {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--mono-font-stack);
-    width: 1.9rem;
-    height: 1.3rem;
-    border-radius: 3px;
-    vertical-align: middle;
-    background: transparent;
-}
-
-.footer a.footer-lang-button:hover {
-    background: transparent;
-    color: inherit;
-    border-color: var(--primary-color);
-}
-
-.footer-lang-button.is-unavailable {
-    opacity: 0.8;
-    cursor: not-allowed;
-}
-
-.footer-lang-button.is-unavailable::before,
-.footer-lang-button.is-unavailable::after {
-    content: "";
-    position: absolute;
-    pointer-events: none;
-}
-
-.footer-lang-button.is-unavailable::before {
-    inset: -2px;
-    border: 2px solid var(--error-color);
-    border-radius: 999px;
-}
-
-.footer-lang-button.is-unavailable::after {
-    top: 50%;
-    left: 50%;
-    width: 1.35rem;
-    height: 2px;
-    background: var(--error-color);
-    transform: translate(-50%, -50%) rotate(-35deg);
-}
-
 .lang-badge {
     font-family: var(--mono-font-stack);
     font-size: var(--global-font-size);
     color: var(--primary-color);
     letter-spacing: 0.03em;
-    line-height: 1;
+}
+
+.footer-lang-button.is-unavailable .lang-badge {
+    color: var(--error-color);
+    text-decoration: line-through;
+    cursor: not-allowed;
 }
 
 /* ============================= */
