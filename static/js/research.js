@@ -105,7 +105,7 @@ const MAX_BAR = 10; // 10 segments = each segment is 10%; fractional part shown 
 
     const tdBar = document.createElement('td');
     tdBar.setAttribute('aria-hidden', 'true');
-    tdBar.style.cssText = 'white-space:nowrap;padding:0 0.5em;letter-spacing:1px;';
+    tdBar.style.cssText = 'white-space:nowrap;padding:0 0.5em;letter-spacing:1px;vertical-align:middle;';
 
     if (fullSegments > 0) {
       const s = document.createElement('span');
@@ -130,8 +130,8 @@ const MAX_BAR = 10; // 10 segments = each segment is 10%; fractional part shown 
 
     /* Count */
     const tdCount = document.createElement('td');
-    tdCount.textContent = count;
-    tdCount.style.cssText = 'text-align:right;color:var(--secondary-color);white-space:nowrap;';
+    tdCount.textContent = `${count} works`.padStart(10);
+    tdCount.style.cssText = 'text-align:right;color:var(--secondary-color);white-space:pre;';
     tr.appendChild(tdCount);
 
     /* Tooltip events on the whole row */

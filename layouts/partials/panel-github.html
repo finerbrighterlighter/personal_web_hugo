@@ -1,0 +1,18 @@
+<div class="terminal-window panel" role="region" aria-label="Open source projects">
+  <div class="window-header">
+    <div class="window-controls" aria-hidden="true">
+      <span class="control close"></span>
+      <span class="control minimize"></span>
+      <span class="control maximize"></span>
+    </div>
+    <div class="window-title">github.sh</div>
+  </div>
+  <div class="window-content">
+    {{- $gh := hugo.Data.github_repository -}}
+    <pre class="panel-terminal"><a href="https://github.com/{{ .Site.Params.promptName }}" target="_blank" rel="noopener">$ gh repo list --owner={{ .Site.Params.promptName }}</a></pre>
+    <div id="github-projects" aria-live="polite"></div>
+    <script>
+      window.__githubProjects = {{ $gh.groups | jsonify | safeJS }};
+    </script>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+groups:
+  - owner: CEB-Data-Science-Clinical-Informatics
+    label: CEB Data Science and Clinical Informatics
+    repos:
+      - name: Hypertension-Cohort
+        label: Hypertension Data Warehouse
+      - name: Dementia-Cohort
+        label: Dementia Data Warehouse
+  - owner: finerbrighterlighter
+    label: Personal
+    repos:
+      - name: myanmar_covid19
+        label: Myanmar COVID-19 Dashboard
+      - name: personal_web_hugo
+        label: This Hugo website
