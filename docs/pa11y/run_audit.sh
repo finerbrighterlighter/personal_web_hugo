@@ -1,24 +1,12 @@
 #!/usr/bin/env bash
 export PATH="/home/finer/.config/nvm/versions/node/v25.9.0/bin:$PATH"
-BASE=http://localhost:1313
 OUT="$(dirname "$0")"
+# Results are written to docs/pa11y/{palette}/
 
-pages=(
-  "index $BASE/"
-  "about $BASE/about/"
-  "works $BASE/works/"
-  "work_single $BASE/works/journal/2023_transitions_from_hypertension_to_cvd_outcomes/"
-  "posts $BASE/posts/"
-  "post_single $BASE/posts/260417-phd-journal-club/"
-  "blood $BASE/blood/"
-)
+# Audit with Duck light theme (the site default palette).
+# To switch to colorblind light instead, change PALETTE to: colorblind
+PALETTE="${1:-duck}"
 
-for entry in "${pages[@]}"; do
-  name="${entry%% *}"
-  url="${entry#* }"
-  echo "Auditing $name ($url)..."
-  pa11y --wait 10000 --reporter csv "$url" > "$OUT/$name.csv"
-  echo "  -> $(( $(wc -l < "$OUT/$name.csv") - 1 )) errors"
-done
-
+echo "Running pa11y audit [theme: $PALETTE light]..."
+node "$OUT/run_audit.js" "$PALETTE" "$OUT"
 echo "All done."

@@ -247,7 +247,7 @@
     primary: "#0072b2"
     secondary: "#6b5e4a"
     tertiary: "#dcdcdc"
-    error: "#d55e00"
+    error: "#4d0000"
     progress_bar_background: "#dcdcdc"
     progress_bar_fill: "#0072b2"
     code_bg: "#efefef"

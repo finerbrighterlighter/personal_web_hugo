@@ -1376,17 +1376,23 @@ Links embedded in paragraph text on the about page are intentionally subtle — 
 
 ### pa11y audit results
 
-Full audit results are in `docs/pa11y/` (CSV per page + `README.md` summary). Re-run with `bash docs/pa11y/run_audit.sh` (Hugo dev server must be running).
+Full audit results are in `docs/pa11y/{theme}/` (CSV per page) + `docs/pa11y/README.md` summary. Re-run with:
 
-**Important:** always use `--wait 10000` (10 seconds). OpenAlex metrics render async via `openalex.js`; shorter waits can produce inconsistent results where pages appear clean before async content loads.
+```bash
+bash docs/pa11y/run_audit.sh            # Duck light (default)
+bash docs/pa11y/run_audit.sh colorblind # Colorblind light
+```
 
-**Current state (2026-05-07, pa11y 9.1.1, `--wait 10000`):**
+The runner pre-seeds `localStorage` (`theme-mode=light`, `theme-palette-light=<palette>`) via a shared Puppeteer browser before each page test, so the inline theme script applies the correct palette on load. Hugo dev server must be running on `localhost:1313`.
 
-| Page        | Result      |
-| ----------- | ----------- |
-| All 7 pages | ✅ 0 errors |
+**Contrast is only assured for Duck light and Colorblind light.** Other palettes are not tested.
 
-The previous OpenAlex SVG contrast finding was eliminated by replacing the SVG chart with an HTML/CSS bar chart.
+**Current state (2026-05-08, pa11y 9.1.1):**
+
+| Theme            | Pages | Result      |
+| ---------------- | ----- | ----------- |
+| Duck light       | 7/7   | ✅ 0 errors |
+| Colorblind light | 7/7   | ✅ 0 errors |
 
 **Previously fixed and cleared:**
 
@@ -1398,3 +1404,5 @@ The previous OpenAlex SVG contrast finding was eliminated by replacing the SVG c
 | OpenAlex SVG contrast false positives | Replaced SVG chart with HTML/CSS bars                                                                         |
 | Filter button `.active` contrast    | False positive — chained CSS custom properties confuse htmlcs/axe; real ratios ~5.5:1 (light) / ~11:1 (dark) |
 | Prose link underlines (`/about/`)   | Accepted — intentional design; links are easter eggs                                                         |
+| Colorblind light `.api-error` / `.nf-line-err` | `--error-color` changed from `#d55e00` (3.71:1) to `#4d0000` (15.29:1)                       |
+| All false positives (no-theme runs) | Audit now pre-seeds localStorage; CSS variables resolve correctly                                             |
