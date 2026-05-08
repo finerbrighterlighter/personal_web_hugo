@@ -217,6 +217,7 @@ function render(groups) {
     ownerLink.href        = `https://github.com/${group.owner}`;
     ownerLink.target      = '_blank';
     ownerLink.rel         = 'noopener';
+    ownerLink.title       = `GitHub: ${group.owner}`;
     ownerLink.textContent = group.label || group.owner;
     ownerLink.style.cssText = 'color:var(--primary-color);text-decoration:none;';
     ownerLink.addEventListener('mouseover', () => ownerLink.style.textDecoration = 'underline');
