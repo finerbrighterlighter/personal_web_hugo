@@ -1,5 +1,7 @@
 import { getCache, setCache } from './cache.js';
 
+const isTouch = window.matchMedia('(hover: none)').matches;
+
 /* GitHub linguist colours for common languages */
 const LANG_COLORS = {
   'Jupyter Notebook':  '#DA5B0B',
@@ -126,7 +128,7 @@ function makeLangBar(langs, tooltip, repoName, repoUrl) {
   );
 
   const bar = makeBar(colors);
-  if (repoUrl) {
+  if (repoUrl && !isTouch) {
     bar.style.cursor = 'pointer';
     bar.addEventListener('click', () => window.open(repoUrl, '_blank', 'noopener'));
   }
@@ -139,7 +141,7 @@ function makeLangBar(langs, tooltip, repoName, repoUrl) {
     const pct = ((bytes / total) * 100).toFixed(1);
     return `<span style="color:${colorMap.get(lang)}">■</span> ${lang} ${pct}%`;
   });
-  const footer = repoUrl ? `<span style="color:var(--secondary-color);opacity:0.6"> · click to open repo</span>` : '';
+  const footer = repoUrl ? `<br><span style="color:var(--secondary-color);opacity:0.6">click to open repo</span>` : '';
   const tooltipHTML = header + lines.join('<br>') + footer;
 
   return { bar, tooltipHTML };
