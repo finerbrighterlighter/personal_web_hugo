@@ -132,6 +132,7 @@ const MAX_BAR = 10; // 10 segments = each segment is 10%; fractional part shown 
     const tdCount = document.createElement('td');
     tdCount.textContent = `${count} works`.padStart(10);
     tdCount.style.cssText = 'text-align:right;color:var(--secondary-color);white-space:pre;';
+    tdCount.className = 'col-hide-mobile';
     tr.appendChild(tdCount);
 
     /* Tooltip events on the whole row */

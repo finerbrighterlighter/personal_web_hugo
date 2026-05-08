@@ -269,6 +269,7 @@ function render(groups) {
       const tdTime = document.createElement('td');
       tdTime.textContent   = relativeTime(repo.pushed_at);
       tdTime.style.cssText = 'text-align:right;color:var(--secondary-color);white-space:pre;';
+      tdTime.className = 'col-hide-mobile';
       trName.appendChild(tdTime);
 
       /* Tooltip on the whole row */

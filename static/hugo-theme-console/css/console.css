@@ -1875,6 +1875,10 @@ header.terminal-logo {
 
 @media (min-width: 768px) and (max-width: 1250px) {
 
+    .col-hide-mobile {
+        display: none;
+    }
+
     .terminal-nav {
         display: flex;
         flex-direction: column;
@@ -1953,6 +1957,10 @@ header.terminal-logo {
 /* ============================= */
 
 @media (max-width: 767px) {
+
+    .col-hide-mobile {
+        display: none;
+    }
 
     :root {
         --global-font-size: 0.85rem;
