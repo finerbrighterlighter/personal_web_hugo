@@ -856,10 +856,32 @@ p.social a {
     letter-spacing: 0.03em;
 }
 
-.footer-lang-button.is-unavailable .lang-badge {
-    color: var(--error-color);
-    text-decoration: line-through;
+.footer-lang-button.is-unavailable {
+    position: relative;
+    display: inline-block;
     cursor: not-allowed;
+}
+
+.footer-lang-button.is-unavailable::before,
+.footer-lang-button.is-unavailable::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+}
+
+.footer-lang-button.is-unavailable::before {
+    inset: -2px;
+    border: 2px solid var(--error-color);
+    border-radius: 999px;
+}
+
+.footer-lang-button.is-unavailable::after {
+    top: 50%;
+    left: 50%;
+    width: 1.35rem;
+    height: 2px;
+    background: var(--error-color);
+    transform: translate(-50%, -50%) rotate(-35deg);
 }
 
 /* ============================= */
