@@ -84,7 +84,7 @@ def load_works(section):
         if text.startswith("---"):
             raw = text.split("---", 2)[1]
             fm = yaml.safe_load(raw)
-            if fm:
+            if fm and not fm.get("draft"):
                 pages.append(fm)
     pages.sort(key=lambda x: str(x.get("date", "")), reverse=True)
     return pages
@@ -348,6 +348,201 @@ def _render_bullet(b):
     return f"<li>{text}{suffix}</li>"
 
 
+def _render_bullet_md(b):
+    if isinstance(b, str):
+        return f"- {b}"
+    text  = b["text"]
+    links = b.get("links", [])
+    link_md = " · ".join(f'[{l["label"]}]({l["url"]})' for l in links)
+    return f"- {text}" + (f"  \n  {link_md}" if link_md else "")
+
+
+# ── Markdown citation helpers ──────────────────────────────────────────────────
+
+def doi_md(sources):
+    """Return a markdown link for the first DOI in sources, or ''."""
+    for s in sources or []:
+        url = s.get("url", "")
+        if "doi.org" in url:
+            short = url.replace("https://doi.org/", "").replace("http://doi.org/", "")
+            return f"[{short}]({url})"
+    return ""
+
+
+def fmt_nlm_citation_md(p, bibtex):
+    """NLM citation as plain Markdown (bold via **, italic via _, links via []()), ."""
+    highlight_idx = next(
+        (i for i, a in enumerate(p.get("authors", [])) if a.get("highlight")),
+        None,
+    )
+    raw_authors = _bib_authors(bibtex)
+    formatted   = [_fmt_author_nlm(a) for a in raw_authors]
+    if len(formatted) > NLM_AUTHOR_LIMIT:
+        shown  = formatted[:NLM_AUTHOR_LIMIT]
+        suffix = ", et al."
+    else:
+        shown  = list(formatted)
+        suffix = "."
+
+    if highlight_idx is not None and highlight_idx < len(shown):
+        shown[highlight_idx] = f"**{shown[highlight_idx]}**"
+
+    author_str = ", ".join(shown) + suffix
+    title = p.get("title", "")
+    venue = p.get("venue", "")
+    year  = str(p.get("date", ""))[:4]
+    vol   = _bib_field(bibtex, "volume")
+    num   = _bib_field(bibtex, "number")
+    pages = _bib_field(bibtex, "pages")
+    if pages:
+        pages = re.sub(r'--?', '-', pages)
+
+    cite = f"{author_str} {title}. _{venue}_. {year}"
+    if vol:
+        cite += f";{vol}"
+    if num:
+        cite += f"({num})"
+    if pages:
+        cite += f":{pages}"
+    cite += "."
+    d = doi_md(p.get("sources"))
+    if d:
+        cite += f" doi: {d}"
+    return cite
+
+
+def fmt_authors_fallback_md(authors):
+    rm = get_researcher_map()
+    parts = []
+    for a in authors:
+        if a.get("id"):
+            person = rm.get(a["id"], {})
+            given  = person.get("given", a.get("given", ""))
+            family = person.get("family", a.get("family", ""))
+        else:
+            given  = a.get("given", "")
+            family = a.get("family", "")
+        name = f"{family} {given[0]}" if given else family
+        parts.append(f"**{name}**" if a.get("highlight") else name)
+    return ", ".join(parts)
+
+
+def _pub_cite_md(p):
+    doi_val = get_doi(p.get("sources"))
+    bibtex  = get_bibtex(doi_val) if doi_val else None
+    if bibtex:
+        return fmt_nlm_citation_md(p, bibtex)
+    authors  = fmt_authors_fallback_md(p.get("authors", []))
+    d        = doi_md(p.get("sources"))
+    cite     = f'{authors} {p["title"]}. _{p.get("venue", "")}_.'
+    if d:
+        cite += f" doi: {d}"
+    return cite
+
+
+# ── Markdown assembler ─────────────────────────────────────────────────────────
+
+def build_markdown(cv):
+    contact = cv["contact"]
+    lines = []
+
+    # Header
+    lines += [
+        f"# {cv['header']['name'].upper()}",
+        "",
+        cv['header']['address'],
+        "",
+        f"{contact['phone']} · {contact['email']} · {contact['website']}",
+        "",
+        "---",
+        "",
+    ]
+
+    # Research Interests
+    lines += [
+        "## Research Interests",
+        "",
+        "; ".join(cv["research_interests"]),
+        "",
+        "---",
+        "",
+    ]
+
+    # Education
+    lines += ["## Education", ""]
+    for e in cv["education"]:
+        lines.append(f"**{e['time']}** | {e['university']}")
+        if e.get("ranking"):
+            lines.append(f"_{e['ranking']}_")
+        lines.append(f"**{e['degree']}** — {e['field']}")
+        if e.get("thesis"):
+            lines.append(f"Thesis: {e['thesis']}")
+        if e.get("note"):
+            lines.append(e["note"])
+        lines.append("")
+    lines += ["---", ""]
+
+    # Work Experience
+    lines += ["## Work Experience", ""]
+    for e in cv["work_experience"]:
+        lines.append(f"**{e['time']}** | {e['institution']}")
+        lines.append(f"**{e['role']}**")
+        for b in e.get("bullets", []):
+            lines.append(_render_bullet_md(b))
+        lines.append("")
+    lines += ["---", ""]
+
+    # Awards
+    lines += ["## Awards", ""]
+    for a in cv["awards"]:
+        lines.append(f"**{a['year']}** | {a['title']}  ")
+        lines.append(f"_{a['institution']}_")
+        lines.append("")
+    lines += ["---", ""]
+
+    # Additional Relevant Experiences
+    lines += ["## Additional Relevant Experiences", ""]
+    for e in cv["additional_experiences"]:
+        lines.append(f"**{e['institution']}**")
+        lines.append(f"_{e['title']}_")
+        for b in e.get("bullets", []):
+            lines.append(f"- {b}")
+        lines.append("")
+    lines += ["---", ""]
+
+    # Publications
+    lines += ["## Publications", ""]
+    journals  = load_works("journal")
+    preprints = load_works("preprint")
+    print("Building Markdown publications…")
+    for i, p in enumerate(journals, 1):
+        lines.append(f"{i}. {_pub_cite_md(p)}")
+    if preprints:
+        lines += ["", "### Preprints and Under Review", ""]
+        for i, p in enumerate(preprints, 1):
+            lines.append(f"{i}. {_pub_cite_md(p)}")
+    lines += ["", "---", ""]
+
+    # Conferences
+    conferences = load_works("conference")
+    type_label  = {
+        "conference-speaking":   "Speaker",
+        "conference-poster":     "Poster",
+        "conference-proceeding": "Proceeding",
+    }
+    lines += ["## Conferences", ""]
+    for c in conferences:
+        year  = str(c.get("date", ""))[:4]
+        label = type_label.get(c.get("type", ""), "")
+        tag   = f" · {label}" if label else ""
+        lines.append(f"**{year}**{tag}  ")
+        lines.append(f"{c['title']}  ")
+        lines.append(f"_{c.get('venue', '')}_")
+        lines.append("")
+
+    return "\n".join(lines)
+
+
 def row(left, right, cls=""):
     """Wrap left/right content in the two-column flex row used throughout the CV."""
     c = f' {cls}' if cls else ''
@@ -603,9 +798,10 @@ if __name__ == "__main__":
     CV_DIR.mkdir(parents=True, exist_ok=True)
 
     cv   = load_yaml(DATA / "cv.yml")
-    html = build_html(cv)
+    today = datetime.now().strftime("%Y%m%d")
 
-    today   = datetime.now().strftime("%Y%m%d")
+    # ── PDF ──────────────────────────────────────────────────────────────────
+    html    = build_html(cv)
     dated   = CV_DIR / f"cv_htunteza_{today}.pdf"
     current = CV_DIR / "cv_htunteza.pdf"
 
@@ -621,3 +817,9 @@ if __name__ == "__main__":
     print(f"Written:  {dated.name}")
     print(f"Current:  {current.name}")
     print(f"Versions: {versions}")
+
+    # ── Markdown ─────────────────────────────────────────────────────────────
+    md_text    = build_markdown(cv)
+    md_current = CV_DIR / "cv_htunteza.md"
+    md_current.write_text(md_text, encoding="utf-8")
+    print(f"Markdown: {md_current.name}")
