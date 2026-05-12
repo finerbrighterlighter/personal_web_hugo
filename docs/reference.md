@@ -1187,6 +1187,7 @@ data/researchers.yml      → get_researcher_map()
 ```text
 static/general/cv/
 ├── cv_htunteza.pdf             Always-current; sidebar links here
+├── cv_htunteza.md              Markdown version (same run, same content)
 └── cv_htunteza_YYYYMMDD.pdf    Dated archive
 ```
 
@@ -1322,9 +1323,9 @@ Accessibility is treated as a first-class concern. The following patterns are ap
 
 ### Panels (`panel-*.html`)
 
-All seven right-column panels carry `role="region"` and `aria-label`:
+All eight right-column panels carry `role="region"` and `aria-label`:
 
-| File                    | `aria-label`         |
+| File                    | `aria-label`           |
 | ----------------------- | ---------------------- |
 | `panel-openalex.html` | "Publications metrics" |
 | `panel-research.html` | "Research topics"      |
@@ -1332,6 +1333,7 @@ All seven right-column panels carry `role="region"` and `aria-label`:
 | `panel-anilist.html`  | "Manga"                |
 | `panel-trakt.html`    | "Screen"               |
 | `panel-unsplash.html` | "Photos"               |
+| `panel-github.html`   | "Open source projects" |
 | `panel-privacy.html`  | "Privacy and cache"    |
 
 Dynamic content divs inside each panel already carry `aria-live="polite"` where content is injected by JS.
@@ -1354,7 +1356,7 @@ Dynamic content divs inside each panel already carry `aria-live="polite"` where 
 
 `sidebar-content.html`: `.avatar-wrapper` has `role="button" tabindex="0" aria-label="Profile photo"`. The avatar `<img>` uses `alt=""` (decorative — button label covers it).
 
-`duck.js`: keydown handler fires `.click()` on Enter/Space so keyboard users can trigger the easter egg. The quack `<span>` elements are not in the tab order and carry no ARIA roles (they are purely visual).
+`duck.js`: keydown handler fires `.click()` on Enter/Space so keyboard users can trigger the easter egg. The quack `<span>` elements and the duck mascot image are both `aria-hidden="true"` — purely decorative. Audio: a pool of `Audio('/general/duck_quack.mp3')` objects is pre-loaded on init; the quack row div is also `aria-hidden="true"` so screen readers are not affected.
 
 ### Theme toggle (`theme.js`)
 
@@ -1387,7 +1389,7 @@ The runner pre-seeds `localStorage` (`theme-mode=light`, `theme-palette-light=<p
 
 **Contrast is only assured for Duck light and Colorblind light.** Other palettes are not tested.
 
-**Current state (2026-05-08, pa11y 9.1.1):**
+**Current state (2026-05-12, pa11y 9.1.1):**
 
 | Theme            | Pages | Result      |
 | ---------------- | ----- | ----------- |
