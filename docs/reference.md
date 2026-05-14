@@ -264,7 +264,14 @@ Hugo version is pinned here. To upgrade: change `HUGO_VERSION` and test locally 
 
 Netlify does not read the project's local `.env` when choosing Hugo; it installs Hugo from `HUGO_VERSION` in `netlify.toml`.
 
-For local development, keep your Hugo binary aligned to that value (for example by prepending a pinned Hugo path in your local `.env` when using `dotenv run ...`).
+For local development, keep your Hugo binary aligned to that value by prepending a pinned Hugo path in your local `.env` and running Hugo through `dotenv run ...`.
+
+Recommended default local workflow:
+
+```bash
+dotenv run hugo server
+dotenv run hugo --gc --minify
+```
 
 Recommended pre-flight check:
 
@@ -517,11 +524,18 @@ DOI is extracted from any source URL containing `doi.org/` — the prefix is str
 ```yaml
 title: "Post title"
 date: 2024-03-28T12:00:00+07:00
+url: "/posts/example_slug/"    # optional explicit permalink
 description: "Short excerpt shown in post lists"
 company: "Optional — shown as a tag on the post"  # optional
 private: false   # true → hidden from list, sitemap, and search engines
 math: false      # true → loads KaTeX CSS (<head>) and JS (</body>) for LaTeX rendering
+image: "cover.webp"  # optional page-bundle social image for og/twitter cards
 ```
+
+Draft post example bundle: `content/posts/YYYMMDD-example-name/index.md`
+
+- Uses `draft: true`, `private: true`, and `build.render/list never` so it stays template-only.
+- Documents all supported post front matter fields and common authoring conventions.
 
 **Math rendering:** set `math: true` to enable KaTeX on that post. Inline math: `$...$`. Display (block) math: `$$...$$`. Requires the goldmark passthrough extension in `hugo.toml` (already configured) — without it, goldmark processes `_` and `\` inside delimiters and breaks the LaTeX.
 
@@ -1215,22 +1229,20 @@ sudo apt-get install libcairo2 libpango-1.0-0 libpangocairo-1.0-0 \
 
 | Partial                | Condition                       | Output                                                                                                                                                                                                                                                                                                                                                                                             |
 | ---------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `header.html`        | Every page                      | `<meta name="description">` (abstract on works, site description elsewhere); `og:title`, `og:description`, `og:type` (`website` home / `article` others), `og:image`, `og:logo` (apple-touch-icon.png), `og:site_name`; Twitter Card tags; `<link rel="canonical">` (guarded — only emitted when `.Permalink` is non-empty, i.e. not on conference/report suppressed pages) |
+| `header.html`        | Every page                      | `<meta name="description">` (citation-style string on journal works, abstract on non-journal works, summary on posts, site description elsewhere); `og:title`, `og:description`, `og:type` (`website` home / `article` others), `og:image`, `og:logo` (apple-touch-icon.png), `og:site_name`; Twitter Card tags; `<link rel="canonical">` (guarded — only emitted when `.Permalink` is non-empty, i.e. not on conference/report suppressed pages) |
+| `work-meta-description.html` | `header.html` | Returns the final meta description string: journal works use up-to-4-author citation text (Family G, …, et al.) + venue + year + DOI URL when available; other works use truncated abstract; posts use front matter or summary fallback; everything else uses site description |
 | `home-seo.html`      | `.IsHome`                     | JSON-LD `Person` — name, jobTitle, image (apple-touch-icon.png, 180×180), description, sameAs (ORCID + Google Scholar)                                                                                                                                                                                                                                                                         |
-| `work-seo.html`      | `works` section + `.IsPage` | `citation_title`, `citation_author` (Family, Given — one tag per author), `citation_publication_date`, `citation_journal_title`, `citation_doi`, `citation_abstract_html_url`, `citation_fulltext_html_url`; JSON-LD `ScholarlyArticle` with author ORCID as `identifier`                                                                                                       |
+| `work-seo.html`      | `works` section + `.IsPage` | `citation_title`, `citation_author` (Family, Given — one tag per author), `citation_publication_date`, `citation_journal_title`, `citation_doi`, `citation_pdf_url` (when a PDF source exists), `citation_abstract_html_url`, `citation_fulltext_html_url`, `citation_keywords`; `article:published_time`; JSON-LD `ScholarlyArticle` with author ORCID as `identifier`, keywords, and PDF encoding when available |
+| `post-seo.html`      | `posts` section + `.IsPage` | JSON-LD `BlogPosting` — title, published date, canonical URL, author, and description from front matter or summary                                                                                                                                                                                                                                                                               |
 | `breadcrumb-ld.html` | Every non-home page             | JSON-LD `BreadcrumbList` built from URL path segments; each item has `@type`, `position`, `name`, `item` (URL)                                                                                                                                                                                                                                                                           |
 
 **`$desc` resolution in `header.html`:**
 
 ```go
-{{- $desc := .Site.Params.description -}}       // 1. site default (per-language)
-{{- with .Params.description }}{{- $desc = . -}}{{- end -}}  // 2. page-level override
-{{- if and (eq .Section "works") .IsPage .Plain -}}
-  {{- $desc = .Plain | truncate 160 "..." -}}   // 3. works pages → abstract body (truncated)
-{{- end -}}
+{{- $desc := partial "work-meta-description.html" . -}}
 ```
 
-Priority: works abstract → page front matter `description` → site-level (per-language) description. The OG image is a single unified variable (`$ogImage := "general/og_image.webp" | absURL`) used for both `og:image` and `twitter:image`.
+Priority: journal works citation string → non-journal works abstract → page front matter `description` / posts summary → site-level (per-language) description. The OG image variable (`$ogImage`) resolves from the page bundle resource named by `.Params.image` when set; falls back to `general/og_image.webp | absURL`. Applied to both `og:image` and `twitter:image`. Posts can set `image: "filename.webp"` in front matter to use a bundle-local social preview.
 
 ### JSON-LD encoding
 

@@ -17,6 +17,9 @@
     {{- if and (eq .Section "works") .IsPage -}}
       {{- partial "work-seo.html" . -}}
     {{- end -}}
+    {{- if and (eq .Section "posts") .IsPage -}}
+      {{- partial "post-seo.html" . -}}
+    {{- end -}}
     {{- partial "breadcrumb-ld.html" . -}}
     {{ block "head-extra" . }}{{ end }}
 </head>

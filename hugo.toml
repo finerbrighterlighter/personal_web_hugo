@@ -11,7 +11,7 @@ defaultContentLanguageInSubdir = false
     home = ["HTML", "llmstxt", "llmsfull"]
 
   [languages.en.params]
-    description = "Htun Teza is a Burmese Data Scientist, Research Assistant and Dentist: currently based in Bangkok Thailand."
+    description = "Htun Teza is a Burmese health data researcher working on real-world evidence, EMR-derived cohorts, and longitudinal analysis, with a focus on what clinical data can and cannot reliably tell us."
 
 [languages.mm]
   locale = "my"

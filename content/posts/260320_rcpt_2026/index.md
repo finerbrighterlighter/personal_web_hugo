@@ -3,6 +3,7 @@ title: 42nd Annual Meeting of The Royal College of Physicians of Thailand
 url: /posts/rcpt_2026/
 date: 2026-03-20
 company: Dusit Thani Pattaya, Chonburi, Thailand
+image: "rcpt-1.webp"
 ---
 
 I had the opportunity to speak at the [42nd Annual Meeting of the The Royal College of Physicians of Thailand (RCPT)](https://www2.rcpt.org/conference/2026/) held in Pattaya, Thailand. My presentation focused on the associations between PM2.5 exposure and dementia, in collaboration with the Dementia Association of Thailand. <!--more--> 

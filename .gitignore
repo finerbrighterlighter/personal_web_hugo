@@ -34,6 +34,9 @@ CLAUDE.md
 # Local Copilot working notes; intentionally excluded from repository history.
 COPILOT.md
 
+# Local agent working notes; intentionally excluded from repository history.
+agents.md
+
 # Local Claude workspace config directory.
 .claude/
 

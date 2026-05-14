@@ -18,13 +18,14 @@
 
 <!-- ============================= -->
 
-{{- $desc := .Site.Params.description -}}
-{{- with .Params.description }}{{- $desc = . -}}{{- end -}}
-{{- if and (eq .Section "works") .IsPage .Plain -}}
-  {{- $desc = .Plain | truncate 160 "..." -}}
-{{- end -}}
+{{- $desc := partial "work-meta-description.html" . -}}
 {{- $permalink := .Permalink -}}
 {{- $ogImage := "general/og_image.webp" | absURL -}}
+{{- with .Params.image -}}
+  {{- with $.Resources.GetMatch . -}}
+    {{- $ogImage = .Permalink -}}
+  {{- end -}}
+{{- end -}}
 <meta name="description" content="{{ $desc }}">
 <meta name="author" content="{{ .Site.Params.author }}">
 {{ if eq .Params.private true }}

@@ -17,7 +17,7 @@ I hadn't yet thought to ask what information was just left on the table.
 
 ---
 
-Before the MSc, I was a [dental house officer](posts/I_was_a_dentist/#house-officer) in Yangon. Our team spent days in the field measuring **periodontal pocket depths** — six sites per tooth, twenty-eight teeth per patient — and we were still short of our target sample size. We knew, without being able to articulate it precisely, that a smarter way to prioritize candidates existed. We just didn't have the tools.
+Before the MSc, I was a [dental house officer](/posts/I_was_a_dentist/#house-officer) in Yangon. Our team spent days in the field measuring **periodontal pocket depths** — six sites per tooth, twenty-eight teeth per patient — and we were still short of our target sample size. We knew, without being able to articulate it precisely, that a smarter way to prioritize candidates existed. We just didn't have the tools.
 
 That frustration is what sent me to Mahidol. I arrived wanting tools. For the first two years, tools were all I wanted.
 

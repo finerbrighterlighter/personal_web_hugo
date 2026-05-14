@@ -4,11 +4,23 @@
 {{- with .Params.sources }}{{- $src = . -}}{{- end -}}
 {{- $ft  := index (where $src "text" "fulltext") 0 -}}
 {{- $doi := "" -}}
+{{- $pdf := "" -}}
 {{- range $src -}}
   {{- if and (not $doi) (strings.Contains .url "doi.org/") -}}
     {{- $doi = .url | strings.TrimPrefix "https://doi.org/" | strings.TrimPrefix "http://doi.org/" -}}
   {{- end -}}
+  {{- if and (not $pdf) (hasSuffix (lower .url) ".pdf") -}}
+    {{- if hasPrefix .url "http" -}}
+      {{- $pdf = .url -}}
+    {{- else -}}
+      {{- $pdf = .url | absURL -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
+{{- $keywords := slice -}}
+{{- with .Params.conditions }}{{- $keywords = $keywords | append . -}}{{- end -}}
+{{- with .Params.datasource }}{{- $keywords = $keywords | append . -}}{{- end -}}
+{{- with .Params.methods }}{{- $keywords = $keywords | append . -}}{{- end -}}
 
 {{/* ── citation_* meta tags (Google Scholar, Semantic Scholar, etc.) ── */}}
 <meta name="citation_title" content="{{ .Title }}">
@@ -31,10 +43,19 @@
 {{ with $doi -}}
 <meta name="citation_doi" content="{{ . }}">
 {{ end -}}
+{{ with $pdf -}}
+<meta name="citation_pdf_url" content="{{ . }}">
+{{ end -}}
 <meta name="citation_abstract_html_url" content="{{ .Permalink }}">
 {{ with $ft -}}
 <meta name="citation_fulltext_html_url" content="{{ .url }}">
 {{ end }}
+{{ with $keywords -}}
+<meta name="citation_keywords" content="{{ delimit . ", " }}">
+{{ end -}}
+
+{{/* ── Article meta for social/share consumers ── */}}
+<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
 
 {{/* ── JSON-LD ScholarlyArticle ── */}}
 {{- $authors := slice -}}
@@ -74,5 +95,11 @@
 {{- end -}}
 {{- with .Plain -}}
   {{- $ld = merge $ld (dict "description" (. | truncate 500 "...")) -}}
+{{- end -}}
+{{- with $keywords -}}
+  {{- $ld = merge $ld (dict "keywords" .) -}}
+{{- end -}}
+{{- with $pdf -}}
+  {{- $ld = merge $ld (dict "encoding" (dict "@type" "MediaObject" "contentUrl" . "encodingFormat" "application/pdf")) -}}
 {{- end -}}
 <script type="application/ld+json">{{ $ld | jsonify | safeJS }}</script>
