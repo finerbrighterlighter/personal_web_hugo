@@ -789,10 +789,34 @@ figure {
 
 .post-single h1 {
     --display-h1-decoration: none;
+    color: var(--primary-color);
     font-size: 1.1rem;
     font-weight: bold;
     line-height: 1.5;
     margin-bottom: var(--space-2);
+    padding-bottom: var(--space-1);
+    border-bottom: 1px solid color-mix(in srgb, var(--primary-color) 40%, transparent);
+}
+
+.post-single h2,
+.post-single h3,
+.post-single h4,
+.post-single h5,
+.post-single h6 {
+    color: var(--primary-color);
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-1);
+    border-bottom: 1px solid color-mix(in srgb, var(--primary-color) 40%, transparent);
+    line-height: 1.4;
+}
+
+.post-single h2 {
+    font-size: 1rem;
+}
+
+.post-single h3 {
+    font-size: 0.95rem;
 }
 
 .post-meta {
@@ -2164,4 +2188,3 @@ header.terminal-logo {
 @keyframes nf-blink {
     50% { opacity: 0; }
 }
-
