@@ -6,11 +6,11 @@ title: "From Obsidian Knowledge Graph to Delegated Librarian"
 date: 2026-05-15
 
 # Public permalink. Folder name can stay organizational/date-prefixed.
-url: "260515-Opencode-Librarian-System"
+url: "/posts/260515-Opencode-Librarian-System"
 
 # Optional short excerpt for list views and SEO/social previews.
 # If omitted, posts fall back to .Summary.
-description: "One-sentence summary used in lists and meta previews."
+description: "I did not start with an agent problem. I started with a memory problem."
 
 # Optional label shown under the title on the post page.
 # Common values: a place/event for academic posts, or Personal update.
