@@ -87,8 +87,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".sidebar").forEach(win => {
       const header = win.querySelector(".window-header");
+      const hasPostToc = win.dataset.hasPostToc === "true";
 
-      if (e.matches && !isHome) {
+      if (hasPostToc) {
+        win.classList.add("collapsed");
+      } else if (e.matches && !isHome) {
         win.classList.add("collapsed");
       } else {
         win.classList.remove("collapsed");

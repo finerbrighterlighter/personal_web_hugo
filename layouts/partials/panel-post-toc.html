@@ -1,0 +1,75 @@
+{{ if and .IsPage (eq .Section "posts") }}
+{{ $sectionHeadings := findRE `<h[2-6][^>]*id=` .Content }}
+{{ if ge (len $sectionHeadings) 2 }}
+<aside class="terminal-window panel post-toc-panel" aria-label="Table of contents">
+  <div class="window-header">
+    <div class="window-controls" aria-hidden="true">
+      <span class="control close"></span>
+      <span class="control minimize"></span>
+      <span class="control maximize"></span>
+    </div>
+    <div class="window-title">toc.sh</div>
+  </div>
+  <div class="window-content">
+    <nav class="post-toc" aria-label="Table of contents">
+      <pre class="panel-terminal post-toc-command">$ toc --levels=<span class="post-toc-current-level">1</span></pre>
+      <div class="post-toc-controls">
+        <fieldset class="post-toc-level-switch">
+          <span class="post-toc-level-legend">Levels</span>
+          <input type="radio" name="post-toc-level" id="post-toc-level-1" value="1" checked>
+          <label class="post-toc-level-option" for="post-toc-level-1">1</label>
+          <input type="radio" name="post-toc-level" id="post-toc-level-2" value="2">
+          <label class="post-toc-level-option post-toc-level-option-secondary" for="post-toc-level-2">2</label>
+        </fieldset>
+      </div>
+      {{ .TableOfContents }}
+    </nav>
+  </div>
+</aside>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const toc = document.querySelector(".post-toc");
+  const controls = document.querySelector(".post-toc-controls");
+  const radios = document.querySelectorAll('input[name="post-toc-level"]');
+  const currentLevel = document.querySelector(".post-toc-current-level");
+  const tocRoot = document.querySelector(".post-toc #TableOfContents");
+
+  if (!toc || !controls || !radios.length || !currentLevel || !tocRoot) return;
+
+  const maxDepth = (() => {
+    let depth = 1;
+    tocRoot.querySelectorAll("li").forEach((item) => {
+      let current = 1;
+      let node = item.parentElement;
+      while (node && node !== tocRoot) {
+        if (node.tagName === "UL" || node.tagName === "OL") current += 1;
+        node = node.parentElement;
+      }
+      depth = Math.max(depth, current);
+    });
+    return Math.min(depth, 2);
+  })();
+
+  if (maxDepth <= 1) {
+    controls.hidden = true;
+  }
+
+  const applyLevel = (level) => {
+    const clamped = Math.max(1, Math.min(maxDepth, level));
+    toc.dataset.visibleLevel = String(clamped);
+    currentLevel.textContent = String(clamped);
+    radios.forEach((radio) => {
+      radio.checked = radio.value === String(clamped);
+    });
+  };
+
+  applyLevel(1);
+  radios.forEach((radio) => {
+    radio.addEventListener("change", () => {
+      if (radio.checked) applyLevel(Number(radio.value));
+    });
+  });
+});
+</script>
+{{ end }}
+{{ end }}

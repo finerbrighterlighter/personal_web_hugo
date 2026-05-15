@@ -756,6 +756,10 @@ figure {
     font-size: var(--font-base);
 }
 
+.latest-posts-list .post + .post {
+    margin-top: var(--space-6);
+}
+
 /* ── Figure shortcode ───────────────────────────── */
 
 .post-figure {
@@ -811,6 +815,14 @@ figure {
     line-height: 1.4;
 }
 
+.post-single h2[id],
+.post-single h3[id],
+.post-single h4[id],
+.post-single h5[id],
+.post-single h6[id] {
+    scroll-margin-top: var(--space-8);
+}
+
 .post-single h2 {
     font-size: 1rem;
 }
@@ -829,6 +841,139 @@ figure {
 
 .post-meta time {
     margin-left: auto;
+}
+
+.post-single {
+    min-width: 0;
+}
+
+.post-toc-panel {
+    margin-bottom: 0;
+}
+
+.post-toc-panel .window-content {
+    padding: var(--space-4);
+}
+
+.post-toc {
+    font-size: var(--font-sm);
+    padding: 0.1rem 0;
+    color: var(--secondary-color);
+}
+
+.post-toc-command {
+    margin-top: 0;
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px dashed color-mix(in srgb, var(--secondary-color) 45%, transparent);
+}
+
+.post-toc-current-level {
+    color: var(--primary-color);
+}
+
+.post-toc-controls {
+    margin-bottom: var(--space-3);
+    flex-shrink: 0;
+    padding-left: 0.1rem;
+}
+
+.post-toc-level-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    margin: 0;
+    padding: 0.1rem;
+    border: 0;
+    background: color-mix(in srgb, var(--code-bg-color) 55%, transparent);
+}
+
+.post-toc-level-legend {
+    margin-right: var(--space-2);
+    color: var(--secondary-color);
+    font-size: var(--font-xs);
+    font-family: var(--mono-font-stack);
+}
+
+.post-toc-level-switch input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.post-toc-level-option {
+    min-width: 1.8rem;
+    padding: 0.1rem 0.45rem;
+    border: 1px dashed color-mix(in srgb, var(--secondary-color) 75%, transparent);
+    color: var(--secondary-color);
+    font-family: var(--mono-font-stack);
+    font-size: var(--font-xs);
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    background: transparent;
+}
+
+.post-toc-level-option-secondary {
+    border-left-style: dotted;
+}
+
+.post-toc-level-switch input:checked + label {
+    background: var(--primary-color);
+    color: var(--invert-font-color);
+    border-color: var(--primary-color);
+}
+
+.post-toc-level-switch input:focus-visible + label {
+    outline: 1px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.post-toc #TableOfContents ul {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.post-toc #TableOfContents > ul {
+    padding-left: 0;
+}
+
+.post-toc #TableOfContents li {
+    margin-bottom: var(--space-2);
+    list-style: none;
+    padding-left: 0.1rem;
+}
+
+.post-toc #TableOfContents li::before {
+    content: "> ";
+    color: var(--primary-color);
+}
+
+.post-toc[data-visible-level="1"] #TableOfContents li ul {
+    display: none;
+}
+
+.post-toc[data-visible-level="2"] #TableOfContents li li ul {
+    display: none;
+}
+
+.post-toc[data-visible-level="3"] #TableOfContents li li li ul {
+    display: none;
+}
+
+.post-toc[data-visible-level="4"] #TableOfContents li li li li ul {
+    display: none;
+}
+
+.post-toc #TableOfContents a {
+    color: var(--secondary-color);
+    border-bottom: none;
+    text-decoration: none;
+}
+
+.post-toc #TableOfContents a:hover,
+.post-toc #TableOfContents a:focus {
+    color: var(--primary-color);
 }
 
 /* ============================= */
@@ -954,6 +1099,10 @@ p.social a {
   max-height: 0;
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.terminal-window.collapsed.panel .window-footer {
+  display: none;
 }
 
 .terminal-window.panel{
@@ -1887,6 +2036,13 @@ header.terminal-logo {
     gap: var(--space-8);
 }
 
+.sidebar-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar-stack,
 .sidebar,
 .main-content,
 .right-panels {
@@ -1945,7 +2101,7 @@ header.terminal-logo {
         align-items: start;
     }
 
-    .sidebar {
+    .sidebar-stack {
         grid-row: span 2;
         position: sticky;
         top: 20px;
@@ -1964,7 +2120,7 @@ header.terminal-logo {
         align-items: start;
     }
 
-    .sidebar {
+    .sidebar-stack {
         position: sticky;
         top: 20px;
     }

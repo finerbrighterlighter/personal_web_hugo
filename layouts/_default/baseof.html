@@ -98,24 +98,33 @@
         </div>
     </div>
 
+    {{ $showPostToc := false }}
+    {{ if and .IsPage (eq .Section "posts") }}
+      {{ $sectionHeadings := findRE `<h[2-6][^>]*id=` .Content }}
+      {{ $showPostToc = ge (len $sectionHeadings) 2 }}
+    {{ end }}
+
     <div class="container terminal-layout {{ .Site.Params.animateStyle }}">
         
-        <aside class="terminal-window sidebar" aria-label="Profile">
-            <div class="window-header">
-                <div class="window-controls" aria-hidden="true">
-                    <span class="control close"></span>
-                    <span class="control minimize"></span>
-                    <span class="control maximize"></span>
+        <div class="sidebar-stack">
+            <aside class="terminal-window sidebar{{ if $showPostToc }} collapsed{{ end }}" aria-label="Profile"{{ if $showPostToc }} data-has-post-toc="true"{{ end }}>
+                <div class="window-header">
+                    <div class="window-controls" aria-hidden="true">
+                        <span class="control close"></span>
+                        <span class="control minimize"></span>
+                        <span class="control maximize"></span>
+                    </div>
+                    <div class="window-title">profile.sh</div>
                 </div>
-                <div class="window-title">profile.sh</div>
-            </div>
-            <div class="window-content">
-                {{- partial "sidebar-content.html" . -}}
-            </div>
-            <div id="lasttrack" class="lasttrack window-footer" role="status" aria-live="polite" aria-atomic="true">
-              <span class="loading-dots">Initializing...</span>
-            </div>
-        </aside>
+                <div class="window-content">
+                    {{- partial "sidebar-content.html" . -}}
+                </div>
+                <div id="lasttrack" class="lasttrack window-footer" role="status" aria-live="polite" aria-atomic="true">
+                  <span class="loading-dots">Initializing...</span>
+                </div>
+            </aside>
+            {{ partial "panel-post-toc.html" . }}
+        </div>
 
         <main class="main-content" id="main-content">
             {{ block "main" . }}{{ end }}

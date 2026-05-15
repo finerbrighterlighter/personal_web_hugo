@@ -205,7 +205,7 @@
 <br/>
 
 <h2 class="category-header">{{ i18n "latest_posts" }}</h2>
-<div class="posts-list">
+<div class="posts-list latest-posts-list">
 {{ with $enSite.GetPage "/posts" }}
   {{/* 1. Filter RegularPages only to exclude _index.md */}}
   {{/* 2. Use 'ne' for robust boolean filtering */}}
@@ -218,7 +218,7 @@
       <div class="post">
           <div class="date">{{ .Date | time.Format ":date_medium" }}</div>
           <h2><a href="{{ .RelPermalink }}" title="{{ .Title }}">{{ .Title }}</a></h2>
-          {{ .Summary | safeHTML }}
+          <p>{{ .Summary | safeHTML | plainify }}</p>
       </div>
   {{ end }}
 {{ end }}
