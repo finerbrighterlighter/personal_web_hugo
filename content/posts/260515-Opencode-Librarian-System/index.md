@@ -31,11 +31,7 @@ I did not start with an agent problem. I started with a memory problem.
 Over time, I accumulated scripts, research notes, meeting logs, health reports, paper summaries, and small local systems spread across repositories and folders. <!--more--> Everything was technically still available, but availability is not the same thing as retrieval. A fact buried in a repo is not really 
 accessible just because it still exists.
 
-
-
 So the first thing I built was not an AI workflow. It was a maintained Obsidian vault.
-
-My setup is fairly simple but structured: I use OpenCode as the local agent orchestrator, Obsidian as the knowledge base, and a small set of model routes behind OpenCode for different task tiers. The raw source stays in the filesystem, the useful parts get curated into linked notes in the vault, and the agent layer works against that curated graph instead of searching everything from scratch.
 
 ## Step 1: Build the Knowledge Graph First
 
@@ -663,7 +659,9 @@ The first librarian proved the vault could work.
 
 The delegated librarian made it sustainable.
 
-## Appendix: Current Model Mapping
+## Appendix: 
+
+My setup is fairly simple but structured: I use OpenCode as the local agent orchestrator, Obsidian as the knowledge base, and a small set of model routes behind OpenCode for different task tiers. The raw source stays in the filesystem, the useful parts get curated into linked notes in the vault, and the agent layer works against that curated graph instead of searching everything from scratch.
 
 This is the concrete routing table encoded in the OpenCode agent config as of the time of writing. The tier labels used throughout the post are the durable part; specific model IDs will change as providers update their offerings.
 
