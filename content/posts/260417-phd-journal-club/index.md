@@ -10,17 +10,6 @@ I recently hosted a journal club discussion covering the paper "Assessing the re
 
 <!--more-->
 
-**Table of Contents**
-
-- [The Efficacy-Effectiveness Gap](#the-efficacy-effectiveness-gap)
-- [Why the Two-Trials Rule (TTR) Falls Short](#why-the-two-trials-rule-ttr-falls-short)
-- [The Sceptical P-Value : A Joint Credibility Test](#the-sceptical-p-value--a-joint-credibility-test)
-- [Case Study: TRITON-TIMI 38](#case-study-triton-timi-38)
-- [The Regulatory Shift](#the-regulatory-shift)
-- [Documents](#documents)
-
----
-
 ## The Efficacy-Effectiveness Gap
 
 While RCTs are the gold standard for internal validity, they often suffer from low external validity. Trials frequently exclude the very patients seen in routine care—the elderly, those with multi-morbidities, or pregnant patients. RWE emulations bridge this gap by analyzing routine healthcare data.

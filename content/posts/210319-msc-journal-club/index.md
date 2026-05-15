@@ -10,19 +10,6 @@ I presdented at a journal club regarding the topic of "Mixed Effect Machine Lear
 
 <!--more-->
 
-**Table of Contents**
-
-- [The Challenge of Correlated Observations](#the-challenge-of-correlated-observations)
-- [Mixed Effects Models Overview](#mixed-effects-models-overview)
-- [The Mixed Effect Machine Learning Framework](#the-mixed-effect-machine-learning-framework)
-- [Continuous Target (Regression)](#continuous-target-regression)
-- [Binary Target (Classification)](#binary-target-classification)
-- [Results and Implications](#results-and-implications)
-- [Documents](#documents)
-- [Practical Application](#practical-application)
-
----
-
 ## The Challenge of Correlated Observations
 
 Traditional machine learning algorithms rely heavily on the assumption that data points are **Independent and Identically Distributed (i.i.d)**. However, this assumption is often violated in clinical data:

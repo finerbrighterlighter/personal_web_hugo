@@ -26,6 +26,8 @@ company: "Mahidol University, Thailand"
 
 # Optional. true = load KaTeX assets for $inline$ and $$block$$ math.
 math: false
+# Optional. true = load Mermaid assets for diagrams in ```mermaid blocks.
+mermaid: false
 
 # Optional bundle-local social preview image for og:image and twitter:image.
 # Expected location: content/posts/YYYMMDD-example-name/cover.webp
