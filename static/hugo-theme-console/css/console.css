@@ -39,9 +39,8 @@
 }
 
 /* --- Handwriting stack for Burmese site pages ---
-   Latin glyphs use ArchitectsDaughter; Myanmar glyphs use
-   Thit_Sar_Shwe_Si under the same family
-   so Burmese pages can switch stacks cleanly at the page level. --- */
+   The default Burmese layer pairs visually similar handwritten Latin and
+   Myanmar fonts. Z01-Umoe002 is available as an opt-in clear mode. --- */
 @font-face {
     font-family: "Site Handwriting";
     src: url("../font/ArchitectsDaughter.ttf") format("truetype");
@@ -118,11 +117,25 @@
     unicode-range: U+1000-109F, U+AA60-AA7F, U+A9E0-A9FF;
 }
 
-/* Myanmar pages use the handwriting stack; code/pre remain mono. */
+@font-face {
+    font-family: "Site Handwriting Clear";
+    src: url("../font/Z01-Umoe002 Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    text-rendering: optimizeLegibility;
+}
+
+/* Myanmar pages use the handwriting stack; terminal/system UI remains mono. */
 html:lang(mm) {
     --font-stack: var(--handwriting-font-stack);
     --global-line-height: 2em;
     word-spacing: 0.05em;
+}
+
+html:lang(mm)[data-mm-font="clear"] {
+    --handwriting-font-stack: "Site Handwriting Clear", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive, sans-serif;
+    font-size-adjust: 0.528;
 }
 
 /* Burmese pages: keep TUI chrome in monospace for terminal feel.
@@ -706,6 +719,39 @@ figure {
 
 /* invert B&W plate in dark mode so it doesn't disappear */
 [data-theme="dark"] .cvd-icon-off { filter: invert(1); }
+
+.mm-font-toggle {
+    position: sticky;
+    top: var(--space-4);
+    display: block;
+    width: max-content;
+    margin-left: auto;
+    margin-bottom: var(--space-2);
+    z-index: 50;
+    padding: 1px 4px;
+    border: none;
+    border-bottom: 1px solid var(--primary-color);
+    background: color-mix(in srgb, var(--background-color) 88%, var(--primary-color));
+    color: var(--primary-color);
+    font-family: var(--mono-font-stack);
+    font-size: var(--font-sm);
+    line-height: var(--global-line-height);
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+.mm-font-toggle:hover,
+.mm-font-toggle:focus-visible {
+    background: var(--primary-color);
+    color: var(--invert-font-color);
+    opacity: 1;
+}
+
+@media (max-width: 767px) {
+    .mm-font-toggle {
+        top: var(--space-3);
+    }
+}
 
 
 /* ============================= */

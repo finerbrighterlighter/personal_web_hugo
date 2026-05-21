@@ -359,17 +359,30 @@ Defined in `static/hugo-theme-console/css/console.css`:
 
 ```css
 @font-face {
-    font-family: "Roboto Mono";
+    font-family: "Site Handwriting";
+    src: url("../font/ArchitectsDaughter.ttf") format("truetype");
+    unicode-range: U+0000-U+024F, ...;
+}
+
+@font-face {
+    font-family: "Site Handwriting";
     src: url("../font/Thit_Sar_Shwe_Si.ttf") format("truetype");
-    unicode-range: U+1000-109F, U+AA60-AA7F, U+A9E0-A9FF;
+    unicode-range: U+1000-109F, ...;
+}
+
+@font-face {
+    font-family: "Site Handwriting Clear";
+    src: url("../font/Z01-Umoe002 Regular.ttf") format("truetype");
 }
 ```
 
-The active Burmese handwriting font is **Thit_Sar_Shwe_Si**. The `unicode-range` override shares the `"Roboto Mono"` family name — no `lang` attribute or class needed; the browser automatically picks the right font for each codepoint. A `:lang(mm)` rule bumps `line-height` to prevent stacked Burmese characters from clipping.
+The default Burmese handwriting layer pairs **ArchitectsDaughter** for Latin glyphs with **Thit_Sar_Shwe_Si** for Myanmar glyphs. This split is intentional: the two fonts have a comparable informal texture, so Burmese pages feel like a quirky handwritten overwrite of the English baseline rather than a separate clean redesign. A `:lang(mm)` rule switches the page-level content stack to `"Site Handwriting"` and bumps `line-height` to prevent stacked Burmese characters from clipping.
+
+**Z01-Umoe002** is available as opt-in clear mode. Burmese pages render a sticky monospace `[font: neat]` button at the top-right of the main content column from `partials/mm-font-toggle.html`; `static/js/mm_font_toggle.js` toggles `html[data-mm-font="clear"]`, persists the choice in `localStorage.mmFontMode`, and changes the button label to `[font: messy]`. Clear mode swaps `--handwriting-font-stack` to `"Site Handwriting Clear"` and uses `font-size-adjust: 0.528` to align Z01-Umoe002's smaller x-height with Roboto Mono. Terminal/system UI stays monospace in both modes.
 
 #### Burmese typography model (EN base + MM overrides)
 
-Design intent: **English UI is the original baseline**; Burmese UI is an intentional overwrite layer to show Burmese language while keeping the original terminal identity visible.
+Design intent: **English UI is the original baseline**; Burmese UI is an intentional handwritten overwrite layer on top of that existing page, while keeping the original terminal identity visible.
 
 In practice, the Burmese UI combines two visual systems:
 
@@ -380,7 +393,7 @@ Implemented in `static/hugo-theme-console/css/console.css` using `html:lang(mm)`
 
 | Area                                                          | Typeface in Burmese mode | Key selectors                                                                                              |
 | ------------------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------- |
-| Main content body (home/about/blood content)                  | Handwriting              | `html:lang(mm)` sets `--font-stack: var(--handwriting-font-stack)`                                     |
+| Main content body (home/about/blood content)                  | Handwriting (`ArchitectsDaughter` + `Thit_Sar_Shwe_Si`; `[font: neat]` uses `Z01-Umoe002`) | `html:lang(mm)` sets `--font-stack: var(--handwriting-font-stack)` |
 | Right-side panels (all panel content, fake CLI + fake output) | Monospace                | `html:lang(mm) .right-panels .terminal-window`, `html:lang(mm) .right-panels .terminal-window *`       |
 | Top nav / prompt / logo                                       | Monospace                | `html:lang(mm) .terminal-prompt`, `.terminal-nav`, `.terminal-menu`, `.terminal-menu a`, `.logo` |
 | Footer                                                        | Monospace                | `html:lang(mm) .footer`, `.footer a`                                                                   |
@@ -391,9 +404,9 @@ Implemented in `static/hugo-theme-console/css/console.css` using `html:lang(mm)`
 | Sidebar education block                                       | Handwriting              | `html:lang(mm) .education-title a`, `.education-university a`, `.education-time`                     |
 | Last track status (`#lasttrack`) and API error text         | Monospace                | `.lasttrack`, `.api-error` use `var(--mono-font-stack)`                                              |
 
-Maintenance rule: treat EN as source-of-truth defaults and add the smallest possible `html:lang(mm)` overrides. For new UI in Burmese mode, classify it first as **filled content** (handwriting) or **printed/system output** (monospace), then scope selectors under the existing MM override block without changing global EN defaults.
+Maintenance rule: treat EN as source-of-truth defaults and add the smallest possible `html:lang(mm)` overrides. For new UI in Burmese mode, classify it first as **filled/overwritten content** (handwriting) or **printed/system output** (monospace), then scope selectors under the existing MM override block without changing global EN defaults.
 
-NotoSansMyanmar-Regular/Bold exist in `static/hugo-theme-console/font/` as committed fallbacks but are not currently active in the CSS.
+`Z01-Umoe002 Regular.ttf` remains active only through the optional `[font: neat]` readability toggle; it is not the default Burmese voice.
 
 #### `content/_index.mm.md`
 

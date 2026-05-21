@@ -141,15 +141,17 @@ Notable interactive behavior:
 
 Current active fonts are intentionally minimal:
 
-- Roboto Mono for baseline UI
-- ArchitectsDaughter for Latin handwriting style on Burmese pages
-- Thit_Sar_Shwe_Si for Myanmar script on Burmese pages
+- Roboto Mono for baseline UI and terminal/system surfaces
+- ArchitectsDaughter for Latin handwriting on Burmese pages
+- Thit_Sar_Shwe_Si for Myanmar handwriting on Burmese pages
+- Z01-Umoe002 by [Zinbo Design](https://www.facebook.com/zinbo.design/posts/pfbid0yrPRGg3hbqhAnhWhfNn6gzMEPdJTTDp5LnHaHQb5qGCCXx3a6bmTWXFxS4xQcr7hl) for the optional Burmese `[font: neat]` readability mode
 
-The Burmese switch is applied at page level via html:lang(my) in [static/hugo-theme-console/css/console.css](static/hugo-theme-console/css/console.css).
+The Burmese switch is applied at page level via html:lang(mm) in [static/hugo-theme-console/css/console.css](static/hugo-theme-console/css/console.css).
 
 Typography intent in Burmese mode:
 
-- Main content reads like handwritten notes/forms (handwriting stack).
+- Main content reads like handwritten notes/forms over the English baseline (handwriting stack).
+- Burmese pages include a sticky top-right `[font: neat]` / `[font: messy]` toggle for readability.
 - Printed/system UI remains monospace (nav, prompts, panel chrome and outputs, footer controls).
 - Sidebar is mixed by role: labels are printed (monospace), values look filled in (handwriting).
 

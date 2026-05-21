@@ -18,6 +18,9 @@
 <script type="module" src="{{ "js/unsplash.js" | relURL }}"></script>
 <script type="module" src="{{ "js/cache-expires.js" | relURL }}"></script>
 <script type="module" src="{{ "js/duck.js" | relURL }}"></script>
+{{ if eq .Site.Language.Lang "mm" }}
+  <script type="module" src="{{ "js/mm_font_toggle.js" | relURL }}"></script>
+{{ end }}
 
 {{ if not hugo.IsServer }}
   <script>window.goatcounter = { allow_local: false }</script>

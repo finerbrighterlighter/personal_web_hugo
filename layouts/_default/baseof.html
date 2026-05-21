@@ -11,6 +11,15 @@
     {{- partial "favicon.html" . -}}
     {{- partial "header.html" . -}}
     {{- partial "theme-data.html" . -}}
+    {{- if eq .Site.Language.Lang "mm" -}}
+      <script>
+        try {
+          if (localStorage.getItem('mmFontMode') === 'clear') {
+            document.documentElement.dataset.mmFont = 'clear';
+          }
+        } catch (error) {}
+      </script>
+    {{- end -}}
     {{- if .IsHome -}}
       {{- partial "home-seo.html" . -}}
     {{- end -}}
@@ -127,6 +136,7 @@
         </div>
 
         <main class="main-content" id="main-content">
+            {{ partial "mm-font-toggle.html" . }}
             {{ block "main" . }}{{ end }}
             {{ partial "footer.html" . }}
         </main>
