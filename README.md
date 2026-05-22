@@ -220,6 +220,7 @@ The goal is clarity with character.
 ## Attributions
 
 - [Thit Sar Shwe Si font](https://www.facebook.com/share/p/1LQYFSUkXy/) by [Phoenix Digital Art](https://www.facebook.com/PhoenixDigitalArt)
+- [Concrete Wall texture](https://www.transparenttextures.com/patterns/concrete-wall.png) by Transparent Textures
 - [Eye test icons](https://www.flaticon.com/free-icons/eye-test) by Freepik on Flaticon
 - [Duck favicon](https://www.magnific.com/icon/duck_530260) by Magnific - Roundicons
 - [Duck sound](https://www.myinstants.com/en/instant/quackmp3/) by MyInstants

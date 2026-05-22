@@ -96,11 +96,12 @@ const BAR_WIDTH = 10;
 
 function makeBar(colors) {
   const wrap = document.createElement('span');
+  wrap.setAttribute('aria-hidden', 'true');
   wrap.style.cssText = 'letter-spacing:1px;cursor:default;';
   for (const color of colors) {
     const s = document.createElement('span');
-    s.textContent = '█';
-    s.style.color = color;
+    s.setAttribute('aria-hidden', 'true');
+    s.style.cssText = `display:inline-block;width:0.65em;height:1em;background-color:${color};vertical-align:-0.12em;`;
     wrap.appendChild(s);
   }
   return wrap;

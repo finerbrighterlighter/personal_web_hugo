@@ -360,21 +360,23 @@ Defined in `static/hugo-theme-console/css/console.css`:
 ```css
 @font-face {
     font-family: "Site Handwriting";
-    src: url("../font/ArchitectsDaughter.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/ArchitectsDaughter.ttf") format("truetype");
     unicode-range: U+0000-U+024F, ...;
 }
 
 @font-face {
     font-family: "Site Handwriting";
-    src: url("../font/Thit_Sar_Shwe_Si.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.ttf") format("truetype");
     unicode-range: U+1000-109F, ...;
 }
 
 @font-face {
     font-family: "Site Handwriting Clear";
-    src: url("../font/Z01-Umoe002 Regular.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/Z01-Umoe002 Regular.ttf") format("truetype");
 }
 ```
+
+Theme-local static assets in `static/hugo-theme-console/` use root-relative URLs (`/hugo-theme-console/...`) rather than CSS-relative `../` paths. The page texture is loaded from `/hugo-theme-console/texture/concrete-wall.png`; original source attribution: <https://www.transparenttextures.com/patterns/concrete-wall.png>.
 
 The default Burmese handwriting layer pairs **ArchitectsDaughter** for Latin glyphs with **Thit_Sar_Shwe_Si** for Myanmar glyphs. This split is intentional: the two fonts have a comparable informal texture, so Burmese pages feel like a quirky handwritten overwrite of the English baseline rather than a separate clean redesign. A `:lang(mm)` rule switches the page-level content stack to `"Site Handwriting"` and bumps `line-height` to prevent stacked Burmese characters from clipping.
 

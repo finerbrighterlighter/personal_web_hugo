@@ -1,7 +1,7 @@
 # pa11y Accessibility Audit
 
-**Tool:** pa11y 9.1.1 (htmlcs, WCAG 2.1 AA)  
-**Date:** 2026-05-08  
+**Tool:** pa11y 9.1.1 (htmlcs, WCAG 2.1 AA)
+**Date:** 2026-05-22
 **Hugo server:** localhost:1313 (development build)
 
 ## Scope
@@ -72,3 +72,4 @@ Update the work and post slugs in `run_audit.js` when auditing different pages.
 | Prose link underlines (`/about/`) | Accepted — intentional design decision; links are easter eggs |
 | All errors were false positives (previous runs) | Previous pa11y runs had no theme applied — CSS variables computed as empty strings, generating spurious contrast failures. Fixed by pre-seeding localStorage before each audit. |
 | Colorblind light `.api-error` / `.nf-line-err` contrast | Changed `--error-color` from `#d55e00` (3.71:1) to `#4d0000` (15.29:1) |
+| GitHub language bar glyph contrast | Replaced text glyph bar segments with CSS background blocks; the repository link and tooltip still convey the useful information. |
