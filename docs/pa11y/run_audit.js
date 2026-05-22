@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-// pa11y audit runner — sets Duck (or colorblind) light theme via localStorage
+// pa11y audit runner — sets Duck (or colorblind) light/dark theme via localStorage
 // before each page is tested so contrast checks use the actual site palette.
 //
 // Usage (called from run_audit.sh):
-//   node run_audit.js [palette] [outDir]
+//   node run_audit.js [palette] [mode] [outDir]
 //   palette: duck (default) | colorblind
+//   mode:    light (default) | dark
 //   outDir:  directory to write CSV files (default: same dir as this script)
 
 const NVM_LIB  = '/home/finer/.config/nvm/versions/node/v25.9.0/lib/node_modules';
@@ -14,9 +15,20 @@ const fs        = require('fs');
 const path      = require('path');
 
 const palette = process.argv[2] || 'duck';
-const baseOut = process.argv[3] || __dirname;
-const outDir  = path.join(baseOut, palette);
+const mode    = process.argv[3] || 'light';
+const baseOut = process.argv[4] || __dirname;
+const outDir  = path.join(baseOut, `${palette}-${mode}`);
 fs.mkdirSync(outDir, { recursive: true });
+
+if (!['duck', 'colorblind'].includes(palette)) {
+  console.error(`Unsupported palette: ${palette}`);
+  process.exit(1);
+}
+
+if (!['light', 'dark'].includes(mode)) {
+  console.error(`Unsupported mode: ${mode}`);
+  process.exit(1);
+}
 
 const BASE = 'http://localhost:1313';
 
@@ -35,15 +47,15 @@ async function main() {
   const browser = await puppeteer.launch({ headless: true });
 
   for (const page of pages) {
-    process.stdout.write(`Auditing ${page.name} (${page.url}) [theme: ${palette} light]... `);
+    process.stdout.write(`Auditing ${page.name} (${page.url}) [theme: ${palette} ${mode}]... `);
     try {
       // Open a page, set localStorage, then pa11y reuses this browser instance.
       const prep = await browser.newPage();
       await prep.goto(page.url, { waitUntil: 'domcontentloaded' });
-      await prep.evaluate((p) => {
-        localStorage.setItem('theme-mode', 'light');
-        localStorage.setItem('theme-palette-light', p);
-      }, palette);
+      await prep.evaluate((p, m) => {
+        localStorage.setItem('theme-mode', m);
+        localStorage.setItem(`theme-palette-${m}`, p);
+      }, palette, mode);
       await prep.close();
 
       // pa11y opens its own page in the shared browser with the primed storage.

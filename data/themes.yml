@@ -11,9 +11,9 @@
     font: "#fcfcfa"        # Near-white foreground
     invert_font: "#2d2a2e"
     primary: "#ffd866"     # Monokai yellow — 100% sat, 70% lightness: airy not harsh
-    secondary: "#727072"   # Comment grey — muted mid-tone for secondary text
+    secondary: "#aaa7aa"   # Comment grey — muted but WCAG AA on dark panels
     tertiary: "#3d3b3f"    # Slightly lighter than bg for panels/containers
-    error: "#ff6188"       # Monokai red/pink
+    error: "#ff7a9d"       # Monokai red/pink, lifted for AA on dark panels
     progress_bar_background: "#3d3b3f"
     progress_bar_fill: "#ffd866"
     code_bg: "#221f22"     # Slightly darker than bg for code blocks
@@ -236,7 +236,7 @@
     primary: "#56b4e9"
     secondary: "#e69f00"
     tertiary: "#2e2e2e"
-    error: "#d55e00"
+    error: "#f07000"
     progress_bar_background: "#2e2e2e"
     progress_bar_fill: "#56b4e9"
     code_bg: "#2a2a2a"

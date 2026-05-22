@@ -6,11 +6,11 @@
 
 ## Scope
 
-Contrast is **only assured for Duck light and Colorblind light** — the two themes with accessibility commitments. Other themes (nord, catppuccin, dracula, etc.) are not tested and may not meet WCAG AA contrast ratios. Dark mode variants are not tested.
+Contrast is **only assured for Duck light, Duck dark, Colorblind light, and Colorblind dark** — the four theme variants with accessibility commitments. Other themes (nord, catppuccin, dracula, etc.) are not tested and may not meet WCAG AA contrast ratios.
 
 ---
 
-## Duck light — 2026-05-08
+## Duck light — 2026-05-22
 
 | Page | Errors | Status |
 | --- | --- | --- |
@@ -26,7 +26,7 @@ Contrast is **only assured for Duck light and Colorblind light** — the two the
 
 ---
 
-## Colorblind light — 2026-05-08
+## Colorblind light — 2026-05-22
 
 | Page | Errors | Status |
 | --- | --- | --- |
@@ -44,17 +44,59 @@ Contrast is **only assured for Duck light and Colorblind light** — the two the
 
 ---
 
+## Duck dark — 2026-05-22
+
+| Page | Errors | Status |
+| --- | --- | --- |
+| Home `/` | 0 | ✅ Pass |
+| About `/about/` | 0 | ✅ Pass |
+| Works `/works/` | 0 | ✅ Pass |
+| Work (single) | 0 | ✅ Pass |
+| Posts `/posts/` | 0 | ✅ Pass |
+| Post (single) | 0 | ✅ Pass |
+| Blood `/blood/` | 0 | ✅ Pass |
+
+**All 7 pages pass with 0 errors.**
+
+`--secondary-color` changed from `#727072` to `#aaa7aa` and `--error-color` changed from `#ff6188` to `#ff7a9d` so secondary/error text meets WCAG AA on dark panels.
+
+---
+
+## Colorblind dark — 2026-05-22
+
+| Page | Errors | Status |
+| --- | --- | --- |
+| Home `/` | 0 | ✅ Pass |
+| About `/about/` | 0 | ✅ Pass |
+| Works `/works/` | 0 | ✅ Pass |
+| Work (single) | 0 | ✅ Pass |
+| Posts `/posts/` | 0 | ✅ Pass |
+| Post (single) | 0 | ✅ Pass |
+| Blood `/blood/` | 0 | ✅ Pass |
+
+**All 7 pages pass with 0 errors.**
+
+`--error-color` changed from Okabe Vermillion `#d55e00` to `#f07000` so error text meets WCAG AA on dark panels.
+
+---
+
 ## How to re-run
 
 ```bash
-# Duck light (default) — results in docs/pa11y/duck/
+# Duck light (default) — results in docs/pa11y/duck-light/
 bash docs/pa11y/run_audit.sh
 
-# Colorblind light — results in docs/pa11y/colorblind/
-bash docs/pa11y/run_audit.sh colorblind
+# Colorblind light — results in docs/pa11y/colorblind-light/
+bash docs/pa11y/run_audit.sh colorblind light
+
+# Duck dark — results in docs/pa11y/duck-dark/
+bash docs/pa11y/run_audit.sh duck dark
+
+# Colorblind dark — results in docs/pa11y/colorblind-dark/
+bash docs/pa11y/run_audit.sh colorblind dark
 ```
 
-The script launches a shared Puppeteer browser, pre-seeds `localStorage` (`theme-mode=light`, `theme-palette-light=<palette>`) before each page, then runs pa11y so the inline theme script applies the correct palette on load. Hugo dev server must be running on `localhost:1313` first.
+The script launches a shared Puppeteer browser, pre-seeds `localStorage` (`theme-mode=<mode>`, `theme-palette-<mode>=<palette>`) before each page, then runs pa11y so the inline theme script applies the correct palette on load. Hugo dev server must be running on `localhost:1313` first.
 
 Update the work and post slugs in `run_audit.js` when auditing different pages.
 
@@ -64,7 +106,7 @@ Update the work and post slugs in `run_audit.js` when auditing different pages.
 
 | Issue | Fix |
 | --- | --- |
-| `.uni-country` contrast (Duck dark secondary `#727072`) | `aria-hidden="true"` on span — decorative country label |
+| `.uni-country` contrast (old Duck dark secondary `#727072`) | `aria-hidden="true"` on span — decorative country label |
 | Research bar `█░` chars contrast | `aria-hidden="true"` on bar `<td>` — count column conveys data |
 | OpenAlex footer `color:#aaa` | Changed to `color:var(--secondary-color)` |
 | OpenAlex SVG contrast false positives | Replaced SVG chart with HTML/CSS bars |
