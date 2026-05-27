@@ -442,7 +442,7 @@ def _pub_cite_md(p):
 
 # ── Markdown assembler ─────────────────────────────────────────────────────────
 
-def build_markdown(cv):
+def build_markdown(cv, generated_date):
     contact = cv["contact"]
     lines = []
 
@@ -453,6 +453,8 @@ def build_markdown(cv):
         cv['header']['address'],
         "",
         f"{contact['phone']} · {contact['email']} · {contact['website']}",
+        "",
+        f"Generated: {generated_date}",
         "",
         "---",
         "",
@@ -797,8 +799,10 @@ a { color: #1a1a1a; text-decoration: none; }
 if __name__ == "__main__":
     CV_DIR.mkdir(parents=True, exist_ok=True)
 
-    cv   = load_yaml(DATA / "cv.yml")
-    today = datetime.now().strftime("%Y%m%d")
+    cv = load_yaml(DATA / "cv.yml")
+    now = datetime.now()
+    today = now.strftime("%Y%m%d")
+    generated_date = now.strftime("%Y-%m-%d")
 
     # ── PDF ──────────────────────────────────────────────────────────────────
     html    = build_html(cv)
@@ -819,7 +823,7 @@ if __name__ == "__main__":
     print(f"Versions: {versions}")
 
     # ── Markdown ─────────────────────────────────────────────────────────────
-    md_text    = build_markdown(cv)
+    md_text    = build_markdown(cv, generated_date)
     md_current = CV_DIR / "cv_htunteza.md"
     md_current.write_text(md_text, encoding="utf-8")
     print(f"Markdown: {md_current.name}")

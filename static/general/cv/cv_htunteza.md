@@ -4,6 +4,8 @@ Department of Clinical Epidemiology and Biostatistics, Faculty of Medicine Ramat
 
 (+66) 989-986-350 · kohtunteza@gmail.com · https://htunteza.com/
 
+Generated: 2026-05-27
+
 ---
 
 ## Research Interests
