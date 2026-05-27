@@ -1,17 +1,18 @@
+import { clearSiteStorage, listCacheEntries } from './cache.js';
+
 const TTL = (window.CONFIG?.cacheTTLMinutes ?? 60) * 60 * 1000;
-const FLUSH_RELOAD_DELAY = 400;  // ms before reloading after localStorage.clear()
+const FLUSH_RELOAD_DELAY = 400;  // ms before reloading after site storage reset
 const line = document.getElementById('cache-expire-line');
 
+let expiryTimer = null;
+let scheduledReloadAt = null;
+
 function soonestExpiry() {
+  const entries = listCacheEntries();
   let min = Infinity;
-  for (let i = 0; i < localStorage.length; i++) {
-    try {
-      const { ts } = JSON.parse(localStorage.getItem(localStorage.key(i)));
-      if (typeof ts === 'number') {
-        const rem = TTL - (Date.now() - ts);
-        if (rem > 0 && rem < min) min = rem;
-      }
-    } catch {}
+  for (const entry of entries) {
+    const rem = TTL - (Date.now() - entry.ts);
+    if (rem > 0 && rem < min) min = rem;
   }
   return min === Infinity ? null : min;
 }
@@ -28,14 +29,49 @@ function fmt(ms) {
 function tick() {
   const rem = soonestExpiry();
   const ttl = window.CONFIG?.cacheTTLMinutes ?? 60;
-  line.textContent = rem ? `[expires] ${fmt(rem)}` : `[expires] ${ttl} ${ttl === 1 ? 'minute' : 'minutes'}`;
+  if (line) {
+    line.textContent = rem ? `[expires] ${fmt(rem)}` : `[expires] ${ttl} ${ttl === 1 ? 'minute' : 'minutes'}`;
+  }
+  scheduleExpiryReload(rem);
+}
+
+function reloadAfterExpiry() {
+  clearSiteStorage();
+  scheduledReloadAt = null;
+  expiryTimer = null;
+  setTimeout(() => location.reload(), FLUSH_RELOAD_DELAY);
+}
+
+function scheduleExpiryReload(rem) {
+  if (!rem) {
+    if (expiryTimer) {
+      clearTimeout(expiryTimer);
+      expiryTimer = null;
+    }
+    scheduledReloadAt = null;
+    return;
+  }
+
+  const targetAt = Date.now() + rem;
+  if (scheduledReloadAt && Math.abs(scheduledReloadAt - targetAt) < 250) {
+    return;
+  }
+
+  if (expiryTimer) clearTimeout(expiryTimer);
+  scheduledReloadAt = targetAt;
+  expiryTimer = setTimeout(reloadAfterExpiry, Math.max(rem, 0));
 }
 
 tick();
 setInterval(tick, 1000);
 
 function doFlush() {
-  localStorage.clear();
+  clearSiteStorage();
+  if (expiryTimer) {
+    clearTimeout(expiryTimer);
+    expiryTimer = null;
+  }
+  scheduledReloadAt = null;
   setTimeout(() => location.reload(), FLUSH_RELOAD_DELAY);
 }
 

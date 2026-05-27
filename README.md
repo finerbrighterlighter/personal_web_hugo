@@ -205,6 +205,18 @@ Generated via custom Hugo output formats from layout templates.
 
 ---
 
+## Cache Behavior
+
+Live API panels use a shared localStorage cache with a site-wide TTL from `cacheTTLMinutes` in [hugo.toml](hugo.toml).
+
+- Cache-backed data is stored under a dedicated `cache:` namespace.
+- Theme, palette, and Burmese font preferences are also reset when a cached session expires, so return visits fall back to the default presentation.
+- Expired cache is still dropped lazily on read by the panel loaders.
+- In addition, open tabs now auto-reload when the oldest active cache entry reaches TTL, so a stale tab starts a fresh cache session without manual refresh.
+- The privacy panel `[Now]` and `[In 10s]` flush controls clear the cached session and visual preferences, then reload the page.
+
+---
+
 ## Why It Feels This Way
 
 The site intentionally behaves like a working terminal, not a static portfolio template.

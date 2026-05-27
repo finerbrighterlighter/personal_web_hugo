@@ -7,6 +7,67 @@
         and writes CSS vars directly to :root as inline styles. */}}
 <script>
 (function () {
+    var TTL = {{ site.Params.cacheTTLMinutes | default 60 }} * 60 * 1000;
+    var CACHE_PREFIX = 'cache:';
+    var SITE_KEYS = ['theme-mode', 'mmFontMode'];
+    var SITE_PREFIXES = ['theme-palette-'];
+
+    function isSitePreferenceKey(key) {
+        if (SITE_KEYS.indexOf(key) !== -1) return true;
+        for (var i = 0; i < SITE_PREFIXES.length; i++) {
+            if (key.indexOf(SITE_PREFIXES[i]) === 0) return true;
+        }
+        return false;
+    }
+
+    function parseCacheEntry(raw) {
+        if (!raw) return null;
+        try {
+            var parsed = JSON.parse(raw);
+            if (parsed && parsed.__cache === true && typeof parsed.ts === 'number') {
+                return parsed;
+            }
+            if (parsed && typeof parsed.ts === 'number' && Object.prototype.hasOwnProperty.call(parsed, 'data')) {
+                return parsed;
+            }
+        } catch (error) {}
+        return null;
+    }
+
+    function hasExpiredCacheSession() {
+        try {
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                if (!key) continue;
+                if (key.indexOf(CACHE_PREFIX) !== 0 && isSitePreferenceKey(key)) continue;
+                var entry = parseCacheEntry(localStorage.getItem(key));
+                if (!entry) continue;
+                if (Date.now() - entry.ts > TTL) return true;
+            }
+        } catch (error) {}
+        return false;
+    }
+
+    function clearSiteStorage() {
+        try {
+            var remove = [];
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                if (!key) continue;
+                if (key.indexOf(CACHE_PREFIX) === 0 || isSitePreferenceKey(key) || parseCacheEntry(localStorage.getItem(key))) {
+                    remove.push(key);
+                }
+            }
+            for (var j = 0; j < remove.length; j++) {
+                localStorage.removeItem(remove[j]);
+            }
+        } catch (error) {}
+    }
+
+    if (hasExpiredCacheSession()) {
+        clearSiteStorage();
+    }
+
     var raw  = JSON.parse(document.getElementById('theme-data').textContent);
     var data = typeof raw === 'string' ? JSON.parse(raw) : raw;
 
