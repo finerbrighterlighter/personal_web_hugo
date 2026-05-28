@@ -9,7 +9,7 @@
   </div>
   <div class="window-content">
     {{- $gh := hugo.Data.github_repository -}}
-    <pre class="panel-terminal"><a href="https://github.com/{{ .Site.Params.promptName }}" target="_blank" rel="noopener">$ gh repo list --owner={{ .Site.Params.promptName }}</a></pre>
+    <pre class="panel-terminal"><a href="https://github.com/{{ .Site.Params.promptName }}" target="_blank" rel="noreferrer noopener">$ gh repo list --owner={{ .Site.Params.promptName }}</a></pre>
     <div id="github-projects" aria-live="polite"></div>
     <script>
       window.__githubProjects = {{ $gh.groups | jsonify | safeJS }};

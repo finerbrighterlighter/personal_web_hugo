@@ -131,7 +131,7 @@ function makeLangBar(langs, tooltip, repoName, repoUrl) {
   const bar = makeBar(colors);
   if (repoUrl && !isTouch) {
     bar.style.cursor = 'pointer';
-    bar.addEventListener('click', () => window.open(repoUrl, '_blank', 'noopener'));
+    bar.addEventListener('click', () => window.open(repoUrl, '_blank', 'noopener,noreferrer'));
   }
 
   /* Tooltip HTML — events attached at row level by caller */
@@ -217,7 +217,7 @@ function render(groups) {
     const ownerLink = document.createElement('a');
     ownerLink.href        = `https://github.com/${group.owner}`;
     ownerLink.target      = '_blank';
-    ownerLink.rel         = 'noopener';
+    ownerLink.rel         = 'noreferrer noopener';
     ownerLink.title       = `GitHub: ${group.owner}`;
     ownerLink.textContent = group.label || group.owner;
     ownerLink.style.cssText = 'color:var(--primary-color);text-decoration:none;';
@@ -245,7 +245,7 @@ function render(groups) {
       const a = document.createElement('a');
       a.href        = repo.html_url;
       a.target      = '_blank';
-      a.rel         = 'noopener';
+      a.rel         = 'noreferrer noopener';
       a.textContent = repo._label || repo.name;
       a.style.cssText = 'color:var(--secondary-color);text-decoration:none;';
       a.addEventListener('mouseover', () => { a.style.color = 'var(--primary-color)'; });

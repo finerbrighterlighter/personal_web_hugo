@@ -856,9 +856,29 @@ Located in `layouts/_default/_markup/`:
 
 | Hook    | File                    | Behavior                                                                        |
 | ------- | ----------------------- | ------------------------------------------------------------------------------- |
-| Link    | `render-link.html`    | External links (`http*`) automatically get `target="_blank" rel="noopener"` |
+| Link    | `render-link.html`    | External links (`http*`) automatically get `target="_blank" rel="noreferrer noopener"` |
 | Image   | `render-image.html`   | Adds `class="img-responsive"` to all `<img>` tags                           |
 | Heading | `render-heading.html` | Standard heading with `id` anchor for deep linking                            |
+
+#### 5.5.1 Link navigation standard
+
+Internal HTML navigation (pages, sections, breadcrumbs, nav menu, tag/search links, language switcher) opens in the current tab with no special `rel`.
+
+External destinations (profiles, APIs, publication sources, third-party services) open in a new tab with:
+
+```html
+target="_blank" rel="noreferrer noopener"
+```
+
+Internal document/resource links that intentionally open separately (PDFs, full-size images, gallery assets) also use:
+
+```html
+target="_blank" rel="noreferrer noopener"
+```
+
+The Creative Commons license link uses `rel="license noreferrer noopener"` to preserve the license relation while maintaining security.
+
+JS-created links follow the same pattern: `element.rel = 'noreferrer noopener'` for DOM nodes, `window.open(url, '_blank', 'noopener,noreferrer')` for programmatic opens.
 
 ---
 

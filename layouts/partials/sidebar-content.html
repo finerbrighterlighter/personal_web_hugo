@@ -6,7 +6,7 @@
 <div class="profile-header">
     {{ with $data.avatar }}
     <div class="avatar-wrapper" role="button" tabindex="0" aria-label="Profile photo">
-      <img src="{{ $data.avatar }}" alt="" class="sidebar-avatar" id="avatar">
+      <img src="{{ $data.avatar }}" alt="" width="160" height="160" fetchpriority="high" decoding="async" class="sidebar-avatar" id="avatar">
     </div>
     {{ end }}
     <h2 id="author-name">
@@ -26,19 +26,19 @@
     {{ end }}
 
     {{ if and $data.area $data.location }}
-    <li><span class="sidebar-label">[time]</span><a href="https://time.is/{{ $data.location }}" target="_blank" id="timezone" title="{{ title $data.area }}/{{ title $data.location }}">{{ title $data.area }}/{{ title $data.location }}</a></li>
+    <li><span class="sidebar-label">[time]</span><a href="https://time.is/{{ $data.location }}" target="_blank" rel="noreferrer noopener" id="timezone" title="{{ title $data.area }}/{{ title $data.location }}">{{ title $data.area }}/{{ title $data.location }}</a></li>
     {{ end }}
 
     {{ with $data.website }}
-    <li><span class="sidebar-label">[web]</span><a href="https://{{ . }}" target="_blank">{{ $data.websitename | default . }}</a></li>
+    <li><span class="sidebar-label">[web]</span><a href="https://{{ . }}" target="_blank" rel="noreferrer noopener">{{ $data.websitename | default . }}</a></li>
     {{ end }}
 
     {{ with $data.orcid }}
-    <li><span class="sidebar-label">[author]</span><a href="https://orcid.org/{{ . }}" target="_blank">orcid</a></li>
+    <li><span class="sidebar-label">[author]</span><a href="https://orcid.org/{{ . }}" target="_blank" rel="noreferrer noopener">orcid</a></li>
     {{ end }}
 
     {{ with $data.cv }}
-    <li><span class="sidebar-label">[cv]</span><a href="{{ . | relURL }}" target="_blank">{{ path.Base . }}</a></li>
+    <li><span class="sidebar-label">[cv]</span><a href="{{ . | relURL }}" target="_blank" rel="noreferrer noopener">{{ path.Base . }}</a></li>
     {{ end }}
 
     {{ with $data.vcard }}
@@ -56,7 +56,7 @@
 </div>
 
 <div class="education-university">
-  <a href="{{ .university.link }}">
+  <a href="{{ .university.link }}" target="_blank" rel="noreferrer noopener">
     <span class="uni-name">{{ .university.name }}</span>
     <span class="uni-country" aria-hidden="true">{{ .university.country }}</span>
   </a>

@@ -14,10 +14,11 @@
             {{ $src = .RelPermalink }}
         {{ end }}
 
-        <a href="{{ .RelPermalink }}" target="_blank">
-            <img src="{{ $src }}"
-                 class="img-responsive"
-                 alt="{{ .Name }}">
+        <a href="{{ .RelPermalink }}" target="_blank" rel="noreferrer noopener">
+             <img src="{{ $src }}"
+                  class="img-responsive"
+                  decoding="async"
+                  alt="{{ .Name }}">
         </a>
     {{ end }}
 </div>

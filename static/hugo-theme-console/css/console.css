@@ -2072,6 +2072,13 @@ header.terminal-logo {
     100% { transform: translateX(-100%); }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .scrobble-marquee {
+    animation: none;
+    padding-left: 0;
+  }
+}
+
 /* ============================= */
 /* BASE LAYOUT (MOBILE FIRST) */
 /* ============================= */

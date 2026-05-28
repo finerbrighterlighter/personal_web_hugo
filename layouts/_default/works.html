@@ -138,7 +138,8 @@
                   {{ with .Params.scholar }}
                     <a itemprop="sameAs"
                        href="https://scholar.google.com/citations?view_op=view_citation&citation_for_view={{ hugo.Data.homepage.sidebar.scholar_profile }}:{{ . }}"
-                       target="_blank">
+                       target="_blank"
+                       rel="noreferrer noopener">
                       [scholar]
                     </a>
                   {{ end }}
@@ -154,7 +155,7 @@
 
                     <a itemprop="url"
                        href="{{ $finalURL }}"
-                       {{ if $isExternal }}target="_blank" rel="noopener"{{ end }}>
+                       {{ if $isExternal }}target="_blank" rel="noreferrer noopener"{{ end }}>
                       [{{ .text }}]
                     </a>
 

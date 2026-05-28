@@ -9,7 +9,7 @@
             {{ with $image }}
                 {{ $thumb := .Resize "400x" }}
                 <!-- {{ $thumb := .Fill "400x400 center" }} -->
-                <img src="{{ $thumb.RelPermalink }}" alt="{{ .Title }}" class="img-responsive">
+                <img src="{{ $thumb.RelPermalink }}" alt="{{ .Title }}" loading="lazy" decoding="async" class="img-responsive">
             {{end}}
             </a>
         {{ end }}

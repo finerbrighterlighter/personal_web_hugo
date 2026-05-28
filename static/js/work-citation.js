@@ -37,7 +37,7 @@ import { getCache, setCache } from './cache.js';
       ? `https://openalex.org/works?filter=cites:${workId}`
       : null;
     if (citingUrl) {
-      el.innerHTML = `<a href="${citingUrl}" target="_blank" rel="noopener">${count} cited</a> ·`;
+      el.innerHTML = `<a href="${citingUrl}" target="_blank" rel="noreferrer noopener">${count} cited</a> ·`;
     } else {
       el.textContent = `${count} cited ·`;
     }

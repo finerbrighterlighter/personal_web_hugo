@@ -44,6 +44,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // Set initial aria-expanded to match current visual state
     header.setAttribute("aria-expanded", !win.classList.contains("collapsed"));
 
+    const content = win.querySelector(".window-content");
+    if (content) {
+      if (!content.id) {
+        const title = win.querySelector(".window-title")?.textContent.trim() || "";
+        const idx = Array.from(win.parentNode.children).indexOf(win);
+        content.id = "window-content-" + (title || "panel") + "-" + idx;
+      }
+      header.setAttribute("aria-controls", content.id);
+    }
+
     function togglePanel() {
       win.classList.toggle("collapsed");
       header.setAttribute("aria-expanded", !win.classList.contains("collapsed"));

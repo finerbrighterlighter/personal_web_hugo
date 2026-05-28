@@ -57,6 +57,8 @@ content for the previous URL.
    speed     Milliseconds between each character (default 40ms)
    callback  Optional function called when typing is complete
 --------------------------------------------------------------- */
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
 function typeText(element, text, speed = 40, callback = null) {
 
   element.textContent = "";
@@ -174,6 +176,17 @@ async function transitionToAbout() {
 
 
     /* ----------------------------------------------------------
+       Step 5b: Move focus into the new content
+       ----------------------------------------------------------
+       After swapping innerHTML, the previously focused element
+       (the [Me] footer link) is gone. Move focus to #main-content
+       so screen readers and keyboard users land in the new page.
+       ---------------------------------------------------------- */
+    currentMain.setAttribute('tabindex', '-1');
+    currentMain.focus({ preventScroll: true });
+
+
+    /* ----------------------------------------------------------
        Step 6: Update the browser URL
        ----------------------------------------------------------
        history.pushState updates the URL bar to /about/ and adds
@@ -203,7 +216,7 @@ async function transitionToAbout() {
        Scroll to the top of the main area, then restore opacity
        so the about content fades in smoothly.
        ---------------------------------------------------------- */
-    currentMain.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    currentMain.scrollIntoView({ block: 'start', behavior: prefersReducedMotion.matches ? 'auto' : 'smooth' });
     currentMain.style.opacity = '1';
 
 
@@ -276,7 +289,7 @@ document.querySelector('.author-link').addEventListener('click', function (e) {
   }
 
   /* Scroll avatar into view */
-  avatar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  avatar.scrollIntoView({ block: 'center', behavior: prefersReducedMotion.matches ? 'auto' : 'smooth' });
 
   const wrapper = avatar.closest('.avatar-wrapper');
 
@@ -291,15 +304,18 @@ document.querySelector('.author-link').addEventListener('click', function (e) {
 
         nameEl.innerHTML = '&nbsp;';
 
-        /* STEP 3 — Scan animation */
-        wrapper.classList.remove('scan');
-        void wrapper.offsetWidth; // forces browser to restart the CSS animation
-        wrapper.classList.add('scan');
+        /* STEP 3 — Scan animation (skipped under reduced motion) */
+        if (!prefersReducedMotion.matches) {
+          wrapper.classList.remove('scan');
+          void wrapper.offsetWidth; // forces browser to restart the CSS animation
+          wrapper.classList.add('scan');
+        }
 
         /* STEP 4 — After scan, type real name and role */
-        setTimeout(() => {
-
-          wrapper.classList.remove('scan');
+        const afterScan = () => {
+          if (!prefersReducedMotion.matches) {
+            wrapper.classList.remove('scan');
+          }
 
           typeText(nameEl, nameText, 45, () => {
 
@@ -319,8 +335,13 @@ document.querySelector('.author-link').addEventListener('click', function (e) {
             }, 200);
 
           });
+        };
 
-        }, 3500); // scan duration in ms
+        if (prefersReducedMotion.matches) {
+          afterScan();
+        } else {
+          setTimeout(afterScan, 3500); // scan duration in ms
+        }
 
       }, 450); // thinking pause in ms
 

@@ -5,7 +5,7 @@
     {{ $image := .Page.Resources.GetMatch .Params.image }}
     {{ with $image }}
         {{ $thumb := .Resize "1000x" }}
-        {{ printf `<img src="%s" alt="%s" class="img-responsive gallery-image">` $thumb.RelPermalink .Title | safeHTML }}
+        {{ printf `<img src="%s" alt="%s" class="img-responsive gallery-image" decoding="async">` $thumb.RelPermalink .Title | safeHTML }}
     {{end}}
 {{ end }}
 

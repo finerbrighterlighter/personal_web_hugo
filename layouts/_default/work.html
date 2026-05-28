@@ -60,7 +60,7 @@
         {{- end -}}
       {{- end -}}
       {{ if $a.highlight }}<strong>{{ end -}}
-        {{- if $orcid -}}<a href="https://orcid.org/{{ $orcid }}" target="_blank" rel="noopener" aria-label="{{ $given }} {{ $family }}: ORCID profile (opens in new window)">{{- end -}}
+        {{- if $orcid -}}<a href="https://orcid.org/{{ $orcid }}" target="_blank" rel="noreferrer noopener" aria-label="{{ $given }} {{ $family }}: ORCID profile (opens in new window)">{{- end -}}
         {{- $given }} {{ $family -}}
         {{- if $orcid -}}</a>{{- end -}}
       {{- if $a.highlight }}</strong>{{ end -}}
@@ -99,7 +99,7 @@
       {{ with $.Params.scholar }}
         <a class="work-link-btn"
            href="https://scholar.google.com/citations?view_op=view_citation&citation_for_view={{ hugo.Data.homepage.sidebar.scholar_profile }}:{{ . }}"
-           target="_blank" rel="noopener" itemprop="sameAs">
+           target="_blank" rel="noreferrer noopener" itemprop="sameAs">
           SCHOLAR
         </a>
       {{ end }}
@@ -109,7 +109,7 @@
         {{ $isExternal := hasPrefix $url "http" }}
         {{ if not $isExternal }}{{ $url = $url | relURL }}{{ end }}
         <a class="work-link-btn" href="{{ $url }}"
-           {{ if $isExternal }}target="_blank" rel="noopener"{{ end }}
+           {{ if $isExternal }}target="_blank" rel="noreferrer noopener"{{ end }}
            itemprop="url">
           {{ .text | upper }}
         </a>
