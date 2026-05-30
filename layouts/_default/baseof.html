@@ -3,8 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{ "hugo-theme-console/css/terminal-0.7.4.min.css" | relURL }}">
-    <link rel="stylesheet" href="{{ "hugo-theme-console/css/console.css" | relURL }}">
+    {{- $terminal := resources.Get "css/terminal-0.7.4.min.css" | minify | fingerprint -}}
+    {{- $console  := resources.Get "css/console.css" | minify | fingerprint -}}
+    <link rel="stylesheet" href="{{ $terminal.RelPermalink }}" integrity="{{ $terminal.Data.Integrity }}">
+    <link rel="stylesheet" href="{{ $console.RelPermalink }}"  integrity="{{ $console.Data.Integrity }}">
 
     {{- partial "favicon.html" . -}}
     {{- partial "header.html" . -}}

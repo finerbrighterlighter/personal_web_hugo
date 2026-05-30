@@ -6,7 +6,7 @@ USAGE
 -----
   conda run -n hugo python scripts/convert_fonts.py
 
-Drops a .woff2 beside each .ttf in static/hugo-theme-console/font/ and
+Drops a .woff2 beside each .ttf in static/theme/font/ and
 rewrites every @font-face src in console.css to list woff2 first with ttf
 as fallback.
 
@@ -24,9 +24,9 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-FONT_DIR   = REPO_ROOT / "static/hugo-theme-console/font"
-CSS_FILE   = REPO_ROOT / "static/hugo-theme-console/css/console.css"
-CSS_FONT_PREFIX = "/hugo-theme-console/font/"
+FONT_DIR   = REPO_ROOT / "static/theme/font"
+CSS_FILE   = REPO_ROOT / "assets/css/console.css"
+CSS_FONT_PREFIX = "/theme/font/"
 
 
 def ensure_fonttools():

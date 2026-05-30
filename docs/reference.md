@@ -115,7 +115,7 @@ hugo_console/
 ├── static/
 │   ├── js/                    17 ES6 modules (loaded as type="module")
 │   ├── general/               PDFs, images, VCF, CV outputs
-│   └── hugo-theme-console/    Base theme CSS + vendor assets; `console.css` keeps Roboto Mono as the default stack and applies a Burmese dual-typography model: handwriting for "filled" content, monospace for terminal/printed UI
+│   └── theme/                 Base theme fonts + texture; CSS has moved to `assets/css/`
 ├── docs/
 │   └── reference.md           This file
 ├── hugo.toml                  Main site config
@@ -365,33 +365,33 @@ Two Burmese-specific transforms run inside `partials/collab-summary.html` when `
 
 #### Font system for Myanmar script
 
-Defined in `static/hugo-theme-console/css/console.css`:
+Defined in `assets/css/console.css`:
 
 ```css
 @font-face {
     font-family: "Site Handwriting";
-    src: url("/hugo-theme-console/font/ArchitectsDaughter.woff2") format("woff2"),
-         url("/hugo-theme-console/font/ArchitectsDaughter.ttf") format("truetype");
+    src: url("/theme/font/ArchitectsDaughter.woff2") format("woff2"),
+         url("/theme/font/ArchitectsDaughter.ttf") format("truetype");
     unicode-range: U+0000-U+024F, ...;
 }
 
 @font-face {
     font-family: "Site Handwriting";
-    src: url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.woff2") format("woff2"),
-         url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.ttf") format("truetype");
+    src: url("/theme/font/Thit_Sar_Shwe_Si.woff2") format("woff2"),
+         url("/theme/font/Thit_Sar_Shwe_Si.ttf") format("truetype");
     unicode-range: U+1000-109F, ...;
 }
 
 @font-face {
     font-family: "Site Handwriting Clear";
-    src: url("/hugo-theme-console/font/Z01-Umoe002 Regular.woff2") format("woff2"),
-         url("/hugo-theme-console/font/Z01-Umoe002 Regular.ttf") format("truetype");
+    src: url("/theme/font/Z01-Umoe002 Regular.woff2") format("woff2"),
+         url("/theme/font/Z01-Umoe002 Regular.ttf") format("truetype");
 }
 ```
 
-All `@font-face` declarations in `console.css` list WOFF2 first with TTF as fallback. WOFF2 files sit alongside TTFs in `static/hugo-theme-console/font/` (~55% smaller). To add a new font: drop the TTF, run `conda run -n hugo python scripts/convert_fonts.py` — it converts and patches `console.css` automatically.
+All `@font-face` declarations in `console.css` list WOFF2 first with TTF as fallback. WOFF2 files sit alongside TTFs in `static/theme/font/` (~55% smaller). To add a new font: drop the TTF, run `conda run -n hugo python scripts/convert_fonts.py` — it converts and patches `console.css` automatically.
 
-Theme-local static assets in `static/hugo-theme-console/` use root-relative URLs (`/hugo-theme-console/...`) rather than CSS-relative `../` paths. The page texture is loaded from `/hugo-theme-console/texture/concrete-wall.png`; original source attribution: <https://www.transparenttextures.com/patterns/concrete-wall.png>.
+Theme fonts and texture live in `static/theme/` and are referenced via root-relative URLs (`/theme/font/...`, `/theme/texture/...`) in `assets/css/console.css`. CSS lives in `assets/css/` and is processed through Hugo's pipeline (`resources.Get | minify | fingerprint`) — output gets content-hash filenames and SRI integrity attributes. The page texture is loaded from `/theme/texture/concrete-wall.png`; original source attribution: <https://www.transparenttextures.com/patterns/concrete-wall.png>.
 
 The default Burmese handwriting layer pairs **ArchitectsDaughter** for Latin glyphs with **Thit_Sar_Shwe_Si** for Myanmar glyphs. This split is intentional: the two fonts have a comparable informal texture, so Burmese pages feel like a quirky handwritten overwrite of the English baseline rather than a separate clean redesign. A `:lang(mm)` rule switches the page-level content stack to `"Site Handwriting"` and bumps `line-height` to prevent stacked Burmese characters from clipping.
 
@@ -406,7 +406,7 @@ In practice, the Burmese UI combines two visual systems:
 1. **"Filled by hand" (handwriting)** — user-authored content areas
 2. **"Printed terminal" (monospace)** — TUI chrome, prompts, and machine-like outputs
 
-Implemented in `static/hugo-theme-console/css/console.css` using `html:lang(mm)` overrides:
+Implemented in `assets/css/console.css` using `html:lang(mm)` overrides:
 
 | Area                                                          | Typeface in Burmese mode | Key selectors                                                                                              |
 | ------------------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------- |
@@ -1311,11 +1311,11 @@ sudo apt-get install libcairo2 libpango-1.0-0 libpangocairo-1.0-0 \
 
 **Run:** `conda run -n hugo python scripts/convert_fonts.py`
 
-**When to run:** After dropping any new TTF file into `static/hugo-theme-console/font/`. Idempotent — skips fonts already converted and CSS lines already patched.
+**When to run:** After dropping any new TTF file into `static/theme/font/`. Idempotent — skips fonts already converted and CSS lines already patched.
 
 **What it does:**
 
-1. Finds all `*.ttf` files in `static/hugo-theme-console/font/`
+1. Finds all `*.ttf` files in `static/theme/font/`
 2. Converts each to WOFF2 using `fontTools.ttLib` (Brotli compression via `fonttools[woff]`)
 3. Regex-patches every `src:` line in `console.css` that references a TTF to list the matching WOFF2 first with TTF as fallback
 
