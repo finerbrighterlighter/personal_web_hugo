@@ -13,7 +13,7 @@
 
   /* Duck overlay — preloaded and layered above avatar, below scan beam */
   const duck = document.createElement('img');
-  duck.src = '/general/duck_mascot.png';
+  duck.src = '/general/duck_mascot.webp';
   duck.alt = '';
   duck.setAttribute('aria-hidden', 'true');
   duck.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.3s;z-index:2;pointer-events:none;';

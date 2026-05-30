@@ -6,7 +6,7 @@
 <div class="profile-header">
     {{ with $data.avatar }}
     <div class="avatar-wrapper" role="button" tabindex="0" aria-label="Profile photo">
-      <img src="{{ $data.avatar }}" alt="" width="160" height="160" fetchpriority="high" decoding="async" class="sidebar-avatar" id="avatar">
+      <img src="{{ $data.avatar }}" alt="" width="160" height="160" fetchpriority="high" decoding="sync" class="sidebar-avatar" id="avatar">
     </div>
     {{ end }}
     <h2 id="author-name">

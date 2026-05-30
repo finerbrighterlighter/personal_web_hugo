@@ -1,24 +1,24 @@
 <div class="image-grid">
     {{ $match := .Get "match" | default "*" }}
     {{ range .Page.Resources.Match $match }}
-        {{/* Define our threshold */}}
-        {{ $targetWidth := 2000 }}
-        {{ $src := "" }}
-
-        {{ if gt .Width $targetWidth }}
-            {{/* Only resize if it's wider than 2000px */}}
-            {{ $thumb := .Resize (printf "%dx" $targetWidth) }}
-            {{ $src = $thumb.RelPermalink }}
-        {{ else }}
-            {{/* Use original if it's already small/sharp */}}
-            {{ $src = .RelPermalink }}
+        {{ $res := . }}
+        {{ $display := $res }}
+        {{ if gt $res.Width 2000 }}
+            {{ $display = $res.Resize "2000x" }}
         {{ end }}
+        {{ $webp := $display.Process "webp" }}
 
-        <a href="{{ .RelPermalink }}" target="_blank" rel="noreferrer noopener">
-             <img src="{{ $src }}"
-                  class="img-responsive"
-                  decoding="async"
-                  alt="{{ .Name }}">
+        <a href="{{ $res.RelPermalink }}" target="_blank" rel="noreferrer noopener">
+            <picture>
+                <source type="image/webp" srcset="{{ $webp.RelPermalink }}">
+                <img src="{{ $display.RelPermalink }}"
+                     class="img-responsive"
+                     loading="lazy"
+                     decoding="async"
+                     width="{{ $display.Width }}"
+                     height="{{ $display.Height }}"
+                     alt="{{ $res.Name }}">
+            </picture>
         </a>
     {{ end }}
 </div>

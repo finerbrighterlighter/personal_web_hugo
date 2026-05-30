@@ -4,7 +4,8 @@
 /* --- Roboto Mono (default mono UI) --- */
 @font-face {
     font-family: "Roboto Mono";
-    src: url("/hugo-theme-console/font/RobotoMono-Regular.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/RobotoMono-Regular.woff2") format("woff2"),
+         url("/hugo-theme-console/font/RobotoMono-Regular.ttf") format("truetype");
     font-style: normal;
     font-weight: 400;
     font-display: swap;
@@ -13,7 +14,8 @@
 
 @font-face {
     font-family: "Roboto Mono";
-    src: url("/hugo-theme-console/font/RobotoMono-Italic.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/RobotoMono-Italic.woff2") format("woff2"),
+         url("/hugo-theme-console/font/RobotoMono-Italic.ttf") format("truetype");
     font-style: italic;
     font-weight: 400;
     font-display: swap;
@@ -22,7 +24,8 @@
 
 @font-face {
     font-family: "Roboto Mono";
-    src: url("/hugo-theme-console/font/RobotoMono-Bold.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/RobotoMono-Bold.woff2") format("woff2"),
+         url("/hugo-theme-console/font/RobotoMono-Bold.ttf") format("truetype");
     font-style: normal;
     font-weight: 700;
     font-display: swap;
@@ -31,7 +34,8 @@
 
 @font-face {
     font-family: "Roboto Mono";
-    src: url("/hugo-theme-console/font/RobotoMono-BoldItalic.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/RobotoMono-BoldItalic.woff2") format("woff2"),
+         url("/hugo-theme-console/font/RobotoMono-BoldItalic.ttf") format("truetype");
     font-style: italic;
     font-weight: 700;
     font-display: swap;
@@ -43,7 +47,8 @@
    Myanmar fonts. Z01-Umoe002 is available as an opt-in clear mode. --- */
 @font-face {
     font-family: "Site Handwriting";
-    src: url("/hugo-theme-console/font/ArchitectsDaughter.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/ArchitectsDaughter.woff2") format("woff2"),
+         url("/hugo-theme-console/font/ArchitectsDaughter.ttf") format("truetype");
     font-style: normal;
     font-weight: 400;
     font-display: swap;
@@ -53,7 +58,8 @@
 
 @font-face {
     font-family: "Site Handwriting";
-    src: url("/hugo-theme-console/font/ArchitectsDaughter.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/ArchitectsDaughter.woff2") format("woff2"),
+         url("/hugo-theme-console/font/ArchitectsDaughter.ttf") format("truetype");
     font-style: normal;
     font-weight: 700;
     font-display: swap;
@@ -63,7 +69,8 @@
 
 @font-face {
     font-family: "Site Handwriting";
-    src: url("/hugo-theme-console/font/ArchitectsDaughter.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/ArchitectsDaughter.woff2") format("woff2"),
+         url("/hugo-theme-console/font/ArchitectsDaughter.ttf") format("truetype");
     font-style: italic;
     font-weight: 400;
     font-display: swap;
@@ -73,7 +80,8 @@
 
 @font-face {
     font-family: "Site Handwriting";
-    src: url("/hugo-theme-console/font/ArchitectsDaughter.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/ArchitectsDaughter.woff2") format("woff2"),
+         url("/hugo-theme-console/font/ArchitectsDaughter.ttf") format("truetype");
     font-style: italic;
     font-weight: 700;
     font-display: swap;
@@ -83,7 +91,8 @@
 
 @font-face {
     font-family: "Site Handwriting";
-    src: url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.woff2") format("woff2"),
+         url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.ttf") format("truetype");
     font-style: normal;
     font-weight: 400;
     font-display: swap;
@@ -92,7 +101,8 @@
 
 @font-face {
     font-family: "Site Handwriting";
-    src: url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.woff2") format("woff2"),
+         url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.ttf") format("truetype");
     font-style: normal;
     font-weight: 700;
     font-display: swap;
@@ -101,7 +111,8 @@
 
 @font-face {
     font-family: "Site Handwriting";
-    src: url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.woff2") format("woff2"),
+         url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.ttf") format("truetype");
     font-style: italic;
     font-weight: 400;
     font-display: swap;
@@ -110,7 +121,8 @@
 
 @font-face {
     font-family: "Site Handwriting";
-    src: url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.woff2") format("woff2"),
+         url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.ttf") format("truetype");
     font-style: italic;
     font-weight: 700;
     font-display: swap;
@@ -119,7 +131,8 @@
 
 @font-face {
     font-family: "Site Handwriting Clear";
-    src: url("/hugo-theme-console/font/Z01-Umoe002 Regular.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/Z01-Umoe002 Regular.woff2") format("woff2"),
+         url("/hugo-theme-console/font/Z01-Umoe002 Regular.ttf") format("truetype");
     font-style: normal;
     font-weight: 400;
     font-display: swap;

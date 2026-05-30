@@ -59,13 +59,15 @@ Comprehensive reference for the Hugo site at `htunteza.com`. Covers structure, c
     - [Data flow](#data-flow)
     - [Output](#output)
     - [Environment setup (first time)](#environment-setup-first-time)
-  - [8. SEO and Structured Data](#8-seo-and-structured-data)
+  - [8. Python Script — `convert_fonts.py`](#8-python-script--convert_fontspy)
+  - [9. Python Script — `convert_images.py`](#9-python-script--convert_imagespy)
+  - [10. SEO and Structured Data](#10-seo-and-structured-data)
     - [Partials](#partials)
     - [JSON-LD encoding](#json-ld-encoding)
     - [BreadcrumbList URL fallback](#breadcrumblist-url-fallback)
     - [Work page microdata](#work-page-microdata)
-  - [9. LLMs.txt Outputs](#9-llmstxt-outputs)
-  - [10. Accessibility](#10-accessibility)
+  - [11. LLMs.txt Outputs](#11-llmstxt-outputs)
+  - [12. Accessibility](#12-accessibility)
 
 ---
 
@@ -256,6 +258,14 @@ publish = "public"
 
 [build.environment]
 HUGO_VERSION = "0.157.0"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 ```
 
 Hugo version is pinned here. To upgrade: change `HUGO_VERSION` and test locally with that version first.
@@ -360,21 +370,26 @@ Defined in `static/hugo-theme-console/css/console.css`:
 ```css
 @font-face {
     font-family: "Site Handwriting";
-    src: url("/hugo-theme-console/font/ArchitectsDaughter.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/ArchitectsDaughter.woff2") format("woff2"),
+         url("/hugo-theme-console/font/ArchitectsDaughter.ttf") format("truetype");
     unicode-range: U+0000-U+024F, ...;
 }
 
 @font-face {
     font-family: "Site Handwriting";
-    src: url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.woff2") format("woff2"),
+         url("/hugo-theme-console/font/Thit_Sar_Shwe_Si.ttf") format("truetype");
     unicode-range: U+1000-109F, ...;
 }
 
 @font-face {
     font-family: "Site Handwriting Clear";
-    src: url("/hugo-theme-console/font/Z01-Umoe002 Regular.ttf") format("truetype");
+    src: url("/hugo-theme-console/font/Z01-Umoe002 Regular.woff2") format("woff2"),
+         url("/hugo-theme-console/font/Z01-Umoe002 Regular.ttf") format("truetype");
 }
 ```
+
+All `@font-face` declarations in `console.css` list WOFF2 first with TTF as fallback. WOFF2 files sit alongside TTFs in `static/hugo-theme-console/font/` (~55% smaller). To add a new font: drop the TTF, run `conda run -n hugo python scripts/convert_fonts.py` — it converts and patches `console.css` automatically.
 
 Theme-local static assets in `static/hugo-theme-console/` use root-relative URLs (`/hugo-theme-console/...`) rather than CSS-relative `../` paths. The page texture is loaded from `/hugo-theme-console/texture/concrete-wall.png`; original source attribution: <https://www.transparenttextures.com/patterns/concrete-wall.png>.
 
@@ -811,7 +826,7 @@ The post TOC no longer lives inside this template; it is rendered from `panel-po
 
 | Partial                     | Called from                                               | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | --------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `header.html`             | `baseof.html`                                           | `<title>`, description, OG tags, Twitter Card, canonical, robots, RSS link                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `header.html`             | `baseof.html`                                           | `<title>`, description, OG tags, Twitter Card, canonical, robots, RSS link; `<link rel="preload">` for LCP avatar image; `preconnect` for OpenAlex + Last.fm (and GoatCounter in prod); `dns-prefetch` for AniList, Trakt, Unsplash, TMDB, doi.org                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | `favicon.html`            | `baseof.html`                                           | `<link>` tags for all favicon sizes + webmanifest                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `theme-data.html`         | `baseof.html`                                           | Embeds `themes.yml` as JSON; blocking inline script writes CSS vars before render                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `home-seo.html`           | `baseof.html` (home only)                               | JSON-LD `Person` schema                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
@@ -844,7 +859,8 @@ The post TOC no longer lives inside this template; it is rendered from `panel-po
 | `collab-count`      | none              | integer                          | `researchers.yml` + all works | Dedupes by ORCID; skips `me-ceb` and any entry sharing its ORCID                                                                       |
 | `institution-count` | none              | integer                          | `researchers.yml` + all works | No person dedup — both institutions count if someone moves; keyword extraction: University, Hospital, Academy, Institute, College, Unit |
 | `country-list`      | none              | prose string                     | `researchers.yml` + all works | Countries sorted by institution count desc; Oxford comma; expands UK, USA/US, UAE                                                        |
-| `gallery`           | `match="*.jpg"` | responsive image grid            | Page bundle resources           | No resize if image width ≤ 2000px                                                                                                       |
+| `gallery`           | `match="*.jpg"` | responsive image grid            | Page bundle resources           | `<picture>` with WebP source + original fallback; lazy loading; explicit dimensions; link goes to full original; resize only if width > 2000px |
+| `fig`               | `num`, `src`    | `<figure>` with caption          | Page bundle resources           | `<picture>` with WebP source + original fallback; lazy loading; explicit dimensions; `alt=""` (caption is the accessible label) |
 | `opening`           | inline text       | `<span class="opening-words">` | —                              | Bold uppercase letter-spaced treatment for first few words of a section; used in `about/index.md`                                      |
 | `pullquote`         | inline text       | `<div class="pullquote">`      | —                              | Decorative closing statement with oversized Georgia quotation mark watermark; used in `about/index.md`                                 |
 
@@ -857,7 +873,7 @@ Located in `layouts/_default/_markup/`:
 | Hook    | File                    | Behavior                                                                        |
 | ------- | ----------------------- | ------------------------------------------------------------------------------- |
 | Link    | `render-link.html`    | External links (`http*`) automatically get `target="_blank" rel="noreferrer noopener"` |
-| Image   | `render-image.html`   | Adds `class="img-responsive"` to all `<img>` tags                           |
+| Image   | `render-image.html`   | Page bundle images: `<picture>` with WebP source + original fallback, `loading="lazy"`, explicit dimensions. External/absolute paths: plain `<img class="img-responsive">` |
 | Heading | `render-heading.html` | Standard heading with `id` anchor for deep linking                            |
 
 #### 5.5.1 Link navigation standard
@@ -903,7 +919,7 @@ All files in `static/js/`, loaded as `type="module"` in `partials/scripts.html`.
 | `openalex.js`         | `cache.js` | `#openalex-metrics`                                                                                       | OpenAlex API                                       | `openalex-author-data`                                        | HTML/CSS bar chart (no SVG); re-renders on `theme-changed` event; hardcoded author ID                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | `work-citation.js`    | `cache.js` | `article[data-doi]`, `#work-cite-count`                                                                 | OpenAlex API                                       | `openalex-work-<doi>`                                         | Work pages only; citation count linked to citing-papers list                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `work-bibtex.js`      | `cache.js` | `article[data-doi]`, `#bibtex-btn`                                                                      | doi.org (content negotiation)                      | `bibtex-<doi>`                                                | Work pages only; CITE button opens `fetch.sh` terminal panel; prompt line shows `$ pub-get --ref --format=<fmt>` (updates on format change). On open: CLI-style status sequence in content area — `[INFO] Searching local cache...`; if miss adds `[INFO] Not found. Requesting metadata from doi.org...`; on success adds `[OK] Key identified: <key>`; after `FETCH_DONE_DELAY` (1200ms) replaced by formatted content; `[ERR]` on failure. Format selector (bibtex/nlm/apa/ama); Copy; BIB download; RIS download; collapse via `collapse_windows.js`, EXIT closes fully. BibTeX display: prettified (one field per line, aligned keys, preferred field order), syntax-highlighted (keys in primary, punctuation in secondary), Courier New at `--font-sm`; Copy and BIB download use raw doi.org response. NLM: all authors listed. AMA: ≤6 authors in full; >6 → first 3 + et al. |
-| `duck.js`             | —           | `.avatar-wrapper`                                                                                         | —                                                 | —                                                              | Avatar easter egg: click reveals `duck_mascot.png` with `duckGlitch` CSS animation (0.6s hue-rotate + jitter), crossfades back over 1.5s. Three `quack` spans cycle mid→right→left on successive clicks — active span flickers bright then dims to 0.25 opacity; all fade back to 0 and cycle resets 1500ms after the last click.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `duck.js`             | —           | `.avatar-wrapper`                                                                                         | —                                                 | —                                                              | Avatar easter egg: click reveals `duck_mascot.webp` with `duckGlitch` CSS animation (0.6s hue-rotate + jitter), crossfades back over 1.5s. Three `quack` spans cycle mid→right→left on successive clicks — active span flickers bright then dims to 0.25 opacity; all fade back to 0 and cycle resets 1500ms after the last click.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `lastFM.js`           | `cache.js` | `#lasttrack`, `#topalbums`                                                                              | Last.fm API                                        | `lastfm-topalbums`                                            | Now-playing (no cache, 30s poll); top albums (cached)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `anilist.js`          | `cache.js` | `#last-read-manga`                                                                                        | AniList GraphQL                                    | `anilist-manga`                                               | Recently read manga for user "finer"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `trakt.js`            | `cache.js` | `#last-watched`                                                                                           | Trakt + TMDB APIs                                  | `trakt-watched`                                               | Recently watched; dedupes consecutive repeats; TMDB poster images                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -1289,7 +1305,64 @@ sudo apt-get install libcairo2 libpango-1.0-0 libpangocairo-1.0-0 \
 
 ---
 
-## 8. SEO and Structured Data
+## 8. Python Script — `convert_fonts.py`
+
+**Runtime:** Python 3.11, conda env `hugo`. Dependency: `fonttools[woff]` (auto-installed on first run).
+
+**Run:** `conda run -n hugo python scripts/convert_fonts.py`
+
+**When to run:** After dropping any new TTF file into `static/hugo-theme-console/font/`. Idempotent — skips fonts already converted and CSS lines already patched.
+
+**What it does:**
+
+1. Finds all `*.ttf` files in `static/hugo-theme-console/font/`
+2. Converts each to WOFF2 using `fontTools.ttLib` (Brotli compression via `fonttools[woff]`)
+3. Regex-patches every `src:` line in `console.css` that references a TTF to list the matching WOFF2 first with TTF as fallback
+
+**Expected savings:** ~55% size reduction per font (e.g. Thit_Sar_Shwe_Si: 546 KB → 245 KB).
+
+**After running:** commit both the new `.woff2` files and the updated `console.css`.
+
+---
+
+## 9. Python Script — `convert_images.py`
+
+**Runtime:** Python 3.11, conda env `hugo`. Dependency: `Pillow` (auto-installed on first run).
+
+**Run:** `conda run -n hugo python scripts/convert_images.py <input> [options]`
+
+**When to run:** when adding new images to `static/` or `content/`. Idempotent — skips files whose `.webp` sibling already exists and CSS/ref lines already updated.
+
+**Options:**
+
+| Flag | Description |
+|---|---|
+| `--size WxH` | Fit within WxH box, aspect ratio preserved, no upscale (e.g. `320x320` for profile) |
+| `--width W` | Proportional resize to max width W, no upscale |
+| `--quality N` | WebP quality 1–100 (default: 85) |
+| `--update-refs` | Scan repo source files (`.yml`, `.yaml`, `.md`, `.html`, `.toml`, `.js`) and replace old filenames with `.webp` |
+| `--dry-run` | Preview changes without writing anything |
+
+Scans source files only — `public/` is excluded.
+
+**Common workflows:**
+
+```bash
+# Profile or other static image with resize
+conda run -n hugo python scripts/convert_images.py static/general/profile.jfif --size 320x320 --update-refs
+
+# Post-bundle or directory (format-only, no resize)
+conda run -n hugo python scripts/convert_images.py content/posts/my-post/ --update-refs
+
+# Preview before committing
+conda run -n hugo python scripts/convert_images.py static/images/icons/ --dry-run
+```
+
+**After running:** commit the new `.webp` files. Original files are kept as fallback — do not delete them unless you've confirmed no remaining references.
+
+---
+
+## 10. SEO and Structured Data
 
 ### Partials
 
@@ -1359,7 +1432,7 @@ The `<urlset>` namespace includes `xmlns:xhtml` to allow hreflang output.
 
 ---
 
-## 9. LLMs.txt Outputs
+## 11. LLMs.txt Outputs
 
 Both generated at build time via Hugo custom output formats. Only the home page (`[outputs] home = [...]`) produces these files.
 
@@ -1385,7 +1458,7 @@ Both generated at build time via Hugo custom output formats. Only the home page 
 
 ---
 
-## 10. Accessibility
+## 12. Accessibility
 
 Accessibility is treated as a first-class concern. The following patterns are applied site-wide.
 

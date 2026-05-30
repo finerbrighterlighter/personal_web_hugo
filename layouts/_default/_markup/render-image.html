@@ -1,1 +1,13 @@
-<img src="{{ .Destination | safeURL }}" alt="{{ .Text }}"{{ with .Title}} title="{{ . }}"{{ end }} class="img-responsive"> 
+{{- $src := .Destination | safeURL -}}
+{{- $alt := .Text -}}
+{{- $title := .Title -}}
+{{- $res := .Page.Resources.GetMatch .Destination -}}
+{{- if $res -}}
+  {{- $webp := $res.Process "webp" -}}
+  <picture>
+    <source type="image/webp" srcset="{{ $webp.RelPermalink }}">
+    <img src="{{ $res.RelPermalink }}" alt="{{ $alt }}"{{ with $title }} title="{{ . }}"{{ end }} class="img-responsive" loading="lazy" width="{{ $res.Width }}" height="{{ $res.Height }}">
+  </picture>
+{{- else -}}
+  <img src="{{ $src }}" alt="{{ $alt }}"{{ with $title }} title="{{ . }}"{{ end }} class="img-responsive">
+{{- end -}}

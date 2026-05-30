@@ -1,5 +1,16 @@
 <!-- ============================= -->
 
+<!-- LCP PRELOAD -->
+
+<!-- ============================= -->
+
+{{- $hp := hugo.Data.homepage -}}
+{{- if eq .Site.Language.Lang "mm" -}}{{- $hp = hugo.Data.homepage_mm -}}{{- end -}}
+{{- $avatarSrc := $hp.sidebar.avatar | relURL -}}
+<link rel="preload" as="image" href="{{ $avatarSrc }}" fetchpriority="high" type="image/webp">
+
+<!-- ============================= -->
+
 <!-- PAGE TITLE -->
 
 <!-- ============================= -->
@@ -74,3 +85,24 @@
 
 <link rel="alternate" type="application/rss+xml" title="{{ $.Site.Title }}" href="{{ .RelPermalink }}">
 {{ end }}
+
+<!-- ============================= -->
+
+<!-- RESOURCE HINTS -->
+
+<!-- ============================= -->
+
+<link rel="preconnect" href="https://api.openalex.org">
+<link rel="dns-prefetch" href="https://api.openalex.org">
+<link rel="preconnect" href="https://ws.audioscrobbler.com">
+<link rel="dns-prefetch" href="https://ws.audioscrobbler.com">
+{{ if not hugo.IsServer -}}
+<link rel="preconnect" href="https://gc.zgo.at">
+<link rel="dns-prefetch" href="https://gc.zgo.at">
+{{- end }}
+<link rel="dns-prefetch" href="https://graphql.anilist.co">
+<link rel="dns-prefetch" href="https://api.trakt.tv">
+<link rel="dns-prefetch" href="https://api.unsplash.com">
+<link rel="dns-prefetch" href="https://api.themoviedb.org">
+<link rel="dns-prefetch" href="https://image.tmdb.org">
+<link rel="dns-prefetch" href="https://doi.org">
