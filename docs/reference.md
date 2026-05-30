@@ -1007,6 +1007,38 @@ Most API panels share one localStorage TTL helper in `static/js/cache.js`.
 - `clear now` and `do not click` use the same reset path and reload behavior.
 - `theme-mode`, `theme-palette-*`, and `mmFontMode` are intentionally cleared so a later return visit falls back to the default page state.
 
+**Session reset mechanism (full flow):**
+
+The blocking inline script in `partials/theme-data.html` runs before body render on every page load:
+
+1. Scans all localStorage keys for any `cache:`-prefixed entry (API data written by `setCache()`) whose `Date.now() - ts > TTL`
+2. If any expired entry is found → calls `clearSiteStorage()`, wiping API cache entries AND `theme-mode`, `theme-palette-*`, `mmFontMode`
+3. Subsequent reads of `theme-mode` / `theme-palette-*` find nothing → fall back to site defaults (Duck theme, system dark/light)
+
+This is intentional: visitors returning after 60 min get the site's default appearance, not their previous choices. It signals the site does not permanently track or store user preferences.
+
+**What the 60-minute TTL covers (localStorage):**
+
+| Data | Stored by | Cleared after TTL |
+|---|---|---|
+| API responses (OpenAlex, Last.fm, AniList, Trakt, Unsplash, BibTeX) | `cache.js` via `setCache()` | Yes — triggers full reset |
+| Theme mode (`dark`/`light`) | `theme.js` plain `setItem` | Yes — piggybacked on API expiry |
+| Palette choice (`theme-palette-dark/light`) | `theme.js` plain `setItem` | Yes — piggybacked on API expiry |
+| Burmese font mode (`mmFontMode`) | `mm_font_toggle.js` plain `setItem` | Yes — piggybacked on API expiry |
+
+Note: theme preferences have no timestamp of their own. They are cleared because `clearSiteStorage()` targets all site preference keys unconditionally when any API entry expires.
+
+**HTTP browser cache (separate concern, no user data):**
+
+CSS, font, and image files are cached at the HTTP level via `Cache-Control` in `netlify.toml`. This is a file download cache — no user identifiers, no relation to the localStorage TTL.
+
+| Path | Cache-Control | Reason |
+|---|---|---|
+| `/css/*` | `max-age=31536000, immutable` | Content-hash filename changes on every deploy |
+| `/theme/*` (fonts, texture) | `max-age=31536000, immutable` | Never change between deploys |
+| `/js/*` | `max-age=3600` | Matches API data refresh cadence |
+| `/images/*`, `/general/*` | `max-age=604800` (1 week) | Rarely change |
+
 ### 6.2 `work-bibtex.js` — CITE panel
 
 Activated on any work single page that has a `data-doi` attribute on the `<article>` element. The bare DOI (e.g. `10.1016/j.jclinepi.2024.111234`) is extracted by the Hugo template from the first source URL containing `doi.org/`.

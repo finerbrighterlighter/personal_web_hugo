@@ -1,7 +1,7 @@
 # pa11y Accessibility Audit
 
 **Tool:** pa11y 9.1.1 (htmlcs, WCAG 2.1 AA)
-**Date:** 2026-05-22
+**Date:** 2026-05-30
 **Hugo server:** localhost:1313 (development build)
 
 ## Scope
