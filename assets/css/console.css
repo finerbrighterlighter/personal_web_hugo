@@ -1632,12 +1632,20 @@ p.social a {
   filter: grayscale(50%);
 }
 
-#topalbums a {
+#topalbums a,
+#last-read-manga a,
+#last-watched a,
+#latestimage a,
+.playlist-strip a {
   position: relative;
   overflow: hidden;
 }
 
-.topalbum-artist {
+.topalbum-artist,
+.manga-origin,
+.screen-language,
+.photo-date,
+.playlist-year {
   position: absolute;
   right: 4px;
   bottom: 5px;
@@ -1645,8 +1653,8 @@ p.social a {
   max-width: 52px;
   padding: 0.24em 0.38em;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--error-color) 64%, var(--background-color));
-  background: color-mix(in srgb, var(--error-color) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary-color) 64%, var(--background-color));
+  background: color-mix(in srgb, var(--primary-color) 88%, transparent);
   color: var(--background-color);
   font-size: 0.56rem;
   font-weight: 800;
@@ -1660,103 +1668,45 @@ p.social a {
   transform-origin: center;
 }
 
-#topalbums a:nth-child(2n) .topalbum-artist {
-  right: auto;
-  left: 5px;
-  bottom: 4px;
-  transform: rotate(4deg);
-}
+/* #topalbums — cycle starts at offset 0 (right/-6deg default) */
+#topalbums a:nth-child(2n) .topalbum-artist { right: auto; left: 5px;  bottom: 4px; transform: rotate(4deg); }
+#topalbums a:nth-child(3n) .topalbum-artist { right: 3px;  left: auto; bottom: 8px; transform: rotate(-10deg); }
+#topalbums a:nth-child(4n) .topalbum-artist { right: auto; left: 7px;  bottom: 6px; transform: rotate(8deg); }
+#topalbums a:nth-child(5n) .topalbum-artist { right: 7px;  left: auto; bottom: 3px; transform: rotate(12deg); }
+#topalbums a:nth-child(7n) .topalbum-artist { right: auto; left: 3px;  bottom: 8px; transform: rotate(-3deg); }
 
-#topalbums a:nth-child(3n) .topalbum-artist {
-  right: 3px;
-  bottom: 8px;
-  left: auto;
-  transform: rotate(-10deg);
-}
+/* #last-read-manga — cycle starts at offset 1 (left/4deg default) */
+.manga-origin { left: 5px; right: auto; bottom: 4px; transform: rotate(4deg); }
+#last-read-manga a:nth-child(2n) .manga-origin { right: 3px;  left: auto; bottom: 8px; transform: rotate(-10deg); }
+#last-read-manga a:nth-child(3n) .manga-origin { right: auto; left: 7px;  bottom: 6px; transform: rotate(8deg); }
+#last-read-manga a:nth-child(4n) .manga-origin { right: 7px;  left: auto; bottom: 3px; transform: rotate(12deg); }
+#last-read-manga a:nth-child(5n) .manga-origin { right: auto; left: 3px;  bottom: 8px; transform: rotate(-3deg); }
+#last-read-manga a:nth-child(7n) .manga-origin { right: 4px;  left: auto; bottom: 5px; transform: rotate(-6deg); }
 
-#topalbums a:nth-child(4n) .topalbum-artist {
-  right: auto;
-  bottom: 6px;
-  left: 7px;
-  transform: rotate(8deg);
-}
+/* #last-watched — cycle starts at offset 2 (right/-10deg default) */
+.screen-language { right: 3px; left: auto; bottom: 8px; transform: rotate(-10deg); }
+#last-watched a:nth-child(2n) .screen-language { right: auto; left: 7px;  bottom: 6px; transform: rotate(8deg); }
+#last-watched a:nth-child(3n) .screen-language { right: 7px;  left: auto; bottom: 3px; transform: rotate(12deg); }
+#last-watched a:nth-child(4n) .screen-language { right: auto; left: 3px;  bottom: 8px; transform: rotate(-3deg); }
+#last-watched a:nth-child(5n) .screen-language { right: 4px;  left: auto; bottom: 5px; transform: rotate(-6deg); }
+#last-watched a:nth-child(7n) .screen-language { right: auto; left: 5px;  bottom: 4px; transform: rotate(4deg); }
 
-#topalbums a:nth-child(5n) .topalbum-artist {
-  right: 7px;
-  bottom: 3px;
-  left: auto;
-  transform: rotate(12deg);
-}
+/* #latestimage — cycle starts at offset 3 (left/8deg default) */
+.photo-date { right: auto; left: 7px; bottom: 6px; transform: rotate(8deg); }
+#latestimage a:nth-child(2n) .photo-date { right: 7px;  left: auto; bottom: 3px; transform: rotate(12deg); }
+#latestimage a:nth-child(3n) .photo-date { right: auto; left: 3px;  bottom: 8px; transform: rotate(-3deg); }
+#latestimage a:nth-child(4n) .photo-date { right: 4px;  left: auto; bottom: 5px; transform: rotate(-6deg); }
+#latestimage a:nth-child(5n) .photo-date { right: auto; left: 5px;  bottom: 4px; transform: rotate(4deg); }
+#latestimage a:nth-child(7n) .photo-date { right: 3px;  left: auto; bottom: 8px; transform: rotate(-10deg); }
 
-#topalbums a:nth-child(7n) .topalbum-artist {
-  right: auto;
-  bottom: 8px;
-  left: 3px;
-  transform: rotate(-3deg);
-}
+/* .playlist-strip — cycle starts at offset 4 (left/5deg default) */
+.playlist-year { left: 4px; right: auto; bottom: 4px; transform: rotate(5deg); }
 
-.playlist-strip a {
-  position: relative;
-  overflow: hidden;
-}
-
-.playlist-year {
-  position: absolute;
-  left: 4px;
-  bottom: 4px;
-  display: inline-block;
-  max-width: 52px;
-  padding: 0.24em 0.38em;
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--error-color) 64%, var(--background-color));
-  background: color-mix(in srgb, var(--error-color) 88%, transparent);
-  color: var(--background-color);
-  font-size: 0.56rem;
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: 0;
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  pointer-events: none;
-  transform: rotate(5deg);
-  transform-origin: center;
-}
-
-.playlist-strip a:nth-child(2n) .playlist-year {
-  right: 5px;
-  bottom: 6px;
-  left: auto;
-  transform: rotate(-8deg);
-}
-
-.playlist-strip a:nth-child(3n) .playlist-year {
-  right: auto;
-  bottom: 3px;
-  left: 7px;
-  transform: rotate(11deg);
-}
-
-.playlist-strip a:nth-child(4n) .playlist-year {
-  right: 3px;
-  bottom: 5px;
-  left: auto;
-  transform: rotate(2deg);
-}
-
-.playlist-strip a:nth-child(5n) .playlist-year {
-  right: auto;
-  bottom: 8px;
-  left: 5px;
-  transform: rotate(-13deg);
-}
-
-.playlist-strip a:nth-child(7n) .playlist-year {
-  right: 8px;
-  bottom: 4px;
-  left: auto;
-  transform: rotate(9deg);
-}
+.playlist-strip a:nth-child(2n) .playlist-year { right: 5px;  left: auto; bottom: 6px; transform: rotate(-8deg); }
+.playlist-strip a:nth-child(3n) .playlist-year { right: auto; left: 7px;  bottom: 3px; transform: rotate(11deg); }
+.playlist-strip a:nth-child(4n) .playlist-year { right: 3px;  left: auto; bottom: 5px; transform: rotate(2deg); }
+.playlist-strip a:nth-child(5n) .playlist-year { right: auto; left: 5px;  bottom: 8px; transform: rotate(-13deg); }
+.playlist-strip a:nth-child(7n) .playlist-year { right: 8px;  left: auto; bottom: 4px; transform: rotate(9deg); }
 
 
 /* ============================= */
