@@ -1632,6 +1632,69 @@ p.social a {
   filter: grayscale(50%);
 }
 
+#topalbums a {
+  position: relative;
+  overflow: hidden;
+}
+
+.topalbum-artist {
+  position: absolute;
+  right: 4px;
+  bottom: 5px;
+  display: inline-block;
+  max-width: 52px;
+  padding: 0.24em 0.38em;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--error-color) 64%, var(--background-color));
+  background: color-mix(in srgb, var(--error-color) 88%, transparent);
+  color: var(--background-color);
+  font-size: 0.56rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: 0;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: rotate(-6deg);
+  transform-origin: center;
+}
+
+#topalbums a:nth-child(2n) .topalbum-artist {
+  right: auto;
+  left: 5px;
+  bottom: 4px;
+  transform: rotate(4deg);
+}
+
+#topalbums a:nth-child(3n) .topalbum-artist {
+  right: 3px;
+  bottom: 8px;
+  left: auto;
+  transform: rotate(-10deg);
+}
+
+#topalbums a:nth-child(4n) .topalbum-artist {
+  right: auto;
+  bottom: 6px;
+  left: 7px;
+  transform: rotate(8deg);
+}
+
+#topalbums a:nth-child(5n) .topalbum-artist {
+  right: 7px;
+  bottom: 3px;
+  left: auto;
+  transform: rotate(12deg);
+}
+
+#topalbums a:nth-child(7n) .topalbum-artist {
+  right: auto;
+  bottom: 8px;
+  left: 3px;
+  transform: rotate(-3deg);
+}
+
 .playlist-strip a {
   position: relative;
   overflow: hidden;
@@ -1639,60 +1702,60 @@ p.social a {
 
 .playlist-year {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--primary-color);
-  border-radius: 50%;
-  box-shadow:
-    inset 0 0 0 2px color-mix(in srgb, var(--primary-color) 88%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--background-color) 72%, transparent);
-  background: transparent;
-  color: var(--primary-color);
-  font-size: 0.66rem;
-  font-weight: 900;
-  line-height: 1;
+  left: 4px;
+  bottom: 4px;
+  display: inline-block;
+  max-width: 52px;
+  padding: 0.24em 0.38em;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--error-color) 64%, var(--background-color));
+  background: color-mix(in srgb, var(--error-color) 88%, transparent);
+  color: var(--background-color);
+  font-size: 0.56rem;
+  font-weight: 800;
+  line-height: 1.05;
   letter-spacing: 0;
-  opacity: 1;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   pointer-events: none;
-  transform: rotate(-12deg);
+  transform: rotate(5deg);
   transform-origin: center;
-  text-shadow:
-    1px 0 0 color-mix(in srgb, var(--background-color) 55%, transparent),
-    -1px 0 0 color-mix(in srgb, var(--background-color) 55%, transparent);
 }
 
 .playlist-strip a:nth-child(2n) .playlist-year {
-  top: 9px;
-  left: 15px;
-  opacity: 0.96;
-  transform: rotate(8deg);
+  right: 5px;
+  bottom: 6px;
+  left: auto;
+  transform: rotate(-8deg);
 }
 
 .playlist-strip a:nth-child(3n) .playlist-year {
-  top: 16px;
-  left: 8px;
-  opacity: 1;
-  transform: rotate(-19deg);
+  right: auto;
+  bottom: 3px;
+  left: 7px;
+  transform: rotate(11deg);
 }
 
 .playlist-strip a:nth-child(4n) .playlist-year {
-  top: 10px;
-  right: 8px;
+  right: 3px;
+  bottom: 5px;
   left: auto;
-  opacity: 0.98;
-  transform: rotate(14deg);
+  transform: rotate(2deg);
 }
 
 .playlist-strip a:nth-child(5n) .playlist-year {
-  top: 18px;
-  left: 16px;
-  opacity: 0.94;
-  transform: rotate(-5deg);
+  right: auto;
+  bottom: 8px;
+  left: 5px;
+  transform: rotate(-13deg);
+}
+
+.playlist-strip a:nth-child(7n) .playlist-year {
+  right: 8px;
+  bottom: 4px;
+  left: auto;
+  transform: rotate(9deg);
 }
 
 

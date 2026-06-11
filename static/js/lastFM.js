@@ -112,7 +112,12 @@ function renderTopAlbums(data, element, limit) {
     img.loading = "lazy";
     img.decoding = "async";
 
+    const artistLabel = document.createElement("span");
+    artistLabel.className = "topalbum-artist";
+    artistLabel.textContent = artist;
+
     link.appendChild(img);
+    link.appendChild(artistLabel);
     frag.appendChild(link);
   }
 
