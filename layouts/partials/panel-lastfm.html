@@ -14,7 +14,7 @@
 
       <pre class="panel-terminal"><a href="https://www.last.fm/user/fibrili/playlists" target="_blank" rel="noreferrer noopener">$ lastfm top tracks --period=365d</a></pre>
 
-      <div class="album-strip">
+      <div class="album-strip playlist-strip">
 
       {{/* Current year — generated at build time; no manual update needed */}}
       {{ $y := now.Year }}
@@ -26,6 +26,7 @@
           loading="lazy"
           decoding="async"
         />
+        <span class="playlist-year">{{ $y }}</span>
       </a>
 
       {{/* Past years from playlists.yml — add a new entry here each January */}}
@@ -38,6 +39,7 @@
           loading="lazy"
           decoding="async"
         />
+        <span class="playlist-year">{{ .year }}</span>
       </a>
       {{ end }}
       </div>

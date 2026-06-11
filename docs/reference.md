@@ -723,10 +723,10 @@ Consumed by `works.html` when building filter buttons.
 ```yaml
 - title: "2026 Top Tracks"
   link: "https://www.last.fm/user/finer/library/tracks?date_preset=LAST_365_DAYS"
-  image: "playlist_2026.png"   # filename in static/general/
+  image: "playlist_2026.png"   # filename in static/images/playlists/
 ```
 
-Consumed by `panel-lastfm.html` to render annual playlist links.
+Consumed by `panel-lastfm.html` to render annual playlist links. Each item's `year` value is also displayed as the cover overlay label.
 
 ### `data/blood.yml`
 
