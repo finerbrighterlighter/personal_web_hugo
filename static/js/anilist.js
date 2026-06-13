@@ -132,7 +132,12 @@ function renderAniList(data, element, limit) {
     img.loading = "lazy";
     img.decoding = "async";
 
+    const originLabel = document.createElement("span");
+    originLabel.className = "manga-origin";
+    originLabel.textContent = lang.toUpperCase();
+
     link.appendChild(img);
+    if (lang) link.appendChild(originLabel);
     frag.appendChild(link);
   }
 

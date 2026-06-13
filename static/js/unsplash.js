@@ -37,7 +37,12 @@ function renderUnsplash(photos, elementID) {
     img.loading = "lazy";
     img.decoding = "async";
 
+    const dateLabel = document.createElement("span");
+    dateLabel.className = "photo-date";
+    dateLabel.textContent = photo.date.slice(0, 4);
+
     link.appendChild(img);
+    link.appendChild(dateLabel);
     frag.appendChild(link);
 
   });
@@ -92,7 +97,6 @@ async function getUnsplash(username, accessKey, limit, elementID) {
       date: photo.created_at.split("T")[0]
 
     }));
-
 
     setCache(cacheKey, photos);
 

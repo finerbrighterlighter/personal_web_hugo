@@ -59,7 +59,10 @@ async function fetchTMDB(tmdbId, type) {
     const backdrop = data.images?.backdrops?.[0]?.file_path;
     if (!backdrop) return null;
 
-    return `https://image.tmdb.org/t/p/w300${backdrop}`;
+    return {
+      image: `https://image.tmdb.org/t/p/w300${backdrop}`,
+      language: data.original_language || ""
+    };
 
   } catch {
     return null;
@@ -102,7 +105,13 @@ function renderWatched(items, elementID) {
     img.loading = "lazy";
     img.decoding = "async";
 
+    const language = item.language || "";
+    const languageLabel = document.createElement("span");
+    languageLabel.className = "screen-language";
+    languageLabel.textContent = language.toUpperCase();
+
     link.appendChild(img);
+    if (language) link.appendChild(languageLabel);
     frag.appendChild(link);
 
   });
@@ -120,7 +129,7 @@ async function loadWatched(username, limit, elementID) {
 
   if (!document.getElementById(elementID)) return;
 
-  const cacheKey = `trakt-${username}-${limit}`;
+  const cacheKey = `trakt-${username}-${limit}-lang`;
 
   /* -----------------------------------------
      Check session cache first
@@ -192,13 +201,14 @@ async function loadWatched(username, limit, elementID) {
        Fetch images from TMDB
     ----------------------------------------- */
 
-    const images = await Promise.all(
+    const media = await Promise.all(
       items.map(item => fetchTMDB(item.tmdb, item.type))
     );
 
     const result = items.map((item, i) => ({
       ...item,
-      image: images[i]
+      image: media[i]?.image,
+      language: media[i]?.language || ""
     }));
 
 
