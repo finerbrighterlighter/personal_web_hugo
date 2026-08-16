@@ -405,6 +405,8 @@ strong {
     border-bottom: 1px solid var(--secondary-color);
     margin-top: 3rem;
     margin-bottom: var(--space-4);
+    /* clears .works-filter-panel (position: sticky; top: 20px) on >=768px */
+    scroll-margin-top: 80px;
 }
 
 .year-header {
@@ -2190,6 +2192,150 @@ header.terminal-logo {
 .main-content,
 .right-panels {
     min-width: 0;
+}
+
+/* ============================= */
+/* FLOATING SECTION-NAV BUBBLE */
+/* ============================= */
+
+:root {
+    --nav-bubble-bottom: 24px;
+    --nav-bubble-size: 48px;
+    --nav-bubble-menu-gap: 10px;
+}
+
+#nav-bubble {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;                  /* fallback until JS anchors it */
+    z-index: 110;                 /* above .works-filter-panel (z:10) and the menu bar */
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--primary-color) 60%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(110%);
+    backdrop-filter: blur(12px) saturate(110%);
+    color: var(--background-color);
+    border: none;
+    font-family: var(--font-stack);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18), 0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.06);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+#nav-bubble:hover,
+#nav-bubble[aria-expanded="true"] {
+    box-shadow: 0 4px 18px rgba(0,0,0,0.24), 0 10px 36px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+#nav-bubble:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 3px;
+}
+
+#nav-bubble-menu {
+    position: fixed;
+    bottom: calc(var(--nav-bubble-bottom) + var(--nav-bubble-size) + var(--nav-bubble-menu-gap));   /* stack above the bubble */
+    z-index: 100;
+    font-family: var(--font-stack);
+    font-size: var(--font-sm, 0.85rem);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    padding: 0;
+    max-width: calc(100vw - 40px);
+    max-height: 60vh;
+    overflow-y: auto;
+    /* transparent chrome — each row is its own bordered frosted pill */
+    background: transparent;
+    border: none;
+    border-radius: 6px;           /* matches .terminal-window panel corners */
+    box-shadow: none;
+    /* ── open animation (enter: fade + slide up) ── */
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: opacity 160ms ease-out, transform 160ms ease-out;
+}
+
+#nav-bubble-menu[hidden] {
+    display: none;
+}
+
+#nav-bubble-menu.is-open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+#nav-bubble-menu .nav-bubble-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;   /* push marker+label to the right edge */
+    gap: 0.75ch;
+    text-align: right;
+    background: color-mix(in srgb, var(--background-color) 60%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(110%);
+    backdrop-filter: blur(12px) saturate(110%);
+    border: 1px solid var(--secondary-color);
+    color: var(--font-color);
+    font: inherit;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    line-height: 1.25;
+}
+
+#nav-bubble-menu .nav-bubble-marker {
+    color: var(--secondary-color);
+    flex-shrink: 0;
+}
+
+#nav-bubble-menu .nav-bubble-label {
+    color: var(--font-color);
+}
+
+#nav-bubble-menu .nav-bubble-row:hover .nav-bubble-marker,
+#nav-bubble-menu .nav-bubble-row:hover .nav-bubble-label,
+#nav-bubble-menu .nav-bubble-row.active .nav-bubble-marker,
+#nav-bubble-menu .nav-bubble-row.active .nav-bubble-label {
+    color: var(--primary-color);
+}
+
+#nav-bubble-menu .nav-bubble-row:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--primary-color) 70%, transparent);
+    outline-offset: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #nav-bubble,
+    #nav-bubble-menu,
+    #nav-bubble-menu .nav-bubble-row {
+        transition: none;
+    }
+    #nav-bubble-menu {
+        transform: none;
+    }
+}
+
+@media (max-width: 767px) {
+    /* Larger bubble on mobile for thumb reach; --nav-bubble-size drives
+       the menu's right padding so rows stay clear of the bigger bubble. */
+    :root {
+        --nav-bubble-size: 56px;
+    }
+    #nav-bubble {
+        width: 56px;
+        height: 56px;
+        font-size: 1.4rem;
+    }
 }
 
 /* ============================= */
