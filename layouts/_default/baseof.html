@@ -147,7 +147,8 @@
           {{ partial "panel-github.html" . }}
           {{ partial "panel-lastfm.html" . }}
           {{ partial "panel-anilist.html" . }}
-          {{ partial "panel-trakt.html" . }}
+          {{- /* panel-trakt disabled: Trakt requires VIP for API apps (2026-08) */ -}}
+          {{- /* {{ partial "panel-trakt.html" . }} */ -}}
           {{ partial "panel-unsplash.html" . }}
           {{ partial "panel-privacy.html" . }}
         </aside>
