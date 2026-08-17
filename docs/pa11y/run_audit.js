@@ -38,7 +38,7 @@ const pages = [
   { name: 'works',       url: `${BASE}/works/` },
   { name: 'work_single', url: `${BASE}/works/journal/2023_transitions_from_hypertension_to_cvd_outcomes/` },
   { name: 'posts',       url: `${BASE}/posts/` },
-  { name: 'post_single', url: `${BASE}/posts/260417-phd-journal-club/` },
+  { name: 'post_single', url: `${BASE}/posts/phd_journal_club/` },
   { name: 'blood',       url: `${BASE}/blood/` },
 ];
 

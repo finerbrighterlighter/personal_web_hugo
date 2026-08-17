@@ -1,7 +1,7 @@
 # pa11y Accessibility Audit
 
 **Tool:** pa11y 9.1.1 (htmlcs, WCAG 2.1 AA)
-**Date:** 2026-05-30
+**Date:** 2026-08-17
 **Hugo server:** localhost:1313 (development build)
 
 ## Scope
@@ -10,7 +10,7 @@ Contrast is **only assured for Duck light, Duck dark, Colorblind light, and Colo
 
 ---
 
-## Duck light — 2026-05-22
+## Duck light — 2026-08-17
 
 | Page | Errors | Status |
 | --- | --- | --- |
@@ -26,7 +26,7 @@ Contrast is **only assured for Duck light, Duck dark, Colorblind light, and Colo
 
 ---
 
-## Colorblind light — 2026-05-22
+## Colorblind light — 2026-08-17
 
 | Page | Errors | Status |
 | --- | --- | --- |
@@ -44,7 +44,7 @@ Contrast is **only assured for Duck light, Duck dark, Colorblind light, and Colo
 
 ---
 
-## Duck dark — 2026-05-22
+## Duck dark — 2026-08-17
 
 | Page | Errors | Status |
 | --- | --- | --- |
@@ -62,7 +62,7 @@ Contrast is **only assured for Duck light, Duck dark, Colorblind light, and Colo
 
 ---
 
-## Colorblind dark — 2026-05-22
+## Colorblind dark — 2026-08-17
 
 | Page | Errors | Status |
 | --- | --- | --- |
@@ -115,3 +115,5 @@ Update the work and post slugs in `run_audit.js` when auditing different pages.
 | All errors were false positives (previous runs) | Previous pa11y runs had no theme applied — CSS variables computed as empty strings, generating spurious contrast failures. Fixed by pre-seeding localStorage before each audit. |
 | Colorblind light `.api-error` / `.nf-line-err` contrast | Changed `--error-color` from `#d55e00` (3.71:1) to `#4d0000` (15.29:1) |
 | GitHub language bar glyph contrast | Replaced text glyph bar segments with CSS background blocks; the repository link and tooltip still convey the useful information. |
+| Post TOC level-switch fieldset (no legend) | `H91.Fieldset.Name` + `H71.NoLegend` — converted `<span class="post-toc-level-legend">` to a proper `<legend>` and hardened `.post-toc-level-legend` CSS (`float: none`, `min-inline-size: min-content`, explicit padding) against browser default legend styling |
+| Stale `post_single` audit slug | `run_audit.js` used `posts/260417-phd-journal-club/` (404) — post front matter sets `url: "/posts/phd_journal_club/"`; updated slug so the TOC panel is actually exercised |
