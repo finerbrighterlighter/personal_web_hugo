@@ -201,8 +201,8 @@ html:lang(mm) .sidebar-links li::after {
     --display-h1-decoration: 1;
     --mobile-max-width: 767px;
     --tablet-min-width: 768px;
-    --tablet-max-width: 1250px;
-    --desktop-min-width: 1251px;
+    --tablet-max-width: 1439px;
+    --desktop-min-width: 1440px;
 
     /* type scale */
     --font-xs:   0.7rem;
@@ -2343,14 +2343,20 @@ header.terminal-logo {
 }
 
 /* ============================= */
-/* TABLET LAYOUT */
+/* OPTIONAL PANEL COLUMNS */
 /* ============================= */
 
-@media (min-width: 768px) and (max-width: 1250px) {
-
+@media (max-width: 1599px) {
     .col-hide-mobile {
         display: none;
     }
+}
+
+/* ============================= */
+/* TABLET LAYOUT */
+/* ============================= */
+
+@media (min-width: 768px) and (max-width: 1439px) {
 
     .terminal-nav {
         display: flex;
@@ -2406,7 +2412,7 @@ header.terminal-logo {
 /* DESKTOP LAYOUT */
 /* ============================= */
 
-@media (min-width: 1251px) {
+@media (min-width: 1440px) {
 
     .terminal-layout {
         grid-template-columns: 25% 1fr 25%;
@@ -2430,10 +2436,6 @@ header.terminal-logo {
 /* ============================= */
 
 @media (max-width: 767px) {
-
-    .col-hide-mobile {
-        display: none;
-    }
 
     :root {
         --global-font-size: 0.85rem;
