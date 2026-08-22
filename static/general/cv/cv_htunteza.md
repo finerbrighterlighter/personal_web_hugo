@@ -4,7 +4,7 @@ Department of Clinical Epidemiology and Biostatistics, Faculty of Medicine Ramat
 
 (+66) 989-986-350 · kohtunteza@gmail.com · https://htunteza.com/
 
-Generated: 2026-05-27
+Generated: 2026-08-22
 
 ---
 
@@ -17,7 +17,6 @@ Electronic medical records; Real world data; Data Observability; Biases inherent
 ## Education
 
 **2019 - 2021** | Mahidol University, Thailand
-_QS WUR 2021 #252; by subject #142 (life sciences and medicine)_
 **Data Science for Healthcare** — Master of Science
 Thesis: Risk-factor based Diagnosis for Chronic Periodontitis using Machine Learning Models
 

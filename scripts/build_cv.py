@@ -474,7 +474,7 @@ def build_markdown(cv, generated_date):
     lines += ["## Education", ""]
     for e in cv["education"]:
         lines.append(f"**{e['time']}** | {e['university']}")
-        if e.get("ranking"):
+        if cv.get("show_qs_rankings", True) and e.get("ranking"):
             lines.append(f"_{e['ranking']}_")
         lines.append(f"**{e['degree']}** — {e['field']}")
         if e.get("thesis"):
@@ -580,7 +580,7 @@ def build_html(cv):
     for e in cv["education"]:
         left  = f'<span class="date">{e["time"]}</span>'
         left += f'<br><span class="inst">{e["university"]}</span>'
-        if e.get("ranking"):
+        if cv.get("show_qs_rankings", True) and e.get("ranking"):
             left += f'<br><span class="meta">{e["ranking"]}</span>'
 
         right  = f'<span class="role">{e["degree"]}</span>'

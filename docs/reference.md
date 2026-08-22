@@ -684,6 +684,7 @@ Read exclusively by `build_cv.py`. Not used by any Hugo template.
 | -------------------------- | ------------------------------------------------------------------------------------------ |
 | `header`                 | `name`, `address`                                                                      |
 | `contact`                | `phone`, `email`, `website`                                                          |
+| `show_qs_rankings`       | Boolean; include education ranking text in generated CV files (defaults to `true`)     |
 | `research_interests`     | Array of strings (semicolon-joined in PDF)                                                 |
 | `education`              | Array:`date`, `university`, `ranking`, `degree`, `field`, `thesis`, `notes`  |
 | `work_experience`        | Array:`institution`, `role`, `period`, `bullets` (strings or dicts with `links`) |

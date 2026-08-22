@@ -7,6 +7,8 @@ header:
   name: "Htun Teza"
   address: "Department of Clinical Epidemiology and Biostatistics, Faculty of Medicine Ramathibodi Hospital, Mahidol University, Sukhothai Road, Dusit, Bangkok 10300"
 
+show_qs_rankings: false
+
 research_interests:
   - Electronic medical records
   - Real world data
