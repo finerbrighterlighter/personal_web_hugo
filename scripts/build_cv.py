@@ -444,6 +444,10 @@ def _pub_cite_md(p):
 
 def build_markdown(cv, generated_date):
     contact = cv["contact"]
+    contact_parts = []
+    if cv.get("show_phone_number", True):
+        contact_parts.append(contact["phone"])
+    contact_parts += [contact["email"], contact["website"]]
     lines = []
 
     # Header
@@ -452,7 +456,7 @@ def build_markdown(cv, generated_date):
         "",
         cv['header']['address'],
         "",
-        f"{contact['phone']} · {contact['email']} · {contact['website']}",
+        " · ".join(contact_parts),
         "",
         f"Generated: {generated_date}",
         "",
@@ -559,15 +563,21 @@ def section(title, content):
 def build_html(cv):
     """Assemble the full HTML document from the cv dict and works pages."""
     contact = cv["contact"]
+    contact_parts = []
+    if cv.get("show_phone_number", True):
+        contact_parts.append(contact["phone"])
+    contact_parts += [
+        f'<a href="mailto:{contact["email"]}">{contact["email"]}</a>',
+        f'<a href="{contact["website"]}">{contact["website"]}</a>',
+    ]
+    contact_html = " &nbsp;&middot;&nbsp; ".join(contact_parts)
 
     # ── Header ──────────────────────────────────────────────────────────────
     header = f"""<header>
       <h1>{cv['header']['name'].upper()}</h1>
       <p class="address">{cv['header']['address']}</p>
       <p class="contact">
-        {contact['phone']} &nbsp;&middot;&nbsp;
-        <a href="mailto:{contact['email']}">{contact['email']}</a> &nbsp;&middot;&nbsp;
-        <a href="{contact['website']}">{contact['website']}</a>
+        {contact_html}
       </p>
     </header>"""
 

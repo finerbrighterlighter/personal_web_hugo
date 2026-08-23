@@ -2,9 +2,9 @@
 
 Department of Clinical Epidemiology and Biostatistics, Faculty of Medicine Ramathibodi Hospital, Mahidol University, Sukhothai Road, Dusit, Bangkok 10300
 
-(+66) 989-986-350 · kohtunteza@gmail.com · https://htunteza.com/
+kohtunteza@gmail.com · https://htunteza.com/
 
-Generated: 2026-08-22
+Generated: 2026-08-23
 
 ---
 

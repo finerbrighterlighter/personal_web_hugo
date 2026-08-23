@@ -1,5 +1,5 @@
 contact:
-  phone: "(+66) 989-986-350"
+  phone: "(+66) xxx-xxx-xxx"
   email: "kohtunteza@gmail.com"
   website: "https://htunteza.com/"
 
@@ -8,6 +8,7 @@ header:
   address: "Department of Clinical Epidemiology and Biostatistics, Faculty of Medicine Ramathibodi Hospital, Mahidol University, Sukhothai Road, Dusit, Bangkok 10300"
 
 show_qs_rankings: false
+show_phone_number: false
 
 research_interests:
   - Electronic medical records
