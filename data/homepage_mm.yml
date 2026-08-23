@@ -44,12 +44,12 @@ education:
   title: ပညာအရည်အချင်း
   info:
     - degree: ကျန်းမာရေးဆိုင်ရာဒေတာသိပ္ပံ မဟာဘွဲ
-      diploma: general/msc_transcript_htunteza.pdf
+      diploma: /general/msc-transcript/
       university: *mahidol_mm
       time: ၂၀၁၉ - ၂၀၂၁
 
     - degree: သွားဘက်ဆိုင်ရာ ဆေးပညာဘွဲ့
-      diploma: general/bds_transcript_htunteza.pdf
+      diploma: /general/bds-transcript/
       university: *udmy_mm
       time: ၂၀၁၂ - ၂၀၁၉
 

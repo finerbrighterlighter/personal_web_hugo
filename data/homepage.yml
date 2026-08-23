@@ -42,13 +42,13 @@ education:
   title: Education
   info:
     - degree: Master of Science in Data Science for Healthcare
-      diploma: general/msc_transcript_htunteza.pdf
+      diploma: /general/msc-transcript/
       university: *mahidol
       time: 2019 - 2021
       details:
 
     - degree: Bachelor of Dental Surgery
-      diploma: general/bds_transcript_htunteza.pdf
+      diploma: /general/bds-transcript/
       university: *udmy
       time: 2012 - 2019
       details:

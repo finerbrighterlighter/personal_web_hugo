@@ -5,6 +5,18 @@ publish = "public"
 [build.environment]
 HUGO_VERSION = "0.157.0"
 
+[[redirects]]
+  from = "/general/msc_transcript_htunteza.pdf"
+  to = "/general/msc-transcript/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/general/bds_transcript_htunteza.pdf"
+  to = "/general/bds-transcript/"
+  status = 301
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -37,3 +49,27 @@ HUGO_VERSION = "0.157.0"
   for = "/general/*"
   [headers.values]
     Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/general/msc_transcript_htunteza.pdf"
+  [headers.values]
+    Cache-Control = "private, no-store"
+    X-Robots-Tag = "noindex, noarchive, nosnippet"
+
+[[headers]]
+  for = "/general/bds_transcript_htunteza.pdf"
+  [headers.values]
+    Cache-Control = "private, no-store"
+    X-Robots-Tag = "noindex, noarchive, nosnippet"
+
+[[headers]]
+  for = "/general/documents/d6e5609a2d5acdbcd5627a56cdb2ea50.pdf"
+  [headers.values]
+    Cache-Control = "private, no-store"
+    X-Robots-Tag = "noindex, noarchive, nosnippet"
+
+[[headers]]
+  for = "/general/documents/7bc4ddb932d5a4c51da057b82c090cc7.pdf"
+  [headers.values]
+    Cache-Control = "private, no-store"
+    X-Robots-Tag = "noindex, noarchive, nosnippet"

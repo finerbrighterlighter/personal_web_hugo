@@ -66,7 +66,7 @@
                 {{- $isPostSlug := and (eq $i $lastIdx) (eq $.Section "posts") $.IsPage -}}
                 {{- if not (or $isWorkSlug $isPostSlug) -}}
                   {{- $pg := site.GetPage $path -}}
-                  /{{ if $pg }}<a href="{{ $path | relURL }}">{{ $part }}</a>{{ else }}<a href="{{ "/works/" | relURL }}?search={{ $part }}">{{ $part }}</a>{{ end }}
+                  /{{ if and $pg $pg.Params.private (not (eq $i $lastIdx)) }}<span class="breadcrumb-segment">{{ $part }}</span>{{ else if $pg }}<a href="{{ $path | relURL }}">{{ $part }}</a>{{ else }}<a href="{{ "/works/" | relURL }}?search={{ $part }}">{{ $part }}</a>{{ end }}
                 {{- end -}}
               {{- end -}}$ <span id="typed-command" aria-hidden="true"></span>
             </div>
@@ -135,7 +135,7 @@
             {{ partial "panel-post-toc.html" . }}
         </div>
 
-        <main class="main-content" id="main-content">
+        <main class="main-content{{ if eq .Layout "protected-document" }} protected-document-main{{ end }}" id="main-content">
             {{ partial "mm-font-toggle.html" . }}
             {{ block "main" . }}{{ end }}
             {{ partial "footer.html" . }}

@@ -1,0 +1,101 @@
+{{ define "main" }}
+{{- $documentKey := .Params.protected_document -}}
+{{- $document := index hugo.Data.protected_documents $documentKey -}}
+{{- if not $document -}}
+  {{- errorf "protected document %q is not configured for %s" $documentKey .File.Path -}}
+{{- end -}}
+
+<article
+  class="protected-document"
+  data-protected-document
+  data-document-id="{{ $document.document_id }}"
+  data-document-url="{{ $document.document_path | relURL }}"
+  data-salt="{{ $document.salt }}"
+  data-password-hash="{{ $document.password_hash }}"
+  data-prompt-label="{{ i18n "protected_document_prompt" }}"
+  data-checking-label="{{ i18n "protected_document_checking" }}"
+  data-loading-label="{{ i18n "protected_document_loading" }}"
+  data-load-error-label="{{ i18n "protected_document_load_error" }}"
+  data-incorrect-label="{{ i18n "protected_document_incorrect" }}"
+  data-unsupported-label="{{ i18n "protected_document_unsupported" }}"
+  data-unlocked-label="{{ i18n "protected_document_unlocked" }}"
+  data-view-label="{{ i18n "protected_document_view" }}"
+  data-exit-label="{{ i18n "protected_document_exit" }}"
+  data-viewer-title="{{ i18n "protected_document_viewer_title" }}">
+  <h2 class="category-header protected-document-title">{{ .Title }}</h2>
+  <p class="protected-document-privacy">{{ i18n "protected_document_privacy" }}</p>
+
+  <button
+    class="work-link-btn protected-document-toggle"
+    type="button"
+    aria-expanded="false"
+    aria-controls="protected-document-stage"
+    data-protected-document-toggle>{{ i18n "protected_document_view" }}</button>
+
+  <div class="protected-document-stage" id="protected-document-stage" data-protected-document-stage>
+    <div class="protected-document-placeholder" aria-hidden="true">
+      <div class="protected-document-paper">
+        <span class="protected-document-seal"></span>
+        <span class="protected-document-line is-heading"></span>
+        <span class="protected-document-line"></span>
+        <span class="protected-document-line is-short"></span>
+        <span class="protected-document-line"></span>
+        <span class="protected-document-line is-short"></span>
+        <span class="protected-document-line"></span>
+      </div>
+    </div>
+
+    <div
+      class="protected-document-viewer"
+      role="region"
+      aria-label="{{ i18n "protected_document_viewer_title" }}"
+      data-protected-document-viewer
+      hidden>
+      <div class="protected-document-viewer-actions">
+        <p class="protected-document-mobile-hint">{{ i18n "protected_document_mobile_hint" }}</p>
+        <a class="work-link-btn" data-protected-document-open target="_blank" rel="noreferrer noopener">{{ i18n "protected_document_open" }}</a>
+      </div>
+    </div>
+
+    <div
+      class="terminal-window protected-document-panel"
+      id="protected-document-panel"
+      role="region"
+      aria-label="{{ i18n "protected_document_viewer_title" }}"
+      data-protected-document-panel
+      hidden>
+      <div class="window-header">
+        <div class="window-controls" aria-hidden="true">
+          <span class="control close"></span>
+          <span class="control minimize"></span>
+          <span class="control maximize"></span>
+        </div>
+        <div class="window-title">unlock.sh</div>
+      </div>
+      <div class="window-content" id="protected-document-panel-content" data-protected-document-content>
+        <div class="protected-document-gate" data-protected-document-gate>
+          <pre class="panel-terminal">$ document-open --verify</pre>
+          <form class="protected-document-form" data-protected-document-form>
+            <label for="protected-document-password">{{ i18n "protected_document_password_label" }}</label>
+            <div class="protected-document-input-row">
+              <span class="protected-document-password-field">
+                <input id="protected-document-password" name="password" type="password" inputmode="numeric" enterkeyhint="go" autocomplete="off">
+                <span class="protected-document-password-mask" data-protected-document-mask aria-hidden="true"></span>
+              </span>
+              <button class="work-link-btn" type="submit" data-protected-document-submit>{{ i18n "protected_document_unlock" }}</button>
+            </div>
+          </form>
+          <pre class="protected-document-status" data-protected-document-status><span class="is-info">[INFO]</span> {{ i18n "protected_document_prompt" }}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="sr-only" data-protected-document-announcer role="status" aria-live="polite"></p>
+  <noscript><p class="protected-document-noscript">{{ i18n "protected_document_unsupported" }}</p></noscript>
+</article>
+{{ end }}
+
+{{ define "scripts-extra" }}
+<script type="module" src="{{ "js/protected-document.js" | relURL }}"></script>
+{{ end }}
