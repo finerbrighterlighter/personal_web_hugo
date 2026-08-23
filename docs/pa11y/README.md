@@ -1,7 +1,7 @@
 # pa11y Accessibility Audit
 
 **Tool:** pa11y 9.1.1 (htmlcs, WCAG 2.1 AA)
-**Date:** 2026-08-17
+**Date:** 2026-08-23
 **Hugo server:** localhost:1313 (development build)
 
 ## Scope
@@ -10,7 +10,7 @@ Contrast is **only assured for Duck light, Duck dark, Colorblind light, and Colo
 
 ---
 
-## Duck light — 2026-08-17
+## Duck light — 2026-08-23
 
 | Page | Errors | Status |
 | --- | --- | --- |
@@ -21,12 +21,13 @@ Contrast is **only assured for Duck light, Duck dark, Colorblind light, and Colo
 | Posts `/posts/` | 0 | ✅ Pass |
 | Post (single) | 0 | ✅ Pass |
 | Blood `/blood/` | 0 | ✅ Pass |
+| Protected document `/general/msc-transcript/` | 0 | ✅ Pass |
 
-**All 7 pages pass with 0 errors.**
+**All 8 pages pass with 0 errors.**
 
 ---
 
-## Colorblind light — 2026-08-17
+## Colorblind light — 2026-08-23
 
 | Page | Errors | Status |
 | --- | --- | --- |
@@ -37,14 +38,15 @@ Contrast is **only assured for Duck light, Duck dark, Colorblind light, and Colo
 | Posts `/posts/` | 0 | ✅ Pass |
 | Post (single) | 0 | ✅ Pass |
 | Blood `/blood/` | 0 | ✅ Pass |
+| Protected document `/general/msc-transcript/` | 0 | ✅ Pass |
 
-**All 7 pages pass with 0 errors.**
+**All 8 pages pass with 0 errors.**
 
 `--error-color` changed from Okabe Vermillion `#d55e00` (3.71:1) to `#4d0000` (15.29:1 on `#fafafa`) to meet WCAG AA.
 
 ---
 
-## Duck dark — 2026-08-17
+## Duck dark — 2026-08-23
 
 | Page | Errors | Status |
 | --- | --- | --- |
@@ -55,14 +57,15 @@ Contrast is **only assured for Duck light, Duck dark, Colorblind light, and Colo
 | Posts `/posts/` | 0 | ✅ Pass |
 | Post (single) | 0 | ✅ Pass |
 | Blood `/blood/` | 0 | ✅ Pass |
+| Protected document `/general/msc-transcript/` | 0 | ✅ Pass |
 
-**All 7 pages pass with 0 errors.**
+**All 8 pages pass with 0 errors.**
 
 `--secondary-color` changed from `#727072` to `#aaa7aa` and `--error-color` changed from `#ff6188` to `#ff7a9d` so secondary/error text meets WCAG AA on dark panels.
 
 ---
 
-## Colorblind dark — 2026-08-17
+## Colorblind dark — 2026-08-23
 
 | Page | Errors | Status |
 | --- | --- | --- |
@@ -73,8 +76,9 @@ Contrast is **only assured for Duck light, Duck dark, Colorblind light, and Colo
 | Posts `/posts/` | 0 | ✅ Pass |
 | Post (single) | 0 | ✅ Pass |
 | Blood `/blood/` | 0 | ✅ Pass |
+| Protected document `/general/msc-transcript/` | 0 | ✅ Pass |
 
-**All 7 pages pass with 0 errors.**
+**All 8 pages pass with 0 errors.**
 
 `--error-color` changed from Okabe Vermillion `#d55e00` to `#f07000` so error text meets WCAG AA on dark panels.
 

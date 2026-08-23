@@ -40,6 +40,7 @@ const pages = [
   { name: 'posts',       url: `${BASE}/posts/` },
   { name: 'post_single', url: `${BASE}/posts/phd_journal_club/` },
   { name: 'blood',       url: `${BASE}/blood/` },
+  { name: 'protected_document', url: `${BASE}/general/msc-transcript/` },
 ];
 
 async function main() {

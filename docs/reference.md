@@ -1595,19 +1595,23 @@ Full audit results are in `docs/pa11y/{theme}/` (CSV per page) + `docs/pa11y/REA
 
 ```bash
 bash docs/pa11y/run_audit.sh            # Duck light (default)
-bash docs/pa11y/run_audit.sh colorblind # Colorblind light
+bash docs/pa11y/run_audit.sh colorblind light # Colorblind light
+bash docs/pa11y/run_audit.sh duck dark       # Duck dark
+bash docs/pa11y/run_audit.sh colorblind dark # Colorblind dark
 ```
 
-The runner pre-seeds `localStorage` (`theme-mode=light`, `theme-palette-light=<palette>`) via a shared Puppeteer browser before each page test, so the inline theme script applies the correct palette on load. Hugo dev server must be running on `localhost:1313`.
+The runner pre-seeds the selected mode and palette in `localStorage` via a shared Puppeteer browser before each page test, so the inline theme script applies the correct theme on load. Hugo dev server must be running on `localhost:1313`.
 
-**Contrast is only assured for Duck light and Colorblind light.** Other palettes are not tested.
+**Contrast is only assured for Duck light, Duck dark, Colorblind light, and Colorblind dark.** Other palettes are not tested.
 
-**Current state (2026-05-12, pa11y 9.1.1):**
+**Current state (2026-08-23, pa11y 9.1.1):**
 
 | Theme            | Pages | Result      |
 | ---------------- | ----- | ----------- |
-| Duck light       | 7/7   | ✅ 0 errors |
-| Colorblind light | 7/7   | ✅ 0 errors |
+| Duck light       | 8/8   | ✅ 0 errors |
+| Duck dark        | 8/8   | ✅ 0 errors |
+| Colorblind light | 8/8   | ✅ 0 errors |
+| Colorblind dark  | 8/8   | ✅ 0 errors |
 
 **Previously fixed and cleared:**
 
