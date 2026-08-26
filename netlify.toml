@@ -24,6 +24,8 @@ HUGO_VERSION = "0.157.0"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' 'unsafe-inline' https://gc.zgo.at https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self' https://api.github.com https://api.openalex.org https://api.unsplash.com https://doi.org https://graphql.anilist.co https://ws.audioscrobbler.com https://gc.zgo.at https://stats.htunteza.com; frame-src 'self'; object-src 'none'; base-uri 'self'"
 
 [[headers]]
   for = "/css/*"
@@ -46,9 +48,9 @@ HUGO_VERSION = "0.157.0"
     Cache-Control = "public, max-age=604800"
 
 [[headers]]
-  for = "/general/*"
+  for = "/general/cv/*"
   [headers.values]
-    Cache-Control = "public, max-age=604800"
+    Cache-Control = "public, max-age=86400"
 
 [[headers]]
   for = "/general/msc_transcript_htunteza.pdf"

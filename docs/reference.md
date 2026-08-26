@@ -266,9 +266,15 @@ HUGO_VERSION = "0.157.0"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' 'unsafe-inline' https://gc.zgo.at https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self' https://api.github.com https://api.openalex.org https://api.unsplash.com https://doi.org https://graphql.anilist.co https://ws.audioscrobbler.com https://gc.zgo.at https://stats.htunteza.com; frame-src 'self'; object-src 'none'; base-uri 'self'"
 ```
 
 Hugo version is pinned here. To upgrade: change `HUGO_VERSION` and test locally with that version first.
+
+**Security headers:** HSTS covers the apex and all subdomains (`stats.htunteza.com` is already HTTPS-only). No `preload` token — submission to hstspreload.org is deliberately avoided. The CSP is **Report-Only** groundwork: violations appear in browser DevTools but nothing is blocked. Known allowed origins: GoatCounter beacon (`gc.zgo.at`), KaTeX/Mermaid CDN (`cdn.jsdelivr.net`), and the panel API origins under `connect-src`. Path to enforcement: review DevTools reports over time, tighten `img-src` from `https:` to an explicit allowlist, then rename the header to `Content-Security-Policy`.
+
+The file also carries 301 redirects for legacy transcript PDF paths and per-path `Cache-Control` / transcript `no-store` overrides — see the cache table in §6.1 and the privacy section.
 
 #### Local parity workflow
 
@@ -1065,7 +1071,11 @@ CSS, font, and image files are cached at the HTTP level via `Cache-Control` in `
 | `/css/*` | `max-age=31536000, immutable` | Content-hash filename changes on every deploy |
 | `/theme/*` (fonts, texture) | `max-age=31536000, immutable` | Never change between deploys |
 | `/js/*` | `max-age=3600` | Matches API data refresh cadence |
-| `/images/*`, `/general/*` | `max-age=604800` (1 week) | Rarely change |
+| `/images/*` | `max-age=604800` (1 week) | Rarely change |
+| `/general/cv/*` | `max-age=86400` (1 day) | CV regenerates on pushes |
+| transcript PDFs (`/general/msc_transcript_htunteza.pdf`, `/general/bds_transcript_htunteza.pdf`, `/general/documents/*.pdf`) | `private, no-store` + `X-Robots-Tag: noindex, noarchive, nosnippet` | Privacy — never cached |
+
+Note: there is no blanket `/general/*` rule. Gate-page HTML under `/general/<transcript>/` has no explicit cache rule, so Netlify's default ETag revalidation applies and edits to PIN data or layout propagate immediately. Other static files under `/general/` (og image, profile photo, duck assets) also use the default.
 
 ### 6.2 `work-bibtex.js` — CITE panel
 
