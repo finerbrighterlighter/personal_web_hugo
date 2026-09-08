@@ -1923,11 +1923,17 @@ p.social a {
 
 #topalbums a,
 #last-read-manga a,
+#last-watched-anime a,
 #last-watched a,
 #latestimage a,
 .playlist-strip a {
   position: relative;
   overflow: hidden;
+}
+
+/* Second command line inside a panel that stacks two strips (music.sh, otaku.sh) */
+.panel-terminal-gap {
+  margin-top: 20px;
 }
 
 .topalbum-artist,
@@ -1971,6 +1977,14 @@ p.social a {
 #last-read-manga a:nth-child(4n) .manga-origin { right: 7px;  left: auto; bottom: 3px; transform: rotate(12deg); }
 #last-read-manga a:nth-child(5n) .manga-origin { right: auto; left: 3px;  bottom: 8px; transform: rotate(-3deg); }
 #last-read-manga a:nth-child(7n) .manga-origin { right: 4px;  left: auto; bottom: 5px; transform: rotate(-6deg); }
+
+/* #last-watched-anime — same stamp, cycle starts at offset 2 (right/-10deg default) so the two otaku.sh strips differ */
+#last-watched-anime .manga-origin { right: 3px; left: auto; bottom: 8px; transform: rotate(-10deg); }
+#last-watched-anime a:nth-child(2n) .manga-origin { right: auto; left: 7px;  bottom: 6px; transform: rotate(8deg); }
+#last-watched-anime a:nth-child(3n) .manga-origin { right: 7px;  left: auto; bottom: 3px; transform: rotate(12deg); }
+#last-watched-anime a:nth-child(4n) .manga-origin { right: auto; left: 3px;  bottom: 8px; transform: rotate(-3deg); }
+#last-watched-anime a:nth-child(5n) .manga-origin { right: 4px;  left: auto; bottom: 5px; transform: rotate(-6deg); }
+#last-watched-anime a:nth-child(7n) .manga-origin { right: auto; left: 5px;  bottom: 4px; transform: rotate(4deg); }
 
 /* #last-watched — cycle starts at offset 2 (right/-10deg default) */
 .screen-language { right: 3px; left: auto; bottom: 8px; transform: rotate(-10deg); }

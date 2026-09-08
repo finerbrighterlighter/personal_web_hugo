@@ -1,4 +1,4 @@
-<div class="terminal-window panel" role="region" aria-label="Manga">
+<div class="terminal-window panel" role="region" aria-label="Anime and manga">
 
   <div class="window-header">
     <div class="window-controls" aria-hidden="true">
@@ -6,14 +6,19 @@
       <span class="control minimize"></span>
       <span class="control maximize"></span>
     </div>
-    <div class="window-title">manga.sh</div>
+    <div class="window-title">otaku.sh</div>
   </div>
 
   <div class="window-content">
 
-    <pre class="panel-terminal"><a  href="https://anilist.co/user/finer/mangalist" target="_blank" rel="noreferrer noopener">$ anilist list --status=recent</a></pre>
+    {{- /* Two strips, one AniList request (anilist.js): manga in progress, then anime in progress. */ -}}
+    <pre class="panel-terminal"><a href="https://anilist.co/user/finer/mangalist/Reading" target="_blank" rel="noreferrer noopener">$ anilist manga --status=reading</a></pre>
 
     <div id="last-read-manga" class="album-strip" aria-live="polite"></div>
+
+    <pre class="panel-terminal panel-terminal-gap"><a href="https://anilist.co/user/finer/animelist/Watching" target="_blank" rel="noreferrer noopener">$ anilist anime --status=watching</a></pre>
+
+    <div id="last-watched-anime" class="album-strip" aria-live="polite"></div>
 
   </div>
 

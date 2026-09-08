@@ -1,124 +1,98 @@
+/**
+ * anilist.js — otaku.sh panel: currently watching anime + currently reading manga.
+ *
+ * One GraphQL request (two aliased MediaListCollection fields) feeds both
+ * strips; cached under a single key via cache.js. Covers render as links
+ * with a country-of-origin stamp (`.manga-origin`, shared by both strips).
+ */
 import { getCache, setCache } from "./cache.js";
 
-const ANILIST_URL = "https://graphql.anilist.co";
+const ANILIST_URL  = "https://graphql.anilist.co";
 const ANILIST_USER = "finer";    // AniList username
-const ANILIST_LIMIT = 10;        // number of manga covers shown in the panel
+const ANILIST_LIMIT = 10;        // covers shown per strip
 
-async function getLastRead(username, media, limit, elementID) {
+/* Strip id → media type. Order here does not matter; the partial fixes the layout. */
+const STRIPS = {
+  "last-read-manga":    "manga",
+  "last-watched-anime": "anime",
+};
 
-  const query = `
-  query ($name: String, $type: MediaType) {
-    MediaListCollection(
-      userName: $name
-      type: $type
-      status: CURRENT
-      sort: UPDATED_TIME_DESC
-    ) {
-      lists {
-        entries {
-          media {
-            siteUrl
-            countryOfOrigin
-            synonyms
-            coverImage { medium }
-            title {
-              romaji
-              english
-            }
-          }
-        }
-      }
-    }
-  }`;
-
-  const variables = {
-    name: username,
-    type: media
-  };
-
-  const element = document.getElementById(elementID);
-
-  /*
-  ------------------------------------------------------
-  Build a unique cache key for this request
-  Example:
-  anilist-finer-MANGA-10
-  ------------------------------------------------------
-  */
-  const cacheKey = `anilist-${username}-${media}-${limit}`;
-
-  /*
-  ------------------------------------------------------
-  Try session cache first
-  If data exists, render immediately and skip fetch
-  ------------------------------------------------------
-  */
-  const cachedData = getCache(cacheKey);
-
-  if (cachedData) {
-    renderAniList(cachedData, element, limit);
-    return;
+const QUERY = `
+query ($name: String) {
+  manga: MediaListCollection(userName: $name, type: MANGA, status: CURRENT, sort: UPDATED_TIME_DESC) {
+    lists { entries { media { ...cover } } }
   }
+  anime: MediaListCollection(userName: $name, type: ANIME, status: CURRENT, sort: UPDATED_TIME_DESC) {
+    lists { entries { media { ...cover } } }
+  }
+}
+fragment cover on Media {
+  siteUrl
+  countryOfOrigin
+  synonyms
+  coverImage { medium }
+  title { romaji english }
+}`;
+
+async function loadOtaku(username, limit) {
+  const elements = Object.fromEntries(
+    Object.keys(STRIPS).map(id => [id, document.getElementById(id)])
+  );
+  if (!Object.values(elements).some(Boolean)) return;
+
+  const cacheKey = `anilist-${username}-current-${limit}`;
+  const cached = getCache(cacheKey);
+  if (cached) { renderAll(cached, elements, limit); return; }
 
   try {
-
     const response = await fetch(ANILIST_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({
-        query,
-        variables
-      })
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({ query: QUERY, variables: { name: username } }),
     });
-
+    if (!response.ok) throw new Error(`AniList ${response.status}`);
     const data = await response.json();
-
-    // save to session cache
+    if (data.errors?.length) throw new Error(data.errors[0].message);
     setCache(cacheKey, data);
-
-    renderAniList(data, element, limit);
-
+    renderAll(data, elements, limit);
   } catch (err) {
     console.error("AniList request failed:", err);
-    if (element) element.innerHTML = '<span class="api-error">$ api is not aping 🐒</span>';
+    for (const el of Object.values(elements)) {
+      if (el) el.innerHTML = '<span class="api-error">$ api is not aping 🐒</span>';
+    }
   }
 }
 
+function renderAll(data, elements, limit) {
+  for (const [id, key] of Object.entries(STRIPS)) {
+    const el = elements[id];
+    if (el) renderStrip(data.data?.[key], el, limit);
+  }
+}
 
-/*
-------------------------------------------------------
-Rendering extracted to a separate function
-So cached and fetched data use the same renderer
-------------------------------------------------------
-*/
-function renderAniList(data, element, limit) {
-
+/* Flatten every list of the collection (AniList may split by custom list). */
+function renderStrip(collection, element, limit) {
   element.innerHTML = "";
-
-  const lists = data.data?.MediaListCollection?.lists;
-  if (!lists?.length) return;
-
-  const entries = lists[0].entries;
+  const entries = (collection?.lists ?? []).flatMap(l => l.entries ?? []);
+  if (!entries.length) {
+    element.innerHTML = '<span class="api-error">$ nothing in progress</span>';
+    return;
+  }
 
   const frag = document.createDocumentFragment();
 
-  for (let i = 0; i < Math.min(limit, entries.length); i++) {
+  for (const entry of entries.slice(0, limit)) {
+    const work = entry.media;
 
-    const work = entries[i].media;
-
-    const romaji = work.title.romaji || "";
+    const romaji  = work.title.romaji || "";
     const english = work.title.english;
     const synonym = work.synonyms?.[0];
-    const lang = work.countryOfOrigin || "";
+    const lang    = work.countryOfOrigin || "";
 
     let title = romaji;
-
-    if (english) title += ` (${english}, ${lang})`;
+    if (english)      title += ` (${english}, ${lang})`;
     else if (synonym) title += ` (${synonym}, ${lang})`;
-    else title += ` (${lang})`;
+    else              title += ` (${lang})`;
 
     const link = document.createElement("a");
     link.href = work.siteUrl;
@@ -144,4 +118,4 @@ function renderAniList(data, element, limit) {
   element.appendChild(frag);
 }
 
-getLastRead(ANILIST_USER, "MANGA", ANILIST_LIMIT, "last-read-manga");
+loadOtaku(ANILIST_USER, ANILIST_LIMIT);
