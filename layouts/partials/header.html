@@ -8,6 +8,11 @@
 {{- if eq .Site.Language.Lang "mm" -}}{{- $hp = hugo.Data.homepage_mm -}}{{- end -}}
 {{- $avatarSrc := $hp.sidebar.avatar | relURL -}}
 <link rel="preload" as="image" href="{{ $avatarSrc }}" fetchpriority="high" type="image/webp">
+{{- /* Primary text font is on every page; Burmese pages also need the Myanmar handwriting face. */}}
+<link rel="preload" as="font" type="font/woff2" href="{{ "theme/font/RobotoMono-Regular.woff2" | relURL }}" crossorigin>
+{{- if eq .Site.Language.Lang "mm" }}
+<link rel="preload" as="font" type="font/woff2" href="{{ "theme/font/Thit_Sar_Shwe_Si.woff2" | relURL }}" crossorigin>
+{{- end }}
 
 <!-- ============================= -->
 
@@ -50,6 +55,24 @@
 
 <!-- ============================= -->
 
+<!-- LANGUAGE ALTERNATES (hreflang) -->
+
+<!-- ============================= -->
+
+{{- /* Hugo key "mm" → BCP 47 "my". x-default points at the English page. */ -}}
+{{- $bcp := dict "en" "en" "mm" "my" -}}
+{{- $ogLocale := dict "en" "en_US" "mm" "my_MM" -}}
+{{- if .IsTranslated }}
+{{- range .AllTranslations }}
+<link rel="alternate" hreflang="{{ index $bcp .Language.Lang | default .Language.Lang }}" href="{{ .Permalink }}">
+{{- end }}
+{{- range .AllTranslations }}{{ if eq .Language.Lang "en" }}
+<link rel="alternate" hreflang="x-default" href="{{ .Permalink }}">
+{{- end }}{{ end }}
+{{- end }}
+
+<!-- ============================= -->
+
 <!-- OPEN GRAPH (SOCIAL SHARING) -->
 
 <!-- ============================= -->
@@ -61,8 +84,13 @@
 <meta property="og:url" content="{{ .Permalink }}">
 {{ end }}
 <meta property="og:image" content="{{ $ogImage }}">
+<meta property="og:image:alt" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
 <meta property="og:logo" content="{{ "apple-touch-icon.png" | absURL }}">
 <meta property="og:site_name" content="{{ .Site.Title }}">
+<meta property="og:locale" content="{{ index $ogLocale .Site.Language.Lang | default "en_US" }}">
+{{- range .Translations }}
+<meta property="og:locale:alternate" content="{{ index $ogLocale .Language.Lang | default "en_US" }}">
+{{- end }}
 
 <!-- ============================= -->
 
@@ -74,6 +102,7 @@
 <meta name="twitter:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
 <meta name="twitter:description" content="{{ $desc }}">
 <meta name="twitter:image" content="{{ $ogImage }}">
+<meta name="twitter:image:alt" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
 
 <!-- ============================= -->
 

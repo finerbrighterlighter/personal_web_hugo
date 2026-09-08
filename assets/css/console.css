@@ -140,47 +140,47 @@
 }
 
 /* Myanmar pages use the handwriting stack; terminal/system UI remains mono. */
-html:lang(mm) {
+html:lang(my) {
     --font-stack: var(--handwriting-font-stack);
     --global-line-height: 2em;
     word-spacing: 0.05em;
 }
 
-html:lang(mm)[data-mm-font="clear"] {
+html:lang(my)[data-mm-font="clear"] {
     --handwriting-font-stack: "Site Handwriting Clear", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive, sans-serif;
     font-size-adjust: 0.528;
 }
 
 /* Burmese pages: keep TUI chrome in monospace for terminal feel.
    Panels are forced to mono end-to-end (fake CLI + fake output). */
-html:lang(mm) .terminal-prompt,
-html:lang(mm) .terminal-nav,
-html:lang(mm) .terminal-menu,
-html:lang(mm) .terminal-menu a,
-html:lang(mm) .logo,
-html:lang(mm) .right-panels .terminal-window,
-html:lang(mm) .right-panels .terminal-window *,
-html:lang(mm) .sidebar .window-header,
-html:lang(mm) .sidebar .window-title,
-html:lang(mm) .footer,
-html:lang(mm) .footer a {
+html:lang(my) .terminal-prompt,
+html:lang(my) .terminal-nav,
+html:lang(my) .terminal-menu,
+html:lang(my) .terminal-menu a,
+html:lang(my) .logo,
+html:lang(my) .right-panels .terminal-window,
+html:lang(my) .right-panels .terminal-window *,
+html:lang(my) .sidebar .window-header,
+html:lang(my) .sidebar .window-title,
+html:lang(my) .footer,
+html:lang(my) .footer a {
     font-family: var(--mono-font-stack);
 }
 
 /* Burmese sidebar typography split:
    name/title + values + education = handwriting, labels = monospace. */
-html:lang(mm) #author-name,
-html:lang(mm) #author-name a,
-html:lang(mm) #job-title,
-html:lang(mm) .sidebar-links a,
-html:lang(mm) .education-title a,
-html:lang(mm) .education-university a,
-html:lang(mm) .education-time {
+html:lang(my) #author-name,
+html:lang(my) #author-name a,
+html:lang(my) #job-title,
+html:lang(my) .sidebar-links a,
+html:lang(my) .education-title a,
+html:lang(my) .education-university a,
+html:lang(my) .education-time {
     font-family: var(--handwriting-font-stack);
 }
 
-html:lang(mm) .sidebar-label,
-html:lang(mm) .sidebar-links li::after {
+html:lang(my) .sidebar-label,
+html:lang(my) .sidebar-links li::after {
     font-family: var(--mono-font-stack);
 }
 
@@ -702,13 +702,13 @@ strong {
     background: var(--code-bg-color);
 }
 
-html:lang(mm) .protected-document-title,
-html:lang(mm) .protected-document-privacy {
+html:lang(my) .protected-document-title,
+html:lang(my) .protected-document-privacy {
     font-family: var(--handwriting-font-stack);
 }
 
-html:lang(mm) .protected-document-panel,
-html:lang(mm) .protected-document-panel * {
+html:lang(my) .protected-document-panel,
+html:lang(my) .protected-document-panel * {
     font-family: var(--mono-font-stack);
 }
 
@@ -770,7 +770,7 @@ html:lang(mm) .protected-document-panel * {
     align-items: baseline;
 }
 
-.experience-header h4 {
+.experience-header h3 {
     margin-bottom: 0;
 }
 
@@ -2213,7 +2213,9 @@ input.works-search::placeholder {
     content: ":";
 }
 
-#works-filters button[data-value="all"] {
+/* Dim the "all" reset button only while it is not the selected state —
+   an active button at 0.7 opacity fails 4.5:1 contrast in dark palettes. */
+#works-filters button[data-value="all"]:not(.active) {
     opacity: 0.7;
 }
 

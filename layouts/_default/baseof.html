@@ -1,25 +1,22 @@
 <!DOCTYPE html>
-<html lang="{{ .Site.Language.Lang }}">
+{{- /* Hugo language key "mm" is the URL prefix; the HTML lang attribute must be
+       the BCP 47 tag, which for Burmese is "my". CSS uses html:lang(my). */ -}}
+{{- $htmlLang := .Site.Language.Lang -}}
+{{- if eq $htmlLang "mm" -}}{{- $htmlLang = "my" -}}{{- end -}}
+<html lang="{{ $htmlLang }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {{- $terminal := resources.Get "css/terminal-0.7.4.min.css" | minify | fingerprint -}}
-    {{- $console  := resources.Get "css/console.css" | minify | fingerprint -}}
-    <link rel="stylesheet" href="{{ $terminal.RelPermalink }}" integrity="{{ $terminal.Data.Integrity }}">
-    <link rel="stylesheet" href="{{ $console.RelPermalink }}"  integrity="{{ $console.Data.Integrity }}">
+    <meta name="theme-color" content="#2d2a2e">
+    {{- /* One stylesheet request: base terminal theme + site overrides concatenated. */ -}}
+    {{- $terminal := resources.Get "css/terminal-0.7.4.min.css" -}}
+    {{- $console  := resources.Get "css/console.css" -}}
+    {{- $css := slice $terminal $console | resources.Concat "css/site.css" | minify | fingerprint -}}
+    <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
 
     {{- partial "favicon.html" . -}}
     {{- partial "header.html" . -}}
     {{- partial "theme-data.html" . -}}
-    {{- if eq .Site.Language.Lang "mm" -}}
-      <script>
-        try {
-          if (localStorage.getItem('mmFontMode') === 'clear') {
-            document.documentElement.dataset.mmFont = 'clear';
-          }
-        } catch (error) {}
-      </script>
-    {{- end -}}
     {{- if .IsHome -}}
       {{- partial "home-seo.html" . -}}
     {{- end -}}
@@ -98,8 +95,8 @@
                   </select>
                 </span>
                 <button id="cvd-shortcut" class="cvd-shortcut" aria-label="Switch to colorblind-safe theme" aria-pressed="false">
-                  <img src="/images/icons/ishihara-on.png"  class="cvd-icon cvd-icon-on"  alt="">
-                  <img src="/images/icons/ishihara-off.png" class="cvd-icon cvd-icon-off" alt="">
+                  <img src="/images/icons/ishihara-on.webp"  class="cvd-icon cvd-icon-on"  alt="">
+                  <img src="/images/icons/ishihara-off.webp" class="cvd-icon cvd-icon-off" alt="">
                 </button>
               </li>
             </ul>
