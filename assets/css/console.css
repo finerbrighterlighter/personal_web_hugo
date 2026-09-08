@@ -1937,7 +1937,7 @@ p.social a {
 }
 
 .topalbum-artist,
-.manga-origin,
+.otaku-stamp,
 .screen-language,
 .photo-date,
 .playlist-year {
@@ -1971,20 +1971,20 @@ p.social a {
 #topalbums a:nth-child(7n) .topalbum-artist { right: auto; left: 3px;  bottom: 8px; transform: rotate(-3deg); }
 
 /* #last-read-manga — cycle starts at offset 1 (left/4deg default) */
-.manga-origin { left: 5px; right: auto; bottom: 4px; transform: rotate(4deg); }
-#last-read-manga a:nth-child(2n) .manga-origin { right: 3px;  left: auto; bottom: 8px; transform: rotate(-10deg); }
-#last-read-manga a:nth-child(3n) .manga-origin { right: auto; left: 7px;  bottom: 6px; transform: rotate(8deg); }
-#last-read-manga a:nth-child(4n) .manga-origin { right: 7px;  left: auto; bottom: 3px; transform: rotate(12deg); }
-#last-read-manga a:nth-child(5n) .manga-origin { right: auto; left: 3px;  bottom: 8px; transform: rotate(-3deg); }
-#last-read-manga a:nth-child(7n) .manga-origin { right: 4px;  left: auto; bottom: 5px; transform: rotate(-6deg); }
+.otaku-stamp { left: 5px; right: auto; bottom: 4px; transform: rotate(4deg); }
+#last-read-manga a:nth-child(2n) .otaku-stamp { right: 3px;  left: auto; bottom: 8px; transform: rotate(-10deg); }
+#last-read-manga a:nth-child(3n) .otaku-stamp { right: auto; left: 7px;  bottom: 6px; transform: rotate(8deg); }
+#last-read-manga a:nth-child(4n) .otaku-stamp { right: 7px;  left: auto; bottom: 3px; transform: rotate(12deg); }
+#last-read-manga a:nth-child(5n) .otaku-stamp { right: auto; left: 3px;  bottom: 8px; transform: rotate(-3deg); }
+#last-read-manga a:nth-child(7n) .otaku-stamp { right: 4px;  left: auto; bottom: 5px; transform: rotate(-6deg); }
 
 /* #last-watched-anime — same stamp, cycle starts at offset 2 (right/-10deg default) so the two otaku.sh strips differ */
-#last-watched-anime .manga-origin { right: 3px; left: auto; bottom: 8px; transform: rotate(-10deg); }
-#last-watched-anime a:nth-child(2n) .manga-origin { right: auto; left: 7px;  bottom: 6px; transform: rotate(8deg); }
-#last-watched-anime a:nth-child(3n) .manga-origin { right: 7px;  left: auto; bottom: 3px; transform: rotate(12deg); }
-#last-watched-anime a:nth-child(4n) .manga-origin { right: auto; left: 3px;  bottom: 8px; transform: rotate(-3deg); }
-#last-watched-anime a:nth-child(5n) .manga-origin { right: 4px;  left: auto; bottom: 5px; transform: rotate(-6deg); }
-#last-watched-anime a:nth-child(7n) .manga-origin { right: auto; left: 5px;  bottom: 4px; transform: rotate(4deg); }
+#last-watched-anime .otaku-stamp { right: 3px; left: auto; bottom: 8px; transform: rotate(-10deg); }
+#last-watched-anime a:nth-child(2n) .otaku-stamp { right: auto; left: 7px;  bottom: 6px; transform: rotate(8deg); }
+#last-watched-anime a:nth-child(3n) .otaku-stamp { right: 7px;  left: auto; bottom: 3px; transform: rotate(12deg); }
+#last-watched-anime a:nth-child(4n) .otaku-stamp { right: auto; left: 3px;  bottom: 8px; transform: rotate(-3deg); }
+#last-watched-anime a:nth-child(5n) .otaku-stamp { right: 4px;  left: auto; bottom: 5px; transform: rotate(-6deg); }
+#last-watched-anime a:nth-child(7n) .otaku-stamp { right: auto; left: 5px;  bottom: 4px; transform: rotate(4deg); }
 
 /* #last-watched — cycle starts at offset 2 (right/-10deg default) */
 .screen-language { right: 3px; left: auto; bottom: 8px; transform: rotate(-10deg); }

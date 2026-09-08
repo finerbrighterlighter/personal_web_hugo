@@ -6,8 +6,9 @@
  * rewatching), capped at ANILIST_LIMIT per strip — so a show that was just
  * finished or dropped still appears. One GraphQL request (two aliased Page
  * fields) feeds both strips; cached under a single key via cache.js. Covers
- * render as links with a country-of-origin stamp (`.manga-origin`, shared by
- * both strips); the hover title carries the list status.
+ * render as links with a list-status stamp (`.otaku-stamp`: WATCHING, DONE,
+ * DROPPED …); the hover title carries the full title, origin, status and
+ * progress (ep 7/24, ch 1120).
  */
 import { getCache, setCache } from "./cache.js";
 
@@ -21,24 +22,27 @@ const STRIPS = {
   "last-watched-anime": "anime",
 };
 
-/* Human label per AniList MediaListStatus, per media type. */
+/* Stamp label per AniList MediaListStatus, per media type — max 8 chars so it fits the 52px stamp. */
 const STATUS_LABEL = {
-  manga: { CURRENT: "reading",  REPEATING: "rereading",  COMPLETED: "finished", DROPPED: "dropped", PAUSED: "paused" },
-  anime: { CURRENT: "watching", REPEATING: "rewatching", COMPLETED: "finished", DROPPED: "dropped", PAUSED: "paused" },
+  manga: { CURRENT: "reading",  REPEATING: "reread",  COMPLETED: "done", DROPPED: "dropped", PAUSED: "paused" },
+  anime: { CURRENT: "watching", REPEATING: "rewatch", COMPLETED: "done", DROPPED: "dropped", PAUSED: "paused" },
 };
+const PROGRESS_UNIT = { manga: "ch", anime: "ep" };
 
 const QUERY = `
 query ($name: String, $perPage: Int) {
   manga: Page(perPage: $perPage) {
     mediaList(userName: $name, type: MANGA, status_not: PLANNING, sort: UPDATED_TIME_DESC) {
       status
-      media { ...cover }
+      progress
+      media { ...cover chapters }
     }
   }
   anime: Page(perPage: $perPage) {
     mediaList(userName: $name, type: ANIME, status_not: PLANNING, sort: UPDATED_TIME_DESC) {
       status
-      media { ...cover }
+      progress
+      media { ...cover episodes }
     }
   }
 }
@@ -102,13 +106,18 @@ function renderStrip(entries, element, limit, key) {
     const english = work.title.english;
     const synonym = work.synonyms?.[0];
     const lang    = work.countryOfOrigin || "";
-    const status  = STATUS_LABEL[key]?.[entry.status] || entry.status?.toLowerCase();
+    const status  = STATUS_LABEL[key]?.[entry.status] || entry.status?.toLowerCase() || "";
+    const total   = key === "anime" ? work.episodes : work.chapters;
+    const progress = entry.progress
+      ? `${PROGRESS_UNIT[key]} ${entry.progress}${total ? `/${total}` : ""}`
+      : "";
 
     let title = romaji;
     if (english)      title += ` (${english}, ${lang})`;
     else if (synonym) title += ` (${synonym}, ${lang})`;
     else              title += ` (${lang})`;
     if (status)       title += ` · ${status}`;
+    if (progress)     title += ` · ${progress}`;
 
     const link = document.createElement("a");
     link.href = work.siteUrl;
@@ -122,12 +131,12 @@ function renderStrip(entries, element, limit, key) {
     img.loading = "lazy";
     img.decoding = "async";
 
-    const originLabel = document.createElement("span");
-    originLabel.className = "manga-origin";
-    originLabel.textContent = lang.toUpperCase();
+    const stamp = document.createElement("span");
+    stamp.className = "otaku-stamp";
+    stamp.textContent = status.toUpperCase();
 
     link.appendChild(img);
-    if (lang) link.appendChild(originLabel);
+    if (status) link.appendChild(stamp);
     frag.appendChild(link);
   }
 
