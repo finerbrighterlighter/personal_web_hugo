@@ -26,50 +26,7 @@
     </nav>
   </div>
 </aside>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const toc = document.querySelector(".post-toc");
-  const controls = document.querySelector(".post-toc-controls");
-  const radios = document.querySelectorAll('input[name="post-toc-level"]');
-  const currentLevel = document.querySelector(".post-toc-current-level");
-  const tocRoot = document.querySelector(".post-toc #TableOfContents");
-
-  if (!toc || !controls || !radios.length || !currentLevel || !tocRoot) return;
-
-  const maxDepth = (() => {
-    let depth = 1;
-    tocRoot.querySelectorAll("li").forEach((item) => {
-      let current = 1;
-      let node = item.parentElement;
-      while (node && node !== tocRoot) {
-        if (node.tagName === "UL" || node.tagName === "OL") current += 1;
-        node = node.parentElement;
-      }
-      depth = Math.max(depth, current);
-    });
-    return Math.min(depth, 2);
-  })();
-
-  if (maxDepth <= 1) {
-    controls.hidden = true;
-  }
-
-  const applyLevel = (level) => {
-    const clamped = Math.max(1, Math.min(maxDepth, level));
-    toc.dataset.visibleLevel = String(clamped);
-    currentLevel.textContent = String(clamped);
-    radios.forEach((radio) => {
-      radio.checked = radio.value === String(clamped);
-    });
-  };
-
-  applyLevel(1);
-  radios.forEach((radio) => {
-    radio.addEventListener("change", () => {
-      if (radio.checked) applyLevel(Number(radio.value));
-    });
-  });
-});
-</script>
+{{- /* Level-switch logic lives in static/js/post_toc.js (module, runs after parse). */ -}}
+<script type="module" src="{{ "js/post_toc.js" | relURL }}"></script>
 {{ end }}
 {{ end }}

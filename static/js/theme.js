@@ -71,6 +71,13 @@
         select.value = mode + '-' + paletteId;
     }
 
+    // Keep <meta name="theme-color"> (mobile browser chrome) on the active background.
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    function updateThemeColor(mode) {
+        if (!themeColorMeta) return;
+        themeColorMeta.setAttribute('content', getActivePalette(mode)[mode].background);
+    }
+
     // Bolds the session-active palette in each group so both cycle targets are visible.
     function updateTicks() {
         [[lightGroup, 'light'], [darkGroup, 'dark']].forEach(([group, mode]) => {
@@ -127,6 +134,7 @@
         updateSelectValue(next);
         updateTicks(next);
         updateCvdBtn(next);
+        updateThemeColor(next);
         root.dataset.palette = getActivePalette(next).id;
         dispatchThemeChanged();
     });
@@ -151,6 +159,7 @@
         updateSelectValue(mode);
         updateTicks(mode);
         updateCvdBtn(mode);
+        updateThemeColor(mode);
         root.dataset.palette = paletteId;
         dispatchThemeChanged();
     });
@@ -192,6 +201,7 @@
             syncSelectTo(mode, targetId);
             updateTicks();
             updateCvdBtn(mode);
+            updateThemeColor(mode);
             root.dataset.palette = targetId;
             dispatchThemeChanged();
         });

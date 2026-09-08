@@ -20,9 +20,7 @@
   <div class="window-content">
     <pre class="panel-terminal"><a href="{{ "/works" | relURL }}">$ research tags --limit={{ .Site.Params.researchTagLimit | default 10 }}</a></pre>
     <div id="research-cloud"></div>
-    <script>
-      window.__researchTags  = {{ $allTags | jsonify | safeJS }};
-      window.__worksCount    = {{ len (where $enSite.RegularPages "Section" "works") }};
-    </script>
+    {{- /* Data blob, not executable: research.js parses it. Keeps the CSP free of 'unsafe-inline'. */ -}}
+    <script type="application/json" id="research-tags-data">{{ dict "tags" $allTags "worksCount" (len (where $enSite.RegularPages "Section" "works")) | jsonify | safeJS }}</script>
   </div>
 </div>

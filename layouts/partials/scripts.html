@@ -27,7 +27,8 @@
 {{ end }}
 
 {{ if not hugo.IsServer }}
-  <script>window.goatcounter = { allow_local: false }</script>
+  {{- /* allow_local:false passed via data-goatcounter-settings (no inline script → CSP-clean). */ -}}
   <script data-goatcounter="https://stats.htunteza.com/count"
-          async src="//gc.zgo.at/count.js"></script>
+          data-goatcounter-settings='{"allow_local": false}'
+          async src="https://gc.zgo.at/count.js"></script>
 {{ end }}

@@ -11,8 +11,7 @@
     {{- $gh := hugo.Data.github_repository -}}
     <pre class="panel-terminal"><a href="https://github.com/finerbrighterlighter" target="_blank" rel="noreferrer noopener">$ gh repo list --owner={{ .Site.Params.promptName }}</a></pre>
     <div id="github-projects" aria-live="polite"></div>
-    <script>
-      window.__githubProjects = {{ $gh.groups | jsonify | safeJS }};
-    </script>
+    {{- /* Data blob, not executable: github.js parses it. Keeps the CSP free of 'unsafe-inline'. */ -}}
+    <script type="application/json" id="github-projects-data">{{ $gh.groups | jsonify | safeJS }}</script>
   </div>
 </div>

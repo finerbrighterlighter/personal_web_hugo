@@ -19,7 +19,12 @@ const MAX_BAR = 10; // 10 segments = each segment is 10%; fractional part shown 
 
 (() => {
   const container = document.getElementById('research-cloud');
-  const rawTags   = window.__researchTags;
+  // Build-time data ships as a JSON <script type="application/json"> (see panel-research.html).
+  let payload = null;
+  try {
+    payload = JSON.parse(document.getElementById('research-tags-data')?.textContent || 'null');
+  } catch (err) { payload = null; }
+  const rawTags = payload?.tags;
   if (!container || !rawTags?.length) return;
 
   const tagMap = {};
@@ -31,7 +36,7 @@ const MAX_BAR = 10; // 10 segments = each segment is 10%; fractional part shown 
     .slice(0, limit);
   if (!top.length) return;
 
-  const totalCount = window.__worksCount || 1;
+  const totalCount = payload?.worksCount || 1;
 
   /* ── Tooltip ─────────────────────────────────────────────────────────── */
   /* Single floating div shared across all rows; positioned on mousemove.  */

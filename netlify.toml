@@ -25,7 +25,15 @@ HUGO_VERSION = "0.157.0"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
-    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' 'unsafe-inline' https://gc.zgo.at https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self' https://api.github.com https://api.openalex.org https://api.unsplash.com https://doi.org https://graphql.anilist.co https://ws.audioscrobbler.com https://gc.zgo.at https://stats.htunteza.com; frame-src 'self'; object-src 'none'; base-uri 'self'"
+    # Enforced CSP (was report-only). No 'unsafe-inline' for scripts: every inline
+    # script was externalised (theme-init.js, post_toc.js, katex-init.js,
+    # mermaid-init.js; build-time data ships as type="application/json").
+    #   script-src  self + GoatCounter + Mermaid ESM from jsDelivr (path-scoped)
+    #   style-src   'unsafe-inline' stays: Chroma/KaTeX inline style attrs, Mermaid <style> in SVG
+    #   connect-src panel APIs + doi.org content negotiation (redirects to Crossref/DataCite/mEDRA)
+    #   frame-src   blob: for the protected-document PDF iframe
+    #   img-src     https: because Last.fm/AniList/Unsplash covers come from their CDNs
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://gc.zgo.at https://cdn.jsdelivr.net/npm/mermaid@11/; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; media-src 'self'; connect-src 'self' https://api.github.com https://api.openalex.org https://api.unsplash.com https://doi.org https://api.crossref.org https://data.crossref.org https://api.datacite.org https://data.datacite.org https://data.medra.org https://graphql.anilist.co https://ws.audioscrobbler.com https://gc.zgo.at https://stats.htunteza.com; frame-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; manifest-src 'self'"
 
 [[headers]]
   for = "/css/*"

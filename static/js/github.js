@@ -313,7 +313,11 @@ async function load() {
   const container = document.getElementById('github-projects');
   if (!container) return;
 
-  const config = window.__githubProjects;
+  // Build-time repo groups ship as a JSON <script type="application/json"> (see panel-github.html).
+  let config = null;
+  try {
+    config = JSON.parse(document.getElementById('github-projects-data')?.textContent || 'null');
+  } catch (err) { config = null; }
   if (!config?.length) return;
 
   try {
