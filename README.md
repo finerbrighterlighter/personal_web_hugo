@@ -6,7 +6,7 @@ Personal website for [Htun Teza](https://htunteza.com): a Hugo site built around
 
 Previous version (Jekyll): [finerbrighterlighter.github.io](https://github.com/finerbrighterlighter/finerbrighterlighter.github.io)
 
-For full implementation details, data schemas, and template internals, use [docs/reference.md](docs/reference.md) as the canonical source. AI assistant notes: `CLAUDE.md` (Claude Code) and `COPILOT.md` (GitHub Copilot) are gitignored working files in the repo root.
+For full implementation details, data schemas, and template internals, use [docs/reference.md](docs/reference.md) as the canonical source. AI assistant notes live in the gitignored `agents.md` in the repo root (`CLAUDE.md` is a one-line pointer to it; `COPILOT.md` is the GitHub Copilot equivalent).
 
 ---
 
@@ -137,6 +137,16 @@ Notable interactive behavior:
 
 ---
 
+## Delivery and Security
+
+- One fingerprinted CSS bundle (base terminal theme + site overrides concatenated at build time).
+- Page-bundle images are served as WebP with `srcset` ladders (240–1600px) and never as raw originals; unreferenced bundle files are not published.
+- Content-Security-Policy is enforced from [netlify.toml](netlify.toml) with no inline scripts allowed — new scripts go in `static/js/`, build-time values travel as `data-*` attributes or JSON blobs.
+- KaTeX is self-hosted under `static/vendor/katex/`; Mermaid is the only third-party script (path-scoped jsDelivr).
+- `hreflang` alternates, `og:locale`, and a live `theme-color` meta are emitted for every page.
+
+---
+
 ## Fonts
 
 Current active fonts are intentionally minimal:
@@ -146,7 +156,9 @@ Current active fonts are intentionally minimal:
 - Thit_Sar_Shwe_Si for Myanmar handwriting on Burmese pages
 - Z01-Umoe002 by [Zinbo Design](https://www.facebook.com/zinbo.design/posts/pfbid0yrPRGg3hbqhAnhWhfNn6gzMEPdJTTDp5LnHaHQb5qGCCXx3a6bmTWXFxS4xQcr7hl) for the optional Burmese `[font: neat]` readability mode
 
-The Burmese switch is applied at page level via html:lang(mm) in [static/hugo-theme-console/css/console.css](static/hugo-theme-console/css/console.css).
+The Burmese switch is applied at page level via html:lang(my) in [assets/css/console.css](assets/css/console.css). Hugo's language key stays `mm` (the URL prefix); the HTML `lang` attribute is the BCP 47 tag `my`.
+
+Roboto Mono is shipped as subsetted WOFF2 (Latin, Greek, punctuation, symbols and box-drawing ranges) via [scripts/subset_fonts.sh](scripts/subset_fonts.sh).
 
 Typography intent in Burmese mode:
 
