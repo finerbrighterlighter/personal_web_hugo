@@ -7,8 +7,8 @@
  * finished or dropped still appears. One GraphQL request (two aliased Page
  * fields) feeds both strips; cached under a single key via cache.js. Covers
  * render as links with a list-status stamp (`.otaku-stamp`: WATCHING, DONE,
- * DROPPED …); the hover title carries the full title, origin, status and
- * progress (ep 7/24, ch 1120).
+ * DROPPED …); the hover title is "Romaji (English) · ep 7/24" — no status
+ * (already on the stamp) and no country of origin (almost always JP).
  */
 import { getCache, setCache } from "./cache.js";
 
@@ -48,7 +48,6 @@ query ($name: String, $perPage: Int) {
 }
 fragment cover on Media {
   siteUrl
-  countryOfOrigin
   synonyms
   coverImage { medium }
   title { romaji english }
@@ -105,19 +104,17 @@ function renderStrip(entries, element, limit, key) {
     const romaji  = work.title.romaji || "";
     const english = work.title.english;
     const synonym = work.synonyms?.[0];
-    const lang    = work.countryOfOrigin || "";
     const status  = STATUS_LABEL[key]?.[entry.status] || entry.status?.toLowerCase() || "";
     const total   = key === "anime" ? work.episodes : work.chapters;
     const progress = entry.progress
       ? `${PROGRESS_UNIT[key]} ${entry.progress}${total ? `/${total}` : ""}`
       : "";
 
+    /* Hover/alt text: "Romaji (English) · ep 7/24". Status is on the stamp; origin is omitted. */
+    const alt = english || synonym;
     let title = romaji;
-    if (english)      title += ` (${english}, ${lang})`;
-    else if (synonym) title += ` (${synonym}, ${lang})`;
-    else              title += ` (${lang})`;
-    if (status)       title += ` · ${status}`;
-    if (progress)     title += ` · ${progress}`;
+    if (alt && alt.toLowerCase() !== romaji.toLowerCase()) title += ` (${alt})`;
+    if (progress) title += ` · ${progress}`;
 
     const link = document.createElement("a");
     link.href = work.siteUrl;
