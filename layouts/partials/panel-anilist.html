@@ -11,12 +11,12 @@
 
   <div class="window-content">
 
-    {{- /* Two strips, one AniList request (anilist.js): manga in progress, then anime in progress. */ -}}
-    <pre class="panel-terminal"><a href="https://anilist.co/user/finer/mangalist/Reading" target="_blank" rel="noreferrer noopener">$ anilist manga --status=reading</a></pre>
+    {{- /* Two strips, one AniList request (anilist.js): most recently updated manga, then anime — any status except planning. */ -}}
+    <pre class="panel-terminal"><a href="https://anilist.co/user/finer/mangalist" target="_blank" rel="noreferrer noopener">$ anilist manga --sort=updated</a></pre>
 
     <div id="last-read-manga" class="album-strip" aria-live="polite"></div>
 
-    <pre class="panel-terminal panel-terminal-gap"><a href="https://anilist.co/user/finer/animelist/Watching" target="_blank" rel="noreferrer noopener">$ anilist anime --status=watching</a></pre>
+    <pre class="panel-terminal panel-terminal-gap"><a href="https://anilist.co/user/finer/animelist" target="_blank" rel="noreferrer noopener">$ anilist anime --sort=updated</a></pre>
 
     <div id="last-watched-anime" class="album-strip" aria-live="polite"></div>
 

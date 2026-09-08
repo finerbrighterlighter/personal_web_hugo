@@ -1,9 +1,13 @@
 /**
- * anilist.js — otaku.sh panel: currently watching anime + currently reading manga.
+ * anilist.js — otaku.sh panel: recently updated manga + recently updated anime.
  *
- * One GraphQL request (two aliased MediaListCollection fields) feeds both
- * strips; cached under a single key via cache.js. Covers render as links
- * with a country-of-origin stamp (`.manga-origin`, shared by both strips).
+ * "Recent" means the user's list entries sorted by UPDATED_TIME_DESC across
+ * every status except PLANNING (watching/reading, completed, dropped, paused,
+ * rewatching), capped at ANILIST_LIMIT per strip — so a show that was just
+ * finished or dropped still appears. One GraphQL request (two aliased Page
+ * fields) feeds both strips; cached under a single key via cache.js. Covers
+ * render as links with a country-of-origin stamp (`.manga-origin`, shared by
+ * both strips); the hover title carries the list status.
  */
 import { getCache, setCache } from "./cache.js";
 
@@ -17,13 +21,25 @@ const STRIPS = {
   "last-watched-anime": "anime",
 };
 
+/* Human label per AniList MediaListStatus, per media type. */
+const STATUS_LABEL = {
+  manga: { CURRENT: "reading",  REPEATING: "rereading",  COMPLETED: "finished", DROPPED: "dropped", PAUSED: "paused" },
+  anime: { CURRENT: "watching", REPEATING: "rewatching", COMPLETED: "finished", DROPPED: "dropped", PAUSED: "paused" },
+};
+
 const QUERY = `
-query ($name: String) {
-  manga: MediaListCollection(userName: $name, type: MANGA, status: CURRENT, sort: UPDATED_TIME_DESC) {
-    lists { entries { media { ...cover } } }
+query ($name: String, $perPage: Int) {
+  manga: Page(perPage: $perPage) {
+    mediaList(userName: $name, type: MANGA, status_not: PLANNING, sort: UPDATED_TIME_DESC) {
+      status
+      media { ...cover }
+    }
   }
-  anime: MediaListCollection(userName: $name, type: ANIME, status: CURRENT, sort: UPDATED_TIME_DESC) {
-    lists { entries { media { ...cover } } }
+  anime: Page(perPage: $perPage) {
+    mediaList(userName: $name, type: ANIME, status_not: PLANNING, sort: UPDATED_TIME_DESC) {
+      status
+      media { ...cover }
+    }
   }
 }
 fragment cover on Media {
@@ -40,7 +56,7 @@ async function loadOtaku(username, limit) {
   );
   if (!Object.values(elements).some(Boolean)) return;
 
-  const cacheKey = `anilist-${username}-current-${limit}`;
+  const cacheKey = `anilist-${username}-recent-${limit}`;
   const cached = getCache(cacheKey);
   if (cached) { renderAll(cached, elements, limit); return; }
 
@@ -48,7 +64,7 @@ async function loadOtaku(username, limit) {
     const response = await fetch(ANILIST_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify({ query: QUERY, variables: { name: username } }),
+      body: JSON.stringify({ query: QUERY, variables: { name: username, perPage: limit } }),
     });
     if (!response.ok) throw new Error(`AniList ${response.status}`);
     const data = await response.json();
@@ -66,16 +82,14 @@ async function loadOtaku(username, limit) {
 function renderAll(data, elements, limit) {
   for (const [id, key] of Object.entries(STRIPS)) {
     const el = elements[id];
-    if (el) renderStrip(data.data?.[key], el, limit);
+    if (el) renderStrip(data.data?.[key]?.mediaList, el, limit, key);
   }
 }
 
-/* Flatten every list of the collection (AniList may split by custom list). */
-function renderStrip(collection, element, limit) {
+function renderStrip(entries, element, limit, key) {
   element.innerHTML = "";
-  const entries = (collection?.lists ?? []).flatMap(l => l.entries ?? []);
-  if (!entries.length) {
-    element.innerHTML = '<span class="api-error">$ nothing in progress</span>';
+  if (!entries?.length) {
+    element.innerHTML = '<span class="api-error">$ no recent activity</span>';
     return;
   }
 
@@ -88,11 +102,13 @@ function renderStrip(collection, element, limit) {
     const english = work.title.english;
     const synonym = work.synonyms?.[0];
     const lang    = work.countryOfOrigin || "";
+    const status  = STATUS_LABEL[key]?.[entry.status] || entry.status?.toLowerCase();
 
     let title = romaji;
     if (english)      title += ` (${english}, ${lang})`;
     else if (synonym) title += ` (${synonym}, ${lang})`;
     else              title += ` (${lang})`;
+    if (status)       title += ` · ${status}`;
 
     const link = document.createElement("a");
     link.href = work.siteUrl;
