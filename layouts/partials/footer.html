@@ -22,7 +22,8 @@
 <div class="footer">
   <span>[<a href="https://gohugo.io/" target="_blank" rel="noreferrer noopener">Hugo</a>]</span>
   <span>[<a href="https://github.com/mrmierzejewski/hugo-theme-console/" target="_blank" rel="noreferrer noopener">Theme</a>]</span>
-  <span>[<a href="{{ "/about/" | relLangURL }}" class="author-link" aria-label="About the author">Me</a>]</span>
+  {{- /* Accessible name must contain the visible label ("Me") — WCAG 2.5.3 label-in-name. */ -}}
+  <span>[<a href="{{ "/about/" | relLangURL }}" class="author-link" aria-label="Me — about the author">Me</a>]</span>
   <span>
     [
     {{- if $langTarget -}}
@@ -30,8 +31,10 @@
         <span class="lang-badge" aria-hidden="true">{{ $langText }}</span>
       </a>
     {{- else -}}
-      <span class="footer-lang-button is-unavailable" aria-label="{{ $missingLabel }}" title="{{ $missingLabel }}">
+      {{- /* aria-label is prohibited on a generic <span>; use visually-hidden text instead. */ -}}
+      <span class="footer-lang-button is-unavailable" title="{{ $missingLabel }}">
         <span class="lang-badge" aria-hidden="true">{{ $langText }}</span>
+        <span class="sr-only">{{ $missingLabel }}</span>
       </span>
     {{- end -}}
     ]

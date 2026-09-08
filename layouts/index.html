@@ -111,7 +111,7 @@
 {{ range first 2 .info }}
 <div class="experience">
   <div class="experience-header">
-    <h4 class="role">{{ .role }}</h4>
+    <h3 class="role">{{ .role }}</h3>
     <span class="time">{{ .time }}</span>
   </div>
 
@@ -132,7 +132,7 @@
 {{ range after 2 .info }}
 <div class="experience">
   <div class="experience-header">
-    <h4 class="role">{{ .role }}</h4>
+    <h3 class="role">{{ .role }}</h3>
     <span class="time">{{ .time }}</span>
   </div>
 
@@ -160,13 +160,13 @@
 {{ range first 2 .assignments }}
 <div class="project">
   <div class="project-header">
-    <h4 class="project-title">
+    <h3 class="project-title">
       {{ if .link }}
         <a href="{{ .link }}">{{ .title }}</a>
       {{ else }}
         {{ .title }}
       {{ end }}
-    </h4>
+    </h3>
     <span class="project-role">{{ .role }}</span>
   </div>
 
@@ -182,13 +182,13 @@
 {{ range after 2 .assignments }}
 <div class="project">
   <div class="project-header">
-    <h4 class="project-title">
+    <h3 class="project-title">
       {{ if .link }}
         <a href="{{ .link }}">{{ .title }}</a>
       {{ else }}
         {{ .title }}
       {{ end }}
-    </h4>
+    </h3>
     <span class="project-role">{{ .role }}</span>
   </div>
 
