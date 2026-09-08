@@ -29,6 +29,15 @@ const STATUS_LABEL = {
 };
 const PROGRESS_UNIT = { manga: "ch", anime: "ep" };
 
+/* Fold case, the × sign, accents, spaces and punctuation so near-identical titles compare equal. */
+function normalizeTitle(s) {
+  return s
+    .toLowerCase()
+    .replace(/×/g, "x")
+    .normalize("NFKD").replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]/g, "");
+}
+
 const QUERY = `
 query ($name: String, $perPage: Int) {
   manga: Page(perPage: $perPage) {
@@ -110,10 +119,12 @@ function renderStrip(entries, element, limit, key) {
       ? `${PROGRESS_UNIT[key]} ${entry.progress}${total ? `/${total}` : ""}`
       : "";
 
-    /* Hover/alt text: "Romaji (English) · ep 7/24". Status is on the stamp; origin is omitted. */
+    /* Hover/alt text: "Romaji (English) · ep 7/24". Status is on the stamp; origin is omitted.
+       The English title is shown only when it differs beyond case, spacing and
+       punctuation (so "SPY×FAMILY" vs "SPY x FAMILY" counts as the same title). */
     const alt = english || synonym;
     let title = romaji;
-    if (alt && alt.toLowerCase() !== romaji.toLowerCase()) title += ` (${alt})`;
+    if (alt && normalizeTitle(alt) !== normalizeTitle(romaji)) title += ` (${alt})`;
     if (progress) title += ` · ${progress}`;
 
     const link = document.createElement("a");
