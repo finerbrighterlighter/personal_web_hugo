@@ -88,3 +88,9 @@ enableInlineShortcodes = false
 
 [security.funcs]
 getenv = ["^HUGO_"]
+
+# Build-time GitHub API responses (panel-github.html via resources.GetRemote).
+# Default maxAge is forever; 1h keeps local builds from serving stale repo data.
+[caches]
+  [caches.getresource]
+    maxAge = "1h"

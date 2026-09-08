@@ -57,6 +57,7 @@ HUGO_UNSPLASH_KEY
 HUGO_TRAKT_KEY
 HUGO_TMDB_KEY
 HUGO_LASTFM_KEY
+HUGO_GITHUB_TOKEN   # optional; build-time only, lifts the GitHub API rate limit for the github.sh panel
 ```
 
 ---

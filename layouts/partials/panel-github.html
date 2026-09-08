@@ -11,7 +11,65 @@
     {{- $gh := hugo.Data.github_repository -}}
     <pre class="panel-terminal"><a href="https://github.com/finerbrighterlighter" target="_blank" rel="noreferrer noopener">$ gh repo list --owner={{ .Site.Params.promptName }}</a></pre>
     <div id="github-projects" aria-live="polite"></div>
-    {{- /* Data blob, not executable: github.js parses it. Keeps the CSP free of 'unsafe-inline'. */ -}}
-    <script type="application/json" id="github-projects-data">{{ $gh.groups | jsonify | safeJS }}</script>
+    {{- /*
+      Build-time GitHub fetch. Each repo's metadata + language bytes are
+      fetched here with resources.GetRemote and baked into the JSON blob, so
+      visitors make no GitHub API calls (the unauthenticated limit is 60/h per
+      IP and was being burnt by the panel). github.js only fetches live for
+      repos that are missing `data` (build-side failure) or when `fetchedAt`
+      is older than 7 days. Set HUGO_GITHUB_TOKEN (fine-grained PAT, public
+      read) in the Netlify environment to lift the build-side limit; without
+      it the fetch still works on a quiet IP. Failures are warnf'd, never fatal.
+      Response cache: [caches.getresource] maxAge = "1h" in hugo.toml.
+    */ -}}
+    {{- $headers := dict "Accept" "application/vnd.github+json" "X-GitHub-Api-Version" "2022-11-28" -}}
+    {{- with getenv "HUGO_GITHUB_TOKEN" -}}
+      {{- $headers = merge $headers (dict "Authorization" (printf "Bearer %s" .)) -}}
+    {{- end -}}
+    {{- $opts := dict "headers" $headers -}}
+    {{- $groups := slice -}}
+    {{- range $gh.groups -}}
+      {{- $owner := .owner -}}
+      {{- $repos := slice -}}
+      {{- range .repos -}}
+        {{- $name := .name -}}
+        {{- $entry := dict "name" $name "label" .label -}}
+        {{- $repoData := dict -}}
+        {{- $langs := dict -}}
+        {{- $ok := true -}}
+        {{- with try (resources.GetRemote (printf "https://api.github.com/repos/%s/%s" $owner $name) $opts) -}}
+          {{- with .Err -}}
+            {{- warnf "github panel: %s/%s metadata fetch failed: %s" $owner $name . -}}{{- $ok = false -}}
+          {{- else with .Value -}}
+            {{- $repoData = .Content | transform.Unmarshal -}}
+          {{- else -}}
+            {{- warnf "github panel: %s/%s metadata fetch returned nothing" $owner $name -}}{{- $ok = false -}}
+          {{- end -}}
+        {{- end -}}
+        {{- if $ok -}}
+          {{- with try (resources.GetRemote (printf "https://api.github.com/repos/%s/%s/languages" $owner $name) $opts) -}}
+            {{- with .Err -}}
+              {{- warnf "github panel: %s/%s languages fetch failed: %s" $owner $name . -}}{{- $ok = false -}}
+            {{- else with .Value -}}
+              {{- $langs = .Content | transform.Unmarshal -}}
+            {{- else -}}
+              {{- $ok = false -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+        {{- if $ok -}}
+          {{- /* Only the fields github.js renders — keeps the blob small. */ -}}
+          {{- $entry = merge $entry (dict "data" (dict
+                "name"      $repoData.name
+                "html_url"  $repoData.html_url
+                "pushed_at" $repoData.pushed_at
+                "_langs"    $langs)) -}}
+        {{- end -}}
+        {{- $repos = $repos | append $entry -}}
+      {{- end -}}
+      {{- $groups = $groups | append (dict "owner" $owner "label" .label "repos" $repos) -}}
+    {{- end -}}
+    {{- $payload := dict "fetchedAt" (now.Format "2006-01-02T15:04:05Z07:00") "groups" $groups -}}
+    <script type="application/json" id="github-projects-data">{{ $payload | jsonify | safeJS }}</script>
   </div>
 </div>

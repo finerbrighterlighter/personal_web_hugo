@@ -75,21 +75,55 @@ function buildColorMap(entries) {
 }
 
 
-async function fetchRepo(owner, { name, label }) {
-  const key    = `github-${owner}-${name}`;
-  const cached = getCache(key);
-  if (cached) { cached._label = label; return cached; }
+/* Baked data older than this triggers one live refresh attempt (cached via cache.js). */
+const STALE_AFTER_MS = 7 * 24 * 60 * 60 * 1000;
 
+async function fetchLive(owner, name) {
   const [repoRes, langRes] = await Promise.all([
     fetch(`https://api.github.com/repos/${owner}/${name}`),
     fetch(`https://api.github.com/repos/${owner}/${name}/languages`),
   ]);
   if (!repoRes.ok || !langRes.ok) throw new Error(`GitHub API ${repoRes.status}`);
-  const data  = await repoRes.json();
-  data._langs = await langRes.json();
-  data._label = label;
-  setCache(key, data);
-  return data;
+  const data = await repoRes.json();
+  return {
+    name:      data.name,
+    html_url:  data.html_url,
+    pushed_at: data.pushed_at,
+    _langs:    await langRes.json(),
+  };
+}
+
+/*
+ * Resolve one repo's render data. Order of preference:
+ *   1. build-time data baked into the JSON blob by panel-github.html (no network)
+ *   2. localStorage cache from an earlier live fetch
+ *   3. live fetch — only when the baked data is missing or stale
+ *   4. a minimal placeholder (name + link, no bar/time) so one failure never blanks the panel
+ */
+async function resolveRepo(owner, { name, label, data }, stale) {
+  const key = `github-${owner}-${name}`;
+  let out = null;
+
+  if (data && !stale) {
+    out = data;
+  } else {
+    const cached = getCache(key);
+    if (cached) {
+      out = cached;
+    } else {
+      try {
+        out = await fetchLive(owner, name);
+        setCache(key, out);
+      } catch (err) {
+        out = data || null; // stale baked data beats nothing
+      }
+    }
+  }
+
+  if (!out) {
+    out = { name, html_url: `https://github.com/${owner}/${name}`, pushed_at: null, _langs: {} };
+  }
+  return { ...out, _label: label };
 }
 
 const BAR_WIDTH = 10;
@@ -228,7 +262,7 @@ function render(groups) {
     tbody.appendChild(trOwner);
 
     const sorted = [...group.repos].sort((a, b) =>
-      new Date(b.pushed_at) - new Date(a.pushed_at)
+      (b.pushed_at ? new Date(b.pushed_at).getTime() : 0) - (a.pushed_at ? new Date(a.pushed_at).getTime() : 0)
     );
 
     sorted.forEach((repo, ri) => {
@@ -271,7 +305,7 @@ function render(groups) {
       trName.appendChild(tdBar);
 
       const tdTime = document.createElement('td');
-      tdTime.textContent   = relativeTime(repo.pushed_at);
+      tdTime.textContent   = repo.pushed_at ? relativeTime(repo.pushed_at) : ''.padStart(10);
       tdTime.style.cssText = 'text-align:right;color:var(--secondary-color);white-space:pre;';
       tdTime.className = 'col-hide-mobile';
       trName.appendChild(tdTime);
@@ -313,26 +347,33 @@ async function load() {
   const container = document.getElementById('github-projects');
   if (!container) return;
 
-  // Build-time repo groups ship as a JSON <script type="application/json"> (see panel-github.html).
-  let config = null;
+  // Build-time payload from panel-github.html: { fetchedAt, groups: [{ owner, label, repos: [{ name, label, data? }] }] }.
+  // `data` is the GitHub metadata fetched during the Hugo build; absent when that fetch failed.
+  let payload = null;
   try {
-    config = JSON.parse(document.getElementById('github-projects-data')?.textContent || 'null');
-  } catch (err) { config = null; }
+    payload = JSON.parse(document.getElementById('github-projects-data')?.textContent || 'null');
+  } catch (err) { payload = null; }
+  const config = payload?.groups;
   if (!config?.length) return;
 
-  try {
-    _groups = await Promise.all(
-      config.map(async ({ owner, label, repos }) => ({
-        owner,
-        label,
-        repos: await Promise.all(repos.map(repo => fetchRepo(owner, repo))),
-      }))
-    );
-    render(_groups);
-  } catch (err) {
-    console.error('GitHub request failed:', err);
+  const fetchedAt = payload.fetchedAt ? new Date(payload.fetchedAt).getTime() : 0;
+  const stale = !fetchedAt || (Date.now() - fetchedAt > STALE_AFTER_MS);
+
+  _groups = await Promise.all(
+    config.map(async ({ owner, label, repos }) => ({
+      owner,
+      label,
+      repos: await Promise.all(repos.map(repo => resolveRepo(owner, repo, stale))),
+    }))
+  );
+
+  const anyData = _groups.some(g => g.repos.some(r => r.pushed_at));
+  if (!anyData) {
+    console.error('GitHub request failed: no build-time data and live fetch unavailable');
     container.innerHTML = '<span class="api-error">$ api is not aping 🐒</span>';
+    return;
   }
+  render(_groups);
 }
 
 load();
