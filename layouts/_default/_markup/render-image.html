@@ -2,12 +2,12 @@
 {{- $alt := .Text -}}
 {{- $title := .Title -}}
 {{- $res := .Page.Resources.GetMatch .Destination -}}
-{{- if $res -}}
-  {{- $webp := $res.Process "webp" -}}
-  <picture>
-    <source type="image/webp" srcset="{{ $webp.RelPermalink }}">
-    <img src="{{ $res.RelPermalink }}" alt="{{ $alt }}"{{ with $title }} title="{{ . }}"{{ end }} class="img-responsive" loading="lazy" width="{{ $res.Width }}" height="{{ $res.Height }}">
-  </picture>
+{{- if and $res (eq $res.ResourceType "image") (not (in (slice "gif" "svg+xml") $res.MediaType.SubType)) -}}
+  {{- partial "responsive-img.html" (dict
+        "res"   $res
+        "alt"   $alt
+        "title" $title
+        "sizes" (partial "image-sizes.html" "main")) -}}
 {{- else -}}
   <img src="{{ $src }}" alt="{{ $alt }}"{{ with $title }} title="{{ . }}"{{ end }} class="img-responsive">
 {{- end -}}

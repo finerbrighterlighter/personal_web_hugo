@@ -60,11 +60,17 @@
 <div class="image-grid">
 
   {{ range $datesorted }}
-    {{ $thumb := .Fill "400x400 center" }}
-    <a href="{{ .RelPermalink }}"
+    {{ $thumb := .Fill "400x400 center webp" }}
+    {{ $thumb2x := $thumb }}{{ if and (ge .Width 800) (ge .Height 800) }}{{ $thumb2x = .Fill "800x800 center webp" }}{{ end }}
+    {{ $full := "" }}{{ if gt .Width 2000 }}{{ $full = .Resize "2000x webp" }}{{ else }}{{ $full = .Process "webp" }}{{ end }}
+    <a href="{{ $full.RelPermalink }}" target="_blank" rel="noreferrer noopener"
        title="{{ with .Meta }}{{ .Date }}{{ else }}{{ .Name }}{{ end }}">
       <img
         src="{{ $thumb.RelPermalink }}"
+        srcset="{{ $thumb.RelPermalink }} {{ $thumb.Width }}w{{ if ne $thumb2x $thumb }}, {{ $thumb2x.RelPermalink }} {{ $thumb2x.Width }}w{{ end }}"
+        sizes="{{ partial "image-sizes.html" "gallery" }}"
+        width="{{ $thumb.Width }}"
+        height="{{ $thumb.Height }}"
         alt="{{ .Name }}"
         decoding="async"
         loading="lazy">
@@ -72,10 +78,16 @@
   {{ end }}
 
   {{ range $namesorted }}
-    {{ $thumb := .Fill "400x400 center" }}
-    <a href="{{ .RelPermalink }}" title="{{ .Name }}">
+    {{ $thumb := .Fill "400x400 center webp" }}
+    {{ $thumb2x := $thumb }}{{ if and (ge .Width 800) (ge .Height 800) }}{{ $thumb2x = .Fill "800x800 center webp" }}{{ end }}
+    {{ $full := "" }}{{ if gt .Width 2000 }}{{ $full = .Resize "2000x webp" }}{{ else }}{{ $full = .Process "webp" }}{{ end }}
+    <a href="{{ $full.RelPermalink }}" target="_blank" rel="noreferrer noopener" title="{{ .Name }}">
       <img
         src="{{ $thumb.RelPermalink }}"
+        srcset="{{ $thumb.RelPermalink }} {{ $thumb.Width }}w{{ if ne $thumb2x $thumb }}, {{ $thumb2x.RelPermalink }} {{ $thumb2x.Width }}w{{ end }}"
+        sizes="{{ partial "image-sizes.html" "gallery" }}"
+        width="{{ $thumb.Width }}"
+        height="{{ $thumb.Height }}"
         alt="{{ .Name }}"
         decoding="async"
         loading="lazy">

@@ -19,26 +19,14 @@
       {{/* Current year — generated at build time; no manual update needed */}}
       {{ $y := now.Year }}
       <a href="https://www.last.fm/user/fibrili/library/tracks?from={{ $y }}-01-01&to={{ $y }}-12-31" target="_blank" rel="noreferrer noopener">
-        <img
-          src="{{ "images/playlists/replay_this_year.webp" | relURL }}"
-          title="Most Played {{ $y }} (Ongoing)"
-          alt="Most Played {{ $y }} (Ongoing)"
-          loading="lazy"
-          decoding="async"
-        />
+        {{ partial "playlist-cover.html" (dict "image" "replay_this_year.webp" "title" (printf "Most Played %d (Ongoing)" $y)) }}
         <span class="playlist-year">{{ $y }}</span>
       </a>
 
       {{/* Past years from playlists.yml — add a new entry here each January */}}
       {{ range first 9 (sort $data.items "year" "desc") }}
       <a href="{{ .url }}" target="_blank" rel="noreferrer noopener">
-        <img
-          src="{{ (printf "images/playlists/%s" .image) | relURL }}"
-          title="{{ .title }}"
-          alt="{{ .title }}"
-          loading="lazy"
-          decoding="async"
-        />
+        {{ partial "playlist-cover.html" (dict "image" .image "title" .title) }}
         <span class="playlist-year">{{ .year }}</span>
       </a>
       {{ end }}

@@ -19,7 +19,7 @@ So, I did go. I made sure to visit every 4 months. From my 18th birthday until I
 
 I tried, I did try to visit the Red Cross to start donating again in Bangkok. It was during the Pandemic, and the Red Cross was announcing they need blood. But one, it was properly too far. Like I know, it is in the "centre" of the city proper, so probably it was just me living on the fringes. Also, I did not really feel welcomed for some reasons. May be I was just feeling things living abroad and alone, but yes, I decided not to visit again. They gave me a badge and a mask for my first blood donation.
 
-{{< gallery match="blood_th*" >}}
+{{< gallery match="blood_th*" page="/blood-records" >}}
 
 Then two years passed. For some reason, it never came to my mind that hospitals do maintain their own blood collection centre. Even back in Myanmar, I was always visiting the National Blood Center. By that time, I was beginning my job in Ramathibodi Hospital. Of course, my office is off the hospital grounds but I decided I will be stating my blood donation journey again this year. So, I did 3 times in the last 9 months because Ramathibodi policy allows once every quarter.
 

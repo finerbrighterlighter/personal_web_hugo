@@ -3,16 +3,14 @@
 {{- $img := .Page.Resources.GetMatch $src -}}
 <figure id="figure-{{ $num }}" aria-labelledby="figure-{{ $num }}-caption" class="post-figure">
   {{- with $img }}
-  {{- $webp := .Process "webp" }}
-  <picture>
-    <source type="image/webp" srcset="{{ $webp.RelPermalink }}">
-    <img src="{{ .RelPermalink }}"
-         alt=""
-         class="img-responsive"
-         loading="lazy"
-         width="{{ .Width }}"
-         height="{{ .Height }}">
-  </picture>
+  {{- if and (eq .ResourceType "image") (not (in (slice "gif" "svg+xml") .MediaType.SubType)) }}
+  {{ partial "responsive-img.html" (dict
+        "res"   .
+        "alt"   ""
+        "sizes" (partial "image-sizes.html" "figure")) }}
+  {{- else }}
+  <img src="{{ .RelPermalink }}" alt="" class="img-responsive" loading="lazy">
+  {{- end }}
   {{- end }}
   <figcaption id="figure-{{ $num }}-caption">
     <span class="figure-label">Figure {{ $num }}.</span>
