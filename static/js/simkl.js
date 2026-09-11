@@ -72,7 +72,8 @@ function loadScreen() {
   const cacheKey = `simkl-recent-${limit}`;
 
   const cached = getCache(cacheKey);
-  const bakedIsNewer = baked?.fetchedAt && (!cached?.fetchedAt || baked.fetchedAt > cached.fetchedAt);
+  const bakedIsNewer = baked?.fetchedAt &&
+    (!cached?.fetchedAt || new Date(baked.fetchedAt) > new Date(cached.fetchedAt));
 
   if (cached && !bakedIsNewer) {
     renderStrip(cached, element);

@@ -78,6 +78,9 @@ function buildColorMap(entries) {
 /* Baked data older than this triggers one live refresh attempt (cached via cache.js). */
 const STALE_AFTER_MS = 7 * 24 * 60 * 60 * 1000;
 
+/* localStorage key for the whole build-time payload (per-repo live fetches use `github-<owner>-<name>`). */
+const PAYLOAD_CACHE_KEY = 'github-projects';
+
 async function fetchLive(owner, name) {
   const [repoRes, langRes] = await Promise.all([
     fetch(`https://api.github.com/repos/${owner}/${name}`),
@@ -353,6 +356,19 @@ async function load() {
   try {
     payload = JSON.parse(document.getElementById('github-projects-data')?.textContent || 'null');
   } catch (err) { payload = null; }
+
+  /* Same lifecycle as the other panels (simkl.js, anilist.js …): the baked payload
+     is kept in localStorage via cache.js — site-wide TTL, cleared by the privacy.sh
+     flush — and the stored copy is used unless this page carries a newer build. */
+  const cached = getCache(PAYLOAD_CACHE_KEY);
+  const bakedIsNewer = payload?.fetchedAt &&
+    (!cached?.fetchedAt || new Date(payload.fetchedAt) > new Date(cached.fetchedAt));
+  if (cached && !bakedIsNewer) {
+    payload = cached;
+  } else if (payload?.groups?.length) {
+    setCache(PAYLOAD_CACHE_KEY, payload);
+  }
+
   const config = payload?.groups;
   if (!config?.length) return;
 
