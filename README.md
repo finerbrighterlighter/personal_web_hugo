@@ -54,10 +54,10 @@ Optional API env vars for live panels:
 
 ```bash
 HUGO_UNSPLASH_KEY
-HUGO_TRAKT_KEY
-HUGO_TMDB_KEY
 HUGO_LASTFM_KEY
-HUGO_GITHUB_TOKEN   # optional; build-time only, lifts the GitHub API rate limit for the github.sh panel
+HUGO_GITHUB_TOKEN     # optional; build-time only, lifts the GitHub API rate limit for the github.sh panel
+HUGO_SIMKL_CLIENT_ID  # build-time only; screen.sh recently-watched strip (Simkl)
+HUGO_SIMKL_TOKEN      # build-time only; Simkl PIN-flow token, never shipped to the browser
 ```
 
 ---

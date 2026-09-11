@@ -1,0 +1,128 @@
+<div class="terminal-window panel" role="region" aria-label="Screen">
+
+  <div class="window-header">
+    <div class="window-controls" aria-hidden="true">
+      <span class="control close"></span>
+      <span class="control minimize"></span>
+      <span class="control maximize"></span>
+    </div>
+    <div class="window-title">screen.sh</div>
+  </div>
+
+  <div class="window-content">
+
+    {{- /*
+      Build-time Simkl fetch (replaces the Trakt panel, 2026-09). The user's
+      library — movies, shows and anime buckets — is read here with
+      resources.GetRemote, sorted by last_watched_at and rendered as static
+      HTML: no client-side JS, no token in the browser.
+
+      Env (Netlify; `.env` + `dotenv run` locally):
+        HUGO_SIMKL_CLIENT_ID  — Simkl app client id
+        HUGO_SIMKL_TOKEN      — long-lived PIN-flow token (read scope is enough)
+
+      Corner stamp (`.screen-stamp`) = progress: Simkl's `last_watched`
+      (`S05E06` for shows, `E10` for anime; year-numbered seasons like
+      `S2026E818` are trimmed to `E818` so they fit the 52px stamp), `FILM` for
+      movies. Anime titles come back romaji, so one `/anime/{id}?extended=full`
+      call per anime item adds the English title to the hover text, otaku.sh
+      style. Posters from simkl.in (`_c` = 170×250). Failures are warnf'd,
+      never fatal; the strip then shows an .api-error line like the JS panels.
+      Response cache: [caches.getresource] maxAge = "1h" in hugo.toml.
+    */ -}}
+    {{- $limit := .Site.Params.screenLimit | default 10 -}}
+    {{- $cid := getenv "HUGO_SIMKL_CLIENT_ID" -}}
+    {{- $tok := getenv "HUGO_SIMKL_TOKEN" -}}
+    {{- $ua := "htunteza-site/1.0 (+https://htunteza.com)" -}}
+    {{- $q := printf "client_id=%s&app-name=htunteza-site&app-version=1.0" $cid -}}
+    {{- $opts := dict "headers" (dict "Authorization" (printf "Bearer %s" $tok) "User-Agent" $ua) -}}
+    {{- $paths := dict "movies" "movies" "shows" "tv" "anime" "anime" -}}
+    {{- $items := slice -}}
+    {{- $failed := false -}}
+
+    {{- if and $cid $tok -}}
+      {{- range $bucket := slice "movies" "shows" "anime" -}}
+        {{- with try (resources.GetRemote (printf "https://api.simkl.com/sync/all-items/%s?%s" $bucket $q) $opts) -}}
+          {{- with .Err -}}
+            {{- warnf "simkl panel: %s fetch failed: %s" $bucket . -}}{{- $failed = true -}}
+          {{- else with .Value -}}
+            {{- $data := .Content | transform.Unmarshal -}}
+            {{- range index $data $bucket -}}
+              {{- if .last_watched_at -}}
+                {{- $m := dict -}}
+                {{- if eq $bucket "movies" -}}{{- $m = .movie -}}{{- else -}}{{- $m = .show -}}{{- end -}}
+                {{- $items = $items | append (dict
+                      "at"      .last_watched_at
+                      "kind"    $bucket
+                      "title"   $m.title
+                      "year"    $m.year
+                      "poster"  $m.poster
+                      "simkl"   (int $m.ids.simkl)
+                      "slug"    $m.ids.slug
+                      "last"    (.last_watched | default "")
+                      "watched" .watched_episodes_count
+                      "total"   .total_episodes_count) -}}
+              {{- end -}}
+            {{- end -}}
+          {{- else -}}
+            {{- warnf "simkl panel: %s fetch returned nothing" $bucket -}}{{- $failed = true -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- else -}}
+      {{- warnf "simkl panel: HUGO_SIMKL_CLIENT_ID / HUGO_SIMKL_TOKEN not set — panel renders offline" -}}{{- $failed = true -}}
+    {{- end -}}
+
+    {{- $items = first $limit (sort $items "at" "desc") -}}
+
+    <pre class="panel-terminal"><a href="https://simkl.com/9013741/" target="_blank" rel="noreferrer noopener">$ simkl list --status=recent</a></pre>
+
+    <div id="last-watched" class="album-strip">
+      {{- if $failed -}}
+        <span class="api-error">$ api is not aping 🐒</span>
+      {{- else if not $items -}}
+        <span class="api-error">$ no recent activity</span>
+      {{- else -}}
+        {{- range $items -}}
+          {{- $path := index $paths .kind -}}
+          {{- $title := .title -}}
+
+          {{- /* Anime only: fetch the English title for the hover text. Public catalogue endpoint, same client_id. */ -}}
+          {{- $english := "" -}}
+          {{- if eq .kind "anime" -}}
+            {{- with try (resources.GetRemote (printf "https://api.simkl.com/anime/%d?extended=full&%s" .simkl $q) (dict "headers" (dict "User-Agent" $ua))) -}}
+              {{- with .Err -}}
+                {{- warnf "simkl panel: anime detail for %s failed: %s" $title . -}}
+              {{- else with .Value -}}
+                {{- $english = (.Content | transform.Unmarshal).en_title | default "" -}}
+              {{- end -}}
+            {{- end -}}
+          {{- end -}}
+
+          {{- /* Hover/alt: "Title (Year)" for films; "Title (English) (Year) · ep 30/36" for shows/anime. */ -}}
+          {{- $label := $title -}}
+          {{- if and $english (ne (lower $english) (lower $title)) -}}{{- $label = printf "%s (%s)" $label $english -}}{{- end -}}
+          {{- with .year -}}{{- $label = printf "%s (%d)" $label (int .) -}}{{- end -}}
+          {{- if and (ne .kind "movies") .watched -}}
+            {{- $label = printf "%s · ep %d" $label (int .watched) -}}
+            {{- with .total -}}{{- $label = printf "%s/%d" $label (int .) -}}{{- end -}}
+          {{- end -}}
+
+          {{- /* Stamp: progress. `S2026E818` (year seasons) → `E818`; movies → FILM. */ -}}
+          {{- $stamp := "FILM" -}}
+          {{- if ne .kind "movies" -}}
+            {{- $stamp = .last -}}
+            {{- if gt (len $stamp) 8 -}}{{- $stamp = replaceRE `^S\d+` "" $stamp -}}{{- end -}}
+          {{- end -}}
+
+          <a href="https://simkl.com/{{ $path }}/{{ .simkl }}{{ with .slug }}/{{ . }}{{ end }}" target="_blank" rel="noreferrer noopener">
+            <img src="https://simkl.in/posters/{{ .poster }}_c.webp" width="64" height="64" alt="{{ $label }}" title="{{ $label }}" loading="lazy" decoding="async">
+            {{- with $stamp }}<span class="screen-stamp">{{ . }}</span>{{ end -}}
+          </a>
+        {{- end -}}
+      {{- end -}}
+    </div>
+
+  </div>
+
+</div>

@@ -33,6 +33,7 @@ promptHost = "homepage"
 buildFuture = true
 cacheTTLMinutes = 60
 researchTagLimit = 5
+screenLimit = 10             # posters shown in screen.sh (build-time Simkl fetch)
 
 [[params.navlinks]]
 name = "Home"
