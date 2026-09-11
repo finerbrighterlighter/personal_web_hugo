@@ -14,8 +14,10 @@
     {{- /*
       Build-time Simkl fetch (replaces the Trakt panel, 2026-09). The user's
       library — movies, shows and anime buckets — is read here with
-      resources.GetRemote, sorted by last_watched_at and rendered as static
-      HTML: no client-side JS, no token in the browser.
+      resources.GetRemote, sorted by last_watched_at and shipped as a JSON blob
+      of ready-to-render items; simkl.js paints the strip and keeps a copy in
+      localStorage (cache.js TTL, privacy.sh flush) like the other panels.
+      Visitors never call the Simkl API and the token never leaves the build.
 
       Env (Netlify; `.env` + `dotenv run` locally):
         HUGO_SIMKL_CLIENT_ID  — Simkl app client id
@@ -27,8 +29,9 @@
       movies. Anime titles come back romaji, so one `/anime/{id}?extended=full`
       call per anime item adds the English title to the hover text, otaku.sh
       style. Posters from simkl.in (`_c` = 170×250). Failures are warnf'd,
-      never fatal; the strip then shows an .api-error line like the JS panels.
-      Response cache: [caches.getresource] maxAge = "1h" in hugo.toml.
+      never fatal; the blob then carries {error: true} and simkl.js shows the
+      usual .api-error line.
+      Build-side response cache: [caches.getresource] maxAge = "1h" in hugo.toml.
     */ -}}
     {{- $limit := .Site.Params.screenLimit | default 10 -}}
     {{- $cid := getenv "HUGO_SIMKL_CLIENT_ID" -}}
@@ -77,51 +80,60 @@
 
     <pre class="panel-terminal"><a href="https://simkl.com/9013741/" target="_blank" rel="noreferrer noopener">$ simkl list --status=recent</a></pre>
 
-    <div id="last-watched" class="album-strip">
-      {{- if $failed -}}
-        <span class="api-error">$ api is not aping 🐒</span>
-      {{- else if not $items -}}
-        <span class="api-error">$ no recent activity</span>
-      {{- else -}}
-        {{- range $items -}}
-          {{- $path := index $paths .kind -}}
-          {{- $title := .title -}}
+    <div id="last-watched" class="album-strip" aria-live="polite"></div>
 
-          {{- /* Anime only: fetch the English title for the hover text. Public catalogue endpoint, same client_id. */ -}}
-          {{- $english := "" -}}
-          {{- if eq .kind "anime" -}}
-            {{- with try (resources.GetRemote (printf "https://api.simkl.com/anime/%d?extended=full&%s" .simkl $q) (dict "headers" (dict "User-Agent" $ua))) -}}
-              {{- with .Err -}}
-                {{- warnf "simkl panel: anime detail for %s failed: %s" $title . -}}
-              {{- else with .Value -}}
-                {{- $english = (.Content | transform.Unmarshal).en_title | default "" -}}
-              {{- end -}}
+    {{- /*
+      Ready-to-render items for simkl.js — href, poster, hover label, stamp.
+      Data blob, not executable (CSP stays free of 'unsafe-inline'); simkl.js
+      renders it and keeps a copy in localStorage via cache.js so the strip
+      follows the same TTL / privacy.sh flush as the other panels.
+    */ -}}
+    {{- $rendered := slice -}}
+    {{- if not $failed -}}
+      {{- range $items -}}
+        {{- $path := index $paths .kind -}}
+        {{- $title := .title -}}
+
+        {{- /* Anime only: fetch the English title for the hover text. Public catalogue endpoint, same client_id. */ -}}
+        {{- $english := "" -}}
+        {{- if eq .kind "anime" -}}
+          {{- with try (resources.GetRemote (printf "https://api.simkl.com/anime/%d?extended=full&%s" .simkl $q) (dict "headers" (dict "User-Agent" $ua))) -}}
+            {{- with .Err -}}
+              {{- warnf "simkl panel: anime detail for %s failed: %s" $title . -}}
+            {{- else with .Value -}}
+              {{- $english = (.Content | transform.Unmarshal).en_title | default "" -}}
             {{- end -}}
           {{- end -}}
-
-          {{- /* Hover/alt: "Title (Year)" for films; "Title (English) (Year) · ep 30/36" for shows/anime. */ -}}
-          {{- $label := $title -}}
-          {{- if and $english (ne (lower $english) (lower $title)) -}}{{- $label = printf "%s (%s)" $label $english -}}{{- end -}}
-          {{- with .year -}}{{- $label = printf "%s (%d)" $label (int .) -}}{{- end -}}
-          {{- if and (ne .kind "movies") .watched -}}
-            {{- $label = printf "%s · ep %d" $label (int .watched) -}}
-            {{- with .total -}}{{- $label = printf "%s/%d" $label (int .) -}}{{- end -}}
-          {{- end -}}
-
-          {{- /* Stamp: progress. `S2026E818` (year seasons) → `E818`; movies → FILM. */ -}}
-          {{- $stamp := "FILM" -}}
-          {{- if ne .kind "movies" -}}
-            {{- $stamp = .last -}}
-            {{- if gt (len $stamp) 8 -}}{{- $stamp = replaceRE `^S\d+` "" $stamp -}}{{- end -}}
-          {{- end -}}
-
-          <a href="https://simkl.com/{{ $path }}/{{ .simkl }}{{ with .slug }}/{{ . }}{{ end }}" target="_blank" rel="noreferrer noopener">
-            <img src="https://simkl.in/posters/{{ .poster }}_c.webp" width="64" height="64" alt="{{ $label }}" title="{{ $label }}" loading="lazy" decoding="async">
-            {{- with $stamp }}<span class="screen-stamp">{{ . }}</span>{{ end -}}
-          </a>
         {{- end -}}
+
+        {{- /* Hover/alt: "Title (Year)" for films; "Title (English) (Year) · ep 30/36" for shows/anime. */ -}}
+        {{- $label := $title -}}
+        {{- if and $english (ne (lower $english) (lower $title)) -}}{{- $label = printf "%s (%s)" $label $english -}}{{- end -}}
+        {{- with .year -}}{{- $label = printf "%s (%d)" $label (int .) -}}{{- end -}}
+        {{- if and (ne .kind "movies") .watched -}}
+          {{- $label = printf "%s · ep %d" $label (int .watched) -}}
+          {{- with .total -}}{{- $label = printf "%s/%d" $label (int .) -}}{{- end -}}
+        {{- end -}}
+
+        {{- /* Stamp: progress. `S2026E818` (year seasons) → `E818`; movies → FILM. */ -}}
+        {{- $stamp := "FILM" -}}
+        {{- if ne .kind "movies" -}}
+          {{- $stamp = .last -}}
+          {{- if gt (len $stamp) 8 -}}{{- $stamp = replaceRE `^S\d+` "" $stamp -}}{{- end -}}
+        {{- end -}}
+
+        {{- $href := printf "https://simkl.com/%s/%d" $path .simkl -}}
+        {{- with .slug -}}{{- $href = printf "%s/%s" $href . -}}{{- end -}}
+        {{- $rendered = $rendered | append (dict
+              "href"  $href
+              "img"   (printf "https://simkl.in/posters/%s_c.webp" .poster)
+              "label" $label
+              "stamp" $stamp) -}}
       {{- end -}}
-    </div>
+    {{- end -}}
+    {{- $payload := dict "fetchedAt" (now.Format "2006-01-02T15:04:05Z07:00") "items" $rendered -}}
+    {{- if $failed -}}{{- $payload = dict "error" true -}}{{- end -}}
+    <script type="application/json" id="simkl-data">{{ $payload | jsonify | safeJS }}</script>
 
   </div>
 
