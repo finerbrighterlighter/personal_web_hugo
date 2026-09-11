@@ -1,4 +1,4 @@
-<div class="terminal-window panel" role="region" aria-label="Anime and manga">
+<div class="terminal-window panel" role="region" aria-label="Manga">
 
   <div class="window-header">
     <div class="window-controls" aria-hidden="true">
@@ -6,19 +6,25 @@
       <span class="control minimize"></span>
       <span class="control maximize"></span>
     </div>
-    <div class="window-title">otaku.sh</div>
+    <div class="window-title">manga.sh</div>
   </div>
 
   <div class="window-content">
 
-    {{- /* Two strips, one AniList request (anilist.js): most recently updated manga, then anime — any status except planning. */ -}}
+    {{- /* One AniList request (anilist.js): most recently updated manga — any status except planning. Stamp = progress (CH 123). */ -}}
     <pre class="panel-terminal"><a href="https://anilist.co/user/finer/mangalist" target="_blank" rel="noreferrer noopener">$ anilist manga --sort=updated</a></pre>
 
     <div id="last-read-manga" class="album-strip" aria-live="polite"></div>
 
+    {{- /*
+      Anime strip retired 2026-09 — anime is now in screen.sh (Simkl, build-time).
+      To bring otaku.sh back: uncomment this block, the `last-watched-anime` STRIPS
+      entry and the `anime:` query alias in anilist.js, and rename the window.
+
     <pre class="panel-terminal panel-terminal-gap"><a href="https://anilist.co/user/finer/animelist" target="_blank" rel="noreferrer noopener">$ anilist anime --sort=updated</a></pre>
 
     <div id="last-watched-anime" class="album-strip" aria-live="polite"></div>
+    */ -}}
 
   </div>
 

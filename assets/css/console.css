@@ -1938,7 +1938,7 @@ p.social a {
 
 .topalbum-artist,
 .otaku-stamp,
-.screen-language,
+.screen-stamp,
 .photo-date,
 .playlist-year {
   position: absolute;
@@ -1978,7 +1978,7 @@ p.social a {
 #last-read-manga a:nth-child(5n) .otaku-stamp { right: auto; left: 3px;  bottom: 8px; transform: rotate(-3deg); }
 #last-read-manga a:nth-child(7n) .otaku-stamp { right: 4px;  left: auto; bottom: 5px; transform: rotate(-6deg); }
 
-/* #last-watched-anime — same stamp, cycle starts at offset 2 (right/-10deg default) so the two otaku.sh strips differ */
+/* #last-watched-anime — retired 2026-09 (anime moved to screen.sh); rules kept for a future otaku.sh revival */
 #last-watched-anime .otaku-stamp { right: 3px; left: auto; bottom: 8px; transform: rotate(-10deg); }
 #last-watched-anime a:nth-child(2n) .otaku-stamp { right: auto; left: 7px;  bottom: 6px; transform: rotate(8deg); }
 #last-watched-anime a:nth-child(3n) .otaku-stamp { right: 7px;  left: auto; bottom: 3px; transform: rotate(12deg); }
@@ -1987,12 +1987,12 @@ p.social a {
 #last-watched-anime a:nth-child(7n) .otaku-stamp { right: auto; left: 5px;  bottom: 4px; transform: rotate(4deg); }
 
 /* #last-watched — cycle starts at offset 2 (right/-10deg default) */
-.screen-language { right: 3px; left: auto; bottom: 8px; transform: rotate(-10deg); }
-#last-watched a:nth-child(2n) .screen-language { right: auto; left: 7px;  bottom: 6px; transform: rotate(8deg); }
-#last-watched a:nth-child(3n) .screen-language { right: 7px;  left: auto; bottom: 3px; transform: rotate(12deg); }
-#last-watched a:nth-child(4n) .screen-language { right: auto; left: 3px;  bottom: 8px; transform: rotate(-3deg); }
-#last-watched a:nth-child(5n) .screen-language { right: 4px;  left: auto; bottom: 5px; transform: rotate(-6deg); }
-#last-watched a:nth-child(7n) .screen-language { right: auto; left: 5px;  bottom: 4px; transform: rotate(4deg); }
+.screen-stamp { right: 3px; left: auto; bottom: 8px; transform: rotate(-10deg); }
+#last-watched a:nth-child(2n) .screen-stamp { right: auto; left: 7px;  bottom: 6px; transform: rotate(8deg); }
+#last-watched a:nth-child(3n) .screen-stamp { right: 7px;  left: auto; bottom: 3px; transform: rotate(12deg); }
+#last-watched a:nth-child(4n) .screen-stamp { right: auto; left: 3px;  bottom: 8px; transform: rotate(-3deg); }
+#last-watched a:nth-child(5n) .screen-stamp { right: 4px;  left: auto; bottom: 5px; transform: rotate(-6deg); }
+#last-watched a:nth-child(7n) .screen-stamp { right: auto; left: 5px;  bottom: 4px; transform: rotate(4deg); }
 
 /* #latestimage — cycle starts at offset 3 (left/8deg default) */
 .photo-date { right: auto; left: 7px; bottom: 6px; transform: rotate(8deg); }
