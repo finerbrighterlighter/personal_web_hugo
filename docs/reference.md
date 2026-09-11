@@ -1078,6 +1078,7 @@ This is intentional: visitors returning after 60 min get the site's default appe
 | Data | Stored by | Cleared after TTL |
 |---|---|---|
 | API responses (OpenAlex, Last.fm, AniList, Unsplash, BibTeX) | `cache.js` via `setCache()` | Yes — triggers full reset |
+| `screen.sh` Simkl strip (static HTML, build time) | — nothing in the browser; Hugo `[caches.getresource]` reuses the API responses for 1h across builds (Netlify persists `/opt/build/cache/hugo_cache`) | No — not affected by the flush |
 | Theme mode (`dark`/`light`) | `theme.js` plain `setItem` | Yes — piggybacked on API expiry |
 | Palette choice (`theme-palette-dark/light`) | `theme.js` plain `setItem` | Yes — piggybacked on API expiry |
 | Burmese font mode (`mmFontMode`) | `mm_font_toggle.js` plain `setItem` | Yes — piggybacked on API expiry |
