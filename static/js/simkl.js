@@ -1,27 +1,114 @@
 /**
  * simkl.js — screen.sh panel: recently watched movies, shows and anime (Simkl).
  *
- * The data is fetched at build time by panel-simkl.html (the Simkl token never
- * reaches the browser) and shipped as a JSON blob of ready-to-render items:
- * { fetchedAt, items: [{ href, img, label, stamp }] } — or { error: true }
- * when the build-side fetch failed. This module only renders, but it keeps
- * the strip in the same localStorage lifecycle as the other panels:
+ * Same lifecycle as lastFM.js / anilist.js: on a fresh load call the Simkl API
+ * directly from the browser, curate the ten most recent titles, cache the
+ * result via cache.js (site-wide TTL, cleared by the privacy.sh flush) and
+ * render. Refreshes inside the TTL never reach Simkl.
  *
- *   1. cached copy from an earlier visit (cache.js, site-wide TTL, cleared by
- *      the privacy.sh flush) — used unless the page carries a newer build
- *   2. baked blob → rendered and written to the cache
+ * Credentials come from window.CONFIG (baked from HUGO_SIMKL_CLIENT_ID /
+ * HUGO_SIMKL_TOKEN at build). Like the Last.fm key they are visible in the
+ * page source — an accepted weakness. Note the Simkl PIN token can also
+ * write to the account; there is no read-only scope.
+ *
+ * Fetch strategy: `/sync/all-items?date_from=<RECENT_WINDOW_DAYS ago>` (a few
+ * KB) first; only when that yields fewer than LIMIT watched titles fall back
+ * to the full library (~400 KB, brotli on the wire). Anime titles come back
+ * romaji, so one detail call per anime item adds the English title to the
+ * hover label.
  *
  * Markup mirrors anilist.js: <a><img><span class="screen-stamp">S05E06</span></a>.
+ * Stamp = progress: Simkl `last_watched` (`S05E06` shows, `E10` anime;
+ * year-numbered seasons like `S2026E818` trimmed to `E818`), `FILM` for movies.
  */
 import { getCache, setCache } from "./cache.js";
 
 const STRIP_ID = "last-watched";
-const DATA_ID  = "simkl-data";
+const API = "https://api.simkl.com";
+const CLIENT_ID = window.CONFIG?.simklClientId || "";
+const TOKEN = window.CONFIG?.simklToken || "";
+const LIMIT = window.CONFIG?.screenLimit ?? 10;   // posters shown
+const RECENT_WINDOW_DAYS = 14;                     // first, cheap request covers this span
+const APP = "app-name=htunteza-site&app-version=1.0";
+const PATHS = { movies: "movies", shows: "tv", anime: "anime" };
 
-function readBlob() {
-  const el = document.getElementById(DATA_ID);
-  if (!el) return null;
-  try { return JSON.parse(el.textContent); } catch { return null; }
+async function simkl(path, auth = true) {
+  const url = `${API}${path}${path.includes("?") ? "&" : "?"}client_id=${CLIENT_ID}&${APP}`;
+  const headers = { "Content-Type": "application/json" };
+  if (auth) headers.Authorization = `Bearer ${TOKEN}`;
+  const res = await fetch(url, { headers });
+  if (!res.ok) throw new Error(`Simkl ${res.status} on ${path}`);
+  return res.json();
+}
+
+/* Flatten the three library buckets into one list of watched titles. */
+function flatten(library) {
+  const out = [];
+  for (const kind of Object.keys(PATHS)) {
+    for (const it of library?.[kind] || []) {
+      if (!it.last_watched_at) continue;
+      const m = kind === "movies" ? it.movie : it.show;
+      out.push({
+        at: it.last_watched_at,
+        kind,
+        title: m.title,
+        year: m.year,
+        poster: m.poster,
+        simkl: m.ids.simkl,
+        slug: m.ids.slug,
+        last: it.last_watched || "",
+        watched: it.watched_episodes_count,
+        total: it.total_episodes_count,
+      });
+    }
+  }
+  return out.sort((a, b) => (a.at < b.at ? 1 : -1));
+}
+
+/* "S2026E818" (year-numbered seasons) → "E818" so it fits the 52px stamp. */
+function stampFor(item) {
+  if (item.kind === "movies") return "FILM";
+  let s = item.last;
+  if (s.length > 8) s = s.replace(/^S\d+/, "");
+  return s;
+}
+
+/* Hover/alt: "Title (Year)" for films; "Title (English) (Year) · ep 30/36" for shows/anime. */
+function labelFor(item, english) {
+  let label = item.title;
+  if (english && english.toLowerCase() !== item.title.toLowerCase()) label += ` (${english})`;
+  if (item.year) label += ` (${item.year})`;
+  if (item.kind !== "movies" && item.watched) {
+    label += ` · ep ${item.watched}`;
+    if (item.total) label += `/${item.total}`;
+  }
+  return label;
+}
+
+async function fetchRecent(limit) {
+  const since = new Date(Date.now() - RECENT_WINDOW_DAYS * 86400000).toISOString().replace(/\.\d{3}Z$/, "Z");
+  let items = flatten(await simkl(`/sync/all-items?date_from=${since}`));
+  if (items.length < limit) items = flatten(await simkl("/sync/all-items"));
+  const top = items.slice(0, limit);
+
+  /* English titles for anime only; a failed lookup just leaves romaji. */
+  const english = await Promise.all(
+    top.map((it) =>
+      it.kind === "anime"
+        ? simkl(`/anime/${it.simkl}?extended=full`, false).then((d) => d?.en_title || "").catch(() => "")
+        : Promise.resolve("")
+    )
+  );
+
+  return {
+    fetchedAt: new Date().toISOString(),
+    items: top.map((it, i) => ({
+      href: `https://simkl.com/${PATHS[it.kind]}/${it.simkl}${it.slug ? `/${it.slug}` : ""}`,
+      img: `https://simkl.in/posters/${it.poster}_c.webp`,
+      label: labelFor(it, english[i]),
+      stamp: stampFor(it),
+    })),
+  };
 }
 
 function renderStrip(payload, element) {
@@ -63,25 +150,28 @@ function renderStrip(payload, element) {
   element.appendChild(frag);
 }
 
-function loadScreen() {
+async function loadScreen() {
   const element = document.getElementById(STRIP_ID);
   if (!element) return;
 
-  const baked = readBlob();
-  const limit = baked?.items?.length ?? 0;
-  const cacheKey = `simkl-recent-${limit}`;
-
-  const cached = getCache(cacheKey);
-  const bakedIsNewer = baked?.fetchedAt &&
-    (!cached?.fetchedAt || new Date(baked.fetchedAt) > new Date(cached.fetchedAt));
-
-  if (cached && !bakedIsNewer) {
-    renderStrip(cached, element);
+  if (!CLIENT_ID || !TOKEN) {
+    console.error("Simkl: HUGO_SIMKL_CLIENT_ID / HUGO_SIMKL_TOKEN not set");
+    renderStrip({ error: true }, element);
     return;
   }
 
-  renderStrip(baked, element);
-  if (baked && !baked.error) setCache(cacheKey, baked);
+  const cacheKey = `simkl-recent-${LIMIT}`;
+  const cached = getCache(cacheKey);
+  if (cached) { renderStrip(cached, element); return; }
+
+  try {
+    const payload = await fetchRecent(LIMIT);
+    setCache(cacheKey, payload);
+    renderStrip(payload, element);
+  } catch (err) {
+    console.error("Simkl request failed:", err);
+    renderStrip({ error: true }, element);
+  }
 }
 
 loadScreen();

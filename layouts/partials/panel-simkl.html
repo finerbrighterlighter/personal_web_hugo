@@ -12,128 +12,15 @@
   <div class="window-content">
 
     {{- /*
-      Build-time Simkl fetch (replaces the Trakt panel, 2026-09). The user's
-      library — movies, shows and anime buckets — is read here with
-      resources.GetRemote, sorted by last_watched_at and shipped as a JSON blob
-      of ready-to-render items; simkl.js paints the strip and keeps a copy in
-      localStorage (cache.js TTL, privacy.sh flush) like the other panels.
-      Visitors never call the Simkl API and the token never leaves the build.
-
-      Env (Netlify; `.env` + `dotenv run` locally):
-        HUGO_SIMKL_CLIENT_ID  — Simkl app client id
-        HUGO_SIMKL_TOKEN      — long-lived PIN-flow token (read scope is enough)
-
-      Corner stamp (`.screen-stamp`) = progress: Simkl's `last_watched`
-      (`S05E06` for shows, `E10` for anime; year-numbered seasons like
-      `S2026E818` are trimmed to `E818` so they fit the 52px stamp), `FILM` for
-      movies. Anime titles come back romaji, so one `/anime/{id}?extended=full`
-      call per anime item adds the English title to the hover text, otaku.sh
-      style. Posters from simkl.in (`_c` = 170×250). Failures are warnf'd,
-      never fatal; the blob then carries {error: true} and simkl.js shows the
-      usual .api-error line.
-      Build-side response cache: [caches.getresource] maxAge = "1h" in hugo.toml.
+      screen.sh — recently watched movies, shows and anime from Simkl.
+      Filled client-side by simkl.js (Simkl API called from the browser, cached
+      via cache.js like the other live panels). Credentials are baked into
+      config.js from HUGO_SIMKL_CLIENT_ID / HUGO_SIMKL_TOKEN. Replaced the
+      Trakt/TMDB panel 2026-09 (Trakt API is VIP-only).
     */ -}}
-    {{- $limit := .Site.Params.screenLimit | default 10 -}}
-    {{- $cid := getenv "HUGO_SIMKL_CLIENT_ID" -}}
-    {{- $tok := getenv "HUGO_SIMKL_TOKEN" -}}
-    {{- $ua := "htunteza-site/1.0 (+https://htunteza.com)" -}}
-    {{- $q := printf "client_id=%s&app-name=htunteza-site&app-version=1.0" $cid -}}
-    {{- $opts := dict "headers" (dict "Authorization" (printf "Bearer %s" $tok) "User-Agent" $ua) -}}
-    {{- $paths := dict "movies" "movies" "shows" "tv" "anime" "anime" -}}
-    {{- $items := slice -}}
-    {{- $failed := false -}}
-
-    {{- if and $cid $tok -}}
-      {{- range $bucket := slice "movies" "shows" "anime" -}}
-        {{- with try (resources.GetRemote (printf "https://api.simkl.com/sync/all-items/%s?%s" $bucket $q) $opts) -}}
-          {{- with .Err -}}
-            {{- warnf "simkl panel: %s fetch failed: %s" $bucket . -}}{{- $failed = true -}}
-          {{- else with .Value -}}
-            {{- $data := .Content | transform.Unmarshal -}}
-            {{- range index $data $bucket -}}
-              {{- if .last_watched_at -}}
-                {{- $m := dict -}}
-                {{- if eq $bucket "movies" -}}{{- $m = .movie -}}{{- else -}}{{- $m = .show -}}{{- end -}}
-                {{- $items = $items | append (dict
-                      "at"      .last_watched_at
-                      "kind"    $bucket
-                      "title"   $m.title
-                      "year"    $m.year
-                      "poster"  $m.poster
-                      "simkl"   (int $m.ids.simkl)
-                      "slug"    $m.ids.slug
-                      "last"    (.last_watched | default "")
-                      "watched" .watched_episodes_count
-                      "total"   .total_episodes_count) -}}
-              {{- end -}}
-            {{- end -}}
-          {{- else -}}
-            {{- warnf "simkl panel: %s fetch returned nothing" $bucket -}}{{- $failed = true -}}
-          {{- end -}}
-        {{- end -}}
-      {{- end -}}
-    {{- else -}}
-      {{- warnf "simkl panel: HUGO_SIMKL_CLIENT_ID / HUGO_SIMKL_TOKEN not set — panel renders offline" -}}{{- $failed = true -}}
-    {{- end -}}
-
-    {{- $items = first $limit (sort $items "at" "desc") -}}
-
     <pre class="panel-terminal"><a href="https://simkl.com/9013741/" target="_blank" rel="noreferrer noopener">$ simkl list --status=recent</a></pre>
 
     <div id="last-watched" class="album-strip" aria-live="polite"></div>
-
-    {{- /*
-      Ready-to-render items for simkl.js — href, poster, hover label, stamp.
-      Data blob, not executable (CSP stays free of 'unsafe-inline'); simkl.js
-      renders it and keeps a copy in localStorage via cache.js so the strip
-      follows the same TTL / privacy.sh flush as the other panels.
-    */ -}}
-    {{- $rendered := slice -}}
-    {{- if not $failed -}}
-      {{- range $items -}}
-        {{- $path := index $paths .kind -}}
-        {{- $title := .title -}}
-
-        {{- /* Anime only: fetch the English title for the hover text. Public catalogue endpoint, same client_id. */ -}}
-        {{- $english := "" -}}
-        {{- if eq .kind "anime" -}}
-          {{- with try (resources.GetRemote (printf "https://api.simkl.com/anime/%d?extended=full&%s" .simkl $q) (dict "headers" (dict "User-Agent" $ua))) -}}
-            {{- with .Err -}}
-              {{- warnf "simkl panel: anime detail for %s failed: %s" $title . -}}
-            {{- else with .Value -}}
-              {{- $english = (.Content | transform.Unmarshal).en_title | default "" -}}
-            {{- end -}}
-          {{- end -}}
-        {{- end -}}
-
-        {{- /* Hover/alt: "Title (Year)" for films; "Title (English) (Year) · ep 30/36" for shows/anime. */ -}}
-        {{- $label := $title -}}
-        {{- if and $english (ne (lower $english) (lower $title)) -}}{{- $label = printf "%s (%s)" $label $english -}}{{- end -}}
-        {{- with .year -}}{{- $label = printf "%s (%d)" $label (int .) -}}{{- end -}}
-        {{- if and (ne .kind "movies") .watched -}}
-          {{- $label = printf "%s · ep %d" $label (int .watched) -}}
-          {{- with .total -}}{{- $label = printf "%s/%d" $label (int .) -}}{{- end -}}
-        {{- end -}}
-
-        {{- /* Stamp: progress. `S2026E818` (year seasons) → `E818`; movies → FILM. */ -}}
-        {{- $stamp := "FILM" -}}
-        {{- if ne .kind "movies" -}}
-          {{- $stamp = .last -}}
-          {{- if gt (len $stamp) 8 -}}{{- $stamp = replaceRE `^S\d+` "" $stamp -}}{{- end -}}
-        {{- end -}}
-
-        {{- $href := printf "https://simkl.com/%s/%d" $path .simkl -}}
-        {{- with .slug -}}{{- $href = printf "%s/%s" $href . -}}{{- end -}}
-        {{- $rendered = $rendered | append (dict
-              "href"  $href
-              "img"   (printf "https://simkl.in/posters/%s_c.webp" .poster)
-              "label" $label
-              "stamp" $stamp) -}}
-      {{- end -}}
-    {{- end -}}
-    {{- $payload := dict "fetchedAt" (now.Format "2006-01-02T15:04:05Z07:00") "items" $rendered -}}
-    {{- if $failed -}}{{- $payload = dict "error" true -}}{{- end -}}
-    <script type="application/json" id="simkl-data">{{ $payload | jsonify | safeJS }}</script>
 
   </div>
 

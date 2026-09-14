@@ -33,7 +33,7 @@ HUGO_VERSION = "0.157.0"
     #   connect-src panel APIs + doi.org content negotiation (redirects to Crossref/DataCite/mEDRA)
     #   frame-src   blob: for the protected-document PDF iframe
     #   img-src     https: because Last.fm/AniList/Unsplash covers come from their CDNs
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://gc.zgo.at https://cdn.jsdelivr.net/npm/mermaid@11/; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; media-src 'self'; connect-src 'self' https://api.github.com https://api.openalex.org https://api.unsplash.com https://doi.org https://api.crossref.org https://data.crossref.org https://api.datacite.org https://data.datacite.org https://data.medra.org https://graphql.anilist.co https://ws.audioscrobbler.com https://gc.zgo.at https://stats.htunteza.com; frame-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; manifest-src 'self'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://gc.zgo.at https://cdn.jsdelivr.net/npm/mermaid@11/; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; media-src 'self'; connect-src 'self' https://api.github.com https://api.openalex.org https://api.unsplash.com https://doi.org https://api.crossref.org https://data.crossref.org https://api.datacite.org https://data.datacite.org https://data.medra.org https://graphql.anilist.co https://api.simkl.com https://ws.audioscrobbler.com https://gc.zgo.at https://stats.htunteza.com; frame-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; manifest-src 'self'"
 
 [[headers]]
   for = "/css/*"
