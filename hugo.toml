@@ -1,4 +1,9 @@
-baseURL = "https://htunteza.com"
+# This repository is the archive of the site, served at archive.htunteza.com.
+# The current site is a separate repository (hugo_between) and owns htunteza.com.
+# baseURL must name the archive: it is what canonical, og:url, the sitemap and
+# every absolute link are built from, and pointing them at the live site made
+# each archive page claim to be its replacement.
+baseURL = "https://archive.htunteza.com"
 defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = false
 

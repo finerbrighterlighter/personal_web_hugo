@@ -20,6 +20,11 @@ HUGO_VERSION = "0.157.0"
 [[headers]]
   for = "/*"
   [headers.values]
+    # The archive is for people who follow a link to it, not for search results.
+    # The current site is at htunteza.com; two copies of the same writing competing
+    # in an index serves nobody. noindex keeps it fully readable while removing it
+    # from search; noarchive stops engines serving their own cached copy of a copy.
+    X-Robots-Tag = "noindex, noarchive"
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"

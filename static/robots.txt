@@ -1,4 +1,6 @@
+# This is the archive of htunteza.com, kept readable but deliberately out of
+# search. The live site, and the sitemap that matters, are at htunteza.com.
 User-agent: *
 Allow: /
 
-Sitemap: https://htunteza.com/sitemap.xml
+Sitemap: https://archive.htunteza.com/sitemap.xml
